@@ -1,0 +1,6 @@
+framework module Pods_Site_Assessment_Commercial {
+  umbrella header "Pods-Site Assessment Commercial-umbrella.h"
+
+  export *
+  module * { export * }
+}

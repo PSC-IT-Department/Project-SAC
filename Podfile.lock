@@ -1,0 +1,56 @@
+PODS:
+  - Alamofire (4.8.0)
+  - Differentiator (3.1.0)
+  - ReachabilitySwift (4.3.0)
+  - RxAlamofire (4.3.0):
+    - RxAlamofire/Core (= 4.3.0)
+  - RxAlamofire/Core (4.3.0):
+    - Alamofire (~> 4.5)
+    - RxSwift (~> 4)
+  - RxAtomic (4.4.0)
+  - RxCocoa (4.4.0):
+    - RxSwift (~> 4.0)
+  - RxDataSources (3.1.0):
+    - Differentiator (~> 3.0)
+    - RxCocoa (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxReachability (0.1.5):
+    - ReachabilitySwift (~> 4)
+    - RxCocoa (~> 4)
+    - RxSwift (~> 4)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
+
+DEPENDENCIES:
+  - RxAlamofire
+  - RxCocoa (~> 4.0)
+  - RxDataSources (~> 3.0)
+  - RxReachability
+  - RxSwift (~> 4.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Differentiator
+    - ReachabilitySwift
+    - RxAlamofire
+    - RxAtomic
+    - RxCocoa
+    - RxDataSources
+    - RxReachability
+    - RxSwift
+
+SPEC CHECKSUMS:
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
+  RxAlamofire: 09624d0f2d48ed8b686e4eb4cf68e28cbd2df556
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxCocoa: df63ebf7b9a70d6b4eeea407ed5dd4efc8979749
+  RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
+  RxReachability: 2895f43994a5201f426967a50ea4259b637952f9
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
+
+PODFILE CHECKSUM: d9136825d8aa9a66fab2f0355182cf4a615c73ec
+
+COCOAPODS: 1.5.3
