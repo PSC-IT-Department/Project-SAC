@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>LAYOUT</string>
+		<key>Questions</key>
+		<array>
+			<dict>
+				<key>Name</key>
+				<string>Project Address</string>
+				<key>Key</key>
+				<string>sac_projectAddress</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Copy of Structural Layout</string>
+				<key>Key</key>
+				<string>sac_copyOfStructuralLayout</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Copy of Floor Plan</string>
+				<key>Key</key>
+				<string>sac_copyOfFloorPlan</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Copy of Electrical Drawing</string>
+				<key>Key</key>
+				<string>sac_copyOfElectricalDrawing</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+		</array>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>STRUCTURAL</string>
+		<key>Questions</key>
+		<array>
+			<dict>
+				<key>Name</key>
+				<string>Structural Type</string>
+				<key>Key</key>
+				<string>sac_structuralType</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Flat Roof</string>
+					<string>Ridge Frame</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Area of Property Site</string>
+				<key>Key</key>
+				<string>sac_areaOfPropertySite</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Building Height</string>
+				<key>Key</key>
+				<string>sac_buildingHeight</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Main Beam Spacing (C)</string>
+				<key>Key</key>
+				<string>sac_mainBeamSpacing</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Open Web Steel Joist Spacing (OWSJ)</string>
+				<key>Key</key>
+				<string>sac_openWebSteelJoistSpacing_OWSJ</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Open Web Steel Joist Spacing(D)</string>
+				<key>Key</key>
+				<string>sac_openWebSteelJoistSpacing_D</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Height of web steel Joist(E)</string>
+				<key>Key</key>
+				<string>sac_heightofwebsteelJoist</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>End Three Web Member Type</string>
+				<key>Key</key>
+				<string>sac_endThreeWebMemberType</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>H Section</string>
+					<string>C Section</string>
+					<string>L Section</string>
+					<string>Z Section</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>End Three Web Member Type Notes</string>
+				<key>Key</key>
+				<string>sac_endThreeWebMemberTypeNotes</string>
+				<key>Type</key>
+				<string>Notes</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>No</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Size of End Three Web Member(W x H x B)</string>
+				<key>Key</key>
+				<string>sac_sizeOfEndThreeWebMember</string>
+				<key>Type</key>
+				<string>Three Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Size of Bottom Chord(W x H x D)</string>
+				<key>Key</key>
+				<string>sac_sizeOfBottomChord</string>
+				<key>Type</key>
+				<string>Three Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Main Beam</string>
+				<key>Key</key>
+				<string>sac_photosMainBeam</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Open Web Steel Joist</string>
+				<key>Key</key>
+				<string>sac_photosOpenWebSteelJoist</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Bottom Chord</string>
+				<key>Key</key>
+				<string>sac_photosBottomChord</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Web Member</string>
+				<key>Key</key>
+				<string>sac_photosWebMember</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+		</array>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>ELECTRICAL</string>
+		<key>Questions</key>
+		<array>
+			<dict>
+				<key>Name</key>
+				<string>Electrical Meter Room Dimension(W x H x L)</string>
+				<key>Key</key>
+				<string>sac_electricalMeterRoomDimension</string>
+				<key>Type</key>
+				<string>Three Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Service</string>
+				<key>Key</key>
+				<string>sac_service</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Single</string>
+					<string>Multiple</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Number of Service</string>
+				<key>Key</key>
+				<string>sac_numberOfService</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Service Capacity(V x A x TYPE)</string>
+				<key>Key</key>
+				<string>sac_service_capacity</string>
+				<key>Type</key>
+				<string>Three Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Main Service Switch Rating(V x A)</string>
+				<key>Key</key>
+				<string>sac_service_serviceSwitchRating</string>
+				<key>Type</key>
+				<string>Two Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Distribution Panel Rating(V x A)</string>
+				<key>Key</key>
+				<string>sac_service_distributionPanelRating</string>
+				<key>Type</key>
+				<string>Two Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Switch Rating for Distribution Panel Board(V x A)</string>
+				<key>Key</key>
+				<string>sac_service_switchRating</string>
+				<key>Type</key>
+				<string>Two Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Main Circuit Breaker Rating for Distribution Panel(V x A)</string>
+				<key>Key</key>
+				<string>sac_service_circuitBreakerRating</string>
+				<key>Type</key>
+				<string>Two Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Transformer Detail</string>
+				<key>Key</key>
+				<string>sac_transformerDetail</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Multi-Meter</string>
+				<key>Key</key>
+				<string>sac_multiMeter</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>No. of Electrical Meters</string>
+				<key>Key</key>
+				<string>sac_numberOfElectricalMeters</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Electrical Meter 1(V x A x PHASE)</string>
+				<key>Key</key>
+				<string>sac_electricalMeter</string>
+				<key>Type</key>
+				<string>Three Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Sub Panel Board</string>
+				<key>Key</key>
+				<string>sac_subPanelBoard</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Sub Panel Breaker Rating for Distribution Panel(V x A)</string>
+				<key>Key</key>
+				<string>sac_subPanelBreakerRating</string>
+				<key>Type</key>
+				<string>Two Inputs</string>
+				<key>Options</key>
+				<array/>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Transformer</string>
+				<key>Key</key>
+				<string>sac_photos_transformer</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Electrical Room</string>
+				<key>Key</key>
+				<string>sac_photos_electricalRoom</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Electrical Meter</string>
+				<key>Key</key>
+				<string>sac_photos_electricalMeter</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Photos - Distribution Panel</string>
+				<key>Key</key>
+				<string>sac_photos_distributionPanel</string>
+				<key>Type</key>
+				<string>Image</string>
+				<key>Options</key>
+				<array>
+					<string>Yes</string>
+					<string>No</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+			</dict>
+		</array>
+	</dict>
+</array>
+</plist>
