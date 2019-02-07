@@ -11,4 +11,6 @@ target 'Site Assessment Commercial' do
   pod 'RxDataSources', '~> 3.0'
   pod 'RxReachability'
   pod 'RxAlamofire'
+  pod 'Fusuma'
+  pod 'YangMingShan'
 end

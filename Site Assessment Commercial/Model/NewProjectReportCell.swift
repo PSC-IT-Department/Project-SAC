@@ -34,17 +34,48 @@ class ARCell: UICollectionViewCell {
 
 class SingleSelectionCell: UICollectionViewCell {
     @IBOutlet weak var imageviewReference: UIImageView!
-
+    
+    @IBOutlet var buttonGroup: [MyCheckBox]!
+    
     @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet weak var buttonOptionA: UIButton!
-    @IBOutlet weak var buttonOptionB: UIButton!
-    @IBOutlet weak var buttonOptionC: UIButton!
-    @IBOutlet weak var buttonOptionD: UIButton!
+    
+    var tapAction: ((MyCheckBox) -> Void)?
+    
+    @IBAction func buttonTapped(_ sender: MyCheckBox) {
+        tapAction?(sender)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
 class ImageCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: ImageGalleryCollectionView!
+    
+    var tapAction: ((UIButton)->())?
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        tapAction?(sender)
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.collectionView.images = []
+        self.collectionView.isUserInteractionEnabled = false
+    }
+        
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        
+        layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
+        return layoutAttributes
+    }
+
 }
 
 class SingleInputCell: UICollectionViewCell {
@@ -54,23 +85,85 @@ class SingleInputCell: UICollectionViewCell {
 
 class TwoInputsCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet weak var textValue1: UITextField!
-    @IBOutlet weak var textValue2: UITextField!
     @IBOutlet weak var labelOperator: UILabel!
+    @IBOutlet var textFields: [UITextField]!
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
 class ThreeInputsCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     
-    @IBOutlet weak var labelOperator1: UILabel!
-    @IBOutlet weak var labelOperator2: UILabel!
+    @IBOutlet var labelOperators: [UILabel]!
+    @IBOutlet var textFields: [UITextField]!
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+    }
     
-    @IBOutlet weak var textValue1: UITextField!
-    @IBOutlet weak var textValue2: UITextField!
-    @IBOutlet weak var textValue3: UITextField!
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }
 
-class NotesCell: UICollectionViewCell {
+class NotesCell: UICollectionViewCell, UITextViewDelegate {
+    var disposeBag = DisposeBag()
+
+    @IBOutlet weak var textViewNotesHeight: NSLayoutConstraint!
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var textviewNotes: UITextView!
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        disposeBag = DisposeBag()
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        self.textviewNotes.text = "Notes: "
+        self.textviewNotes.textColor = UIColor.lightGray
+        self.textviewNotes.delegate = self
+    }
+    
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+
+        return layoutAttributes
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "Notes: "
+            textView.textColor = UIColor.lightGray
+        }
+        
+        textView.resignFirstResponder()
+    }
+
+}
+
+class ImageGalleryCell: UICollectionViewCell {
+    @IBOutlet weak var buttonView: UIButton!
+    
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
+        return layoutAttributes
+    }
 }

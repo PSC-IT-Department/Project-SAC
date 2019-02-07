@@ -20,6 +20,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -37,6 +39,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -54,6 +58,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -71,6 +77,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 		</array>
 	</dict>
@@ -95,6 +103,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -104,11 +114,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Area of Property Site (sq. ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -118,11 +132,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Building Height (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -132,11 +150,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Main Beam Spacing-C (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -146,11 +168,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Open Web Steel Joist Spacing-OWSJ (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -160,11 +186,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Open Web Steel Joist Spacing-D (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -174,11 +204,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Height of web steel Joist-E (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -198,6 +232,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -212,6 +248,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>No</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -221,11 +259,17 @@
 				<key>Type</key>
 				<string>Three Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>H (mm)</string>
+					<string>W (mm)</string>
+					<string>B (mm)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -235,11 +279,17 @@
 				<key>Type</key>
 				<string>Three Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>H (ft)</string>
+					<string>W (ft)</string>
+					<string>B (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -257,6 +307,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -274,6 +326,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -291,6 +345,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -308,6 +364,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 		</array>
 	</dict>
@@ -318,17 +376,23 @@
 		<array>
 			<dict>
 				<key>Name</key>
-				<string>Electrical Meter Room Dimension(W x H x L)</string>
+				<string>Electrical Meter Room Dimension(L x W x H)</string>
 				<key>Key</key>
 				<string>sac_electricalMeterRoomDimension</string>
 				<key>Type</key>
 				<string>Three Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>L (ft)</string>
+					<string>W (ft)</string>
+					<string>H (ft)</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -346,6 +410,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -355,25 +421,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Number of Service</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
-			</dict>
-			<dict>
-				<key>Name</key>
-				<string>Service Capacity(V x A x TYPE)</string>
-				<key>Key</key>
-				<string>sac_service_capacity</string>
-				<key>Type</key>
-				<string>Three Inputs</string>
-				<key>Options</key>
-				<array/>
-				<key>Default</key>
+				<key>Value</key>
 				<string></string>
-				<key>Mandatory</key>
-				<string>Yes</string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -383,11 +439,35 @@
 				<key>Type</key>
 				<string>Two Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Service Type</string>
+				<key>Key</key>
+				<string>sac_service_type</string>
+				<key>Type</key>
+				<string>Single Selection</string>
+				<key>Options</key>
+				<array>
+					<string>Single Phase</string>
+					<string>Three Phase</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -397,11 +477,16 @@
 				<key>Type</key>
 				<string>Two Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -411,11 +496,16 @@
 				<key>Type</key>
 				<string>Two Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -425,11 +515,16 @@
 				<key>Type</key>
 				<string>Two Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -439,11 +534,15 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>Transformer Detail</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -461,6 +560,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -470,25 +571,35 @@
 				<key>Type</key>
 				<string>Single Input</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>No. of Electrical Meters</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
-				<string>Electrical Meter 1(V x A x PHASE)</string>
+				<string>Electrical Meter(V x A x PHASE)</string>
 				<key>Key</key>
 				<string>sac_electricalMeter</string>
 				<key>Type</key>
 				<string>Three Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+					<string>Phase</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -506,6 +617,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -515,11 +628,16 @@
 				<key>Type</key>
 				<string>Two Inputs</string>
 				<key>Options</key>
-				<array/>
+				<array>
+					<string>V</string>
+					<string>A</string>
+				</array>
 				<key>Default</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -537,6 +655,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -554,6 +674,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -571,6 +693,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -588,6 +712,8 @@
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
 			</dict>
 		</array>
 	</dict>

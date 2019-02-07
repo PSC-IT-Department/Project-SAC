@@ -149,4 +149,3 @@ func rxFatalError(_ lastMessage: String) -> Never  {
     // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
     fatalError(lastMessage)
 }
-

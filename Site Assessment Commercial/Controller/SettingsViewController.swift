@@ -10,30 +10,40 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-class SettingsViewController: UITableViewController {
+class SettingsViewController: UIViewController {
 
+    @IBOutlet weak var tableView: UITableView!
+    var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Settings"
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        let items = Observable.just(
+            (0..<20).map { "\($0)" }
+        )
+        
+        items
+            .bind(to: tableView.rx.items(cellIdentifier: "SettingsCell", cellType: SettingsCell.self)) { (row, element, cell) in
+                
+                cell.label.text = "\(element) @ row \(row)"
+            }
+            .disposed(by: disposeBag)
+        /*
+        tableView.rx
+            .modelSelected(String.self)
+            .subscribe(onNext:  { value in
+                print("Hello, World!")
+            })
+            .disposed(by: disposeBag)
+        
+        tableView.rx
+            .itemAccessoryButtonTapped
+            .subscribe(onNext: { indexPath in
+                print("hello, World!")
+            })
+            .disposed(by: disposeBag)
+        */
     }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
-
 }

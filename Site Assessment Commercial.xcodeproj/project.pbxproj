@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		272CB9C59BFB653EAFF22E0B /* Pods_Site_Assessment_Commercial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */; };
+		DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */; };
 		DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */; };
+		DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */; };
 		DD754C6E21AC699400253D58 /* QuestionnaireConfigs.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD754C6D21AC699400253D58 /* QuestionnaireConfigs.plist */; };
 		DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BEFD21A85D7600A65352 /* AppDelegate.swift */; };
 		DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD76BF0121A85D7600A65352 /* Main.storyboard */; };
@@ -25,8 +27,7 @@
 		DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2321A874D300A65352 /* InformationCell.swift */; };
 		DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2521A8AB8000A65352 /* MainViewModel.swift */; };
 		DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */; };
-		DD81E8CB21E00E3F005FDAF4 /* ImageGalleryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81E8CA21E00E3F005FDAF4 /* ImageGalleryTableView.swift */; };
-		DD81E8CF21E01128005FDAF4 /* ImageGalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81E8CE21E01128005FDAF4 /* ImageGalleryCell.swift */; };
+		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
 		DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */; };
 		DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */; };
 		DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD909D6521AF26A300BC9736 /* NetworkService.swift */; };
@@ -39,7 +40,9 @@
 		5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Site_Assessment_Commercial.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD3D4EF6F70EB09AC05F271F /* Pods-Site Assessment Commercial.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.debug.xcconfig"; sourceTree = "<group>"; };
 		D38745A09F38BE1C10B8782F /* Pods-Site Assessment Commercial.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.release.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.release.xcconfig"; sourceTree = "<group>"; };
+		DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionView.swift; sourceTree = "<group>"; };
 		DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportCell.swift; sourceTree = "<group>"; };
+		DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveToCustomAlbum.swift; sourceTree = "<group>"; };
 		DD754C6D21AC699400253D58 /* QuestionnaireConfigs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = QuestionnaireConfigs.plist; sourceTree = "<group>"; };
 		DD76BEFA21A85D7600A65352 /* Site Assessment Commercial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Site Assessment Commercial.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD76BEFD21A85D7600A65352 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,8 +61,7 @@
 		DD76BF2321A874D300A65352 /* InformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationCell.swift; sourceTree = "<group>"; };
 		DD76BF2521A8AB8000A65352 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlowLayout.swift; sourceTree = "<group>"; };
-		DD81E8CA21E00E3F005FDAF4 /* ImageGalleryTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableView.swift; sourceTree = "<group>"; };
-		DD81E8CE21E01128005FDAF4 /* ImageGalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCell.swift; sourceTree = "<group>"; };
+		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
 		DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportViewModel.swift; sourceTree = "<group>"; };
 		DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableView.swift; sourceTree = "<group>"; };
 		DD909D6521AF26A300BC9736 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				DD909D6721AF26AD00BC9736 /* Service */,
 				DD909D6A21B04F1E00BC9736 /* SADTO.swift */,
 				DD81CFE721C2F92C00FBE53E /* Layouts */,
+				DD85EC0A21ED02D5009C8F4A /* Extensions */,
 			);
 			path = "Site Assessment Commercial";
 			sourceTree = "<group>";
@@ -142,7 +145,6 @@
 				DD76BF1F21A86C7500A65352 /* ReviewCell.swift */,
 				DD76BF2321A874D300A65352 /* InformationCell.swift */,
 				DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */,
-				DD81E8CE21E01128005FDAF4 /* ImageGalleryCell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -155,8 +157,8 @@
 				DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */,
 				DD76BF0F21A85F7100A65352 /* SettingsViewController.swift */,
 				DD76BF1921A86AE200A65352 /* MainViewController.swift */,
-				DD81E8CA21E00E3F005FDAF4 /* ImageGalleryTableView.swift */,
 				DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */,
+				DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -177,6 +179,15 @@
 				DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */,
 			);
 			path = Layouts;
+			sourceTree = "<group>";
+		};
+		DD85EC0A21ED02D5009C8F4A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */,
+				DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		DD909D6721AF26AD00BC9736 /* Service */ = {
@@ -285,6 +296,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
+				"${BUILT_PRODUCTS_DIR}/Fusuma/Fusuma.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
@@ -292,11 +304,13 @@
 				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxReachability/RxReachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/YangMingShan/YangMingShan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fusuma.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
@@ -304,6 +318,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxReachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YangMingShan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -317,7 +332,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD81E8CB21E00E3F005FDAF4 /* ImageGalleryTableView.swift in Sources */,
 				DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */,
 				DD76BF1E21A86BC900A65352 /* SettingsCell.swift in Sources */,
 				DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */,
@@ -326,18 +340,20 @@
 				DD76BF1621A86A8200A65352 /* MainCell.swift in Sources */,
 				DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */,
 				DD909D6B21B04F1E00BC9736 /* SADTO.swift in Sources */,
+				DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */,
 				DD76BF1021A85F7100A65352 /* SettingsViewController.swift in Sources */,
+				DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */,
 				DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */,
 				DD76BF1A21A86AE200A65352 /* MainViewController.swift in Sources */,
 				DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */,
 				DD76BF2021A86C7500A65352 /* ReviewCell.swift in Sources */,
 				DD76BF1421A8629C00A65352 /* ReviewViewController.swift in Sources */,
+				DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */,
 				DD76BF1221A8622E00A65352 /* NewProjectReportViewController.swift in Sources */,
 				DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */,
 				DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */,
 				DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */,
 				DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */,
-				DD81E8CF21E01128005FDAF4 /* ImageGalleryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
