@@ -89,7 +89,7 @@
                     <navigationItem key="navigationItem" id="KZy-zN-6j2">
                         <barButtonItem key="leftBarButtonItem" title="Menu" image="Menu" id="kqq-f8-Yfh">
                             <connections>
-                                <segue destination="Rr7-QC-evs" kind="showDetail" id="DhS-zs-InT"/>
+                                <segue destination="Rr7-QC-evs" kind="show" id="DhS-zs-InT"/>
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
@@ -117,7 +117,7 @@
                                 <rect key="frame" x="234" y="946" width="300" height="30"/>
                                 <state key="normal" title="Start"/>
                                 <connections>
-                                    <action selector="startButtonDidClicked:" destination="KmB-Uj-V9H" eventType="touchUpInside" id="pni-1s-Jaw"/>
+                                    <segue destination="z8d-ag-e6U" kind="show" id="Pje-RW-9bb"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nZu-um-5b1">
@@ -194,7 +194,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Bue-Qm-gTS">
-                                <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
+                                <rect key="frame" x="0.0" y="70" width="768" height="954"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SettingsCell" rowHeight="44" id="QAs-Ji-aJX" customClass="SettingsCell" customModule="Site_Assessment_Commercial" customModuleProvider="target">
@@ -245,12 +245,12 @@
         <scene sceneID="8SY-KD-FBK">
             <objects>
                 <viewController storyboardIdentifier="NewProjectReportViewController" id="z8d-ag-e6U" customClass="NewProjectReportViewController" customModule="Site_Assessment_Commercial" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="1YZ-ZO-6sT">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="1YZ-ZO-6sT">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mjP-eb-XS2">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="972"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="eBW-mx-1Z0"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="safeArea" id="IPf-iE-2FP">
@@ -569,13 +569,13 @@
                                                             <color key="textColor" red="0.1019607843" green="0.1019607843" blue="0.1019607843" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <textField opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Answer" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xLt-nL-QmH">
+                                                        <textField opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Answer" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xLt-nL-QmH">
                                                             <rect key="frame" x="692" y="0.0" width="60" height="40"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" secondItem="xLt-nL-QmH" secondAttribute="height" multiplier="3:2" id="d8f-kM-mot"/>
                                                             </constraints>
                                                             <nil key="textColor"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits"/>
                                                         </textField>
                                                     </subviews>
@@ -779,18 +779,32 @@
                                     </connections>
                                 </collectionReusableView>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="arc-Jr-80n">
+                                <rect key="frame" x="336" y="972" width="96" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="arc-Jr-80n" secondAttribute="height" multiplier="3:1" id="NrS-yM-Yaz"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Review"/>
+                                <connections>
+                                    <segue destination="QZV-yZ-dWa" kind="show" id="8eP-3I-VZP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="mjP-eb-XS2" firstAttribute="bottom" secondItem="Dtf-bb-Qk4" secondAttribute="bottom" id="Am6-Kz-QcO"/>
-                            <constraint firstItem="mjP-eb-XS2" firstAttribute="top" secondItem="1YZ-ZO-6sT" secondAttribute="top" id="D5P-Mp-Upf"/>
-                            <constraint firstItem="Dtf-bb-Qk4" firstAttribute="trailing" secondItem="mjP-eb-XS2" secondAttribute="trailing" id="lAJ-b7-Vju"/>
-                            <constraint firstItem="mjP-eb-XS2" firstAttribute="leading" secondItem="Dtf-bb-Qk4" secondAttribute="leading" id="rRD-cz-k5S"/>
+                            <constraint firstItem="mjP-eb-XS2" firstAttribute="top" secondItem="1YZ-ZO-6sT" secondAttribute="top" id="0vy-xW-hio"/>
+                            <constraint firstItem="arc-Jr-80n" firstAttribute="top" secondItem="mjP-eb-XS2" secondAttribute="bottom" id="A9m-sX-qQ0"/>
+                            <constraint firstItem="DsO-mo-r7B" firstAttribute="bottom" secondItem="arc-Jr-80n" secondAttribute="bottom" constant="20" id="Ckg-Ma-nYE"/>
+                            <constraint firstItem="mjP-eb-XS2" firstAttribute="leading" secondItem="DsO-mo-r7B" secondAttribute="leading" id="dmP-XH-TAr"/>
+                            <constraint firstItem="mjP-eb-XS2" firstAttribute="trailing" secondItem="DsO-mo-r7B" secondAttribute="trailing" id="fZk-wQ-BiW"/>
+                            <constraint firstItem="arc-Jr-80n" firstAttribute="centerX" secondItem="1YZ-ZO-6sT" secondAttribute="centerX" id="zS4-TO-Jlp"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Dtf-bb-Qk4"/>
+                        <viewLayoutGuide key="safeArea" id="DsO-mo-r7B"/>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="mjP-eb-XS2" id="StF-7k-aD6"/>
+                        <outlet property="reviewButton" destination="arc-Jr-80n" id="mA6-Ey-RmM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T5Y-4w-1pK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -826,7 +840,7 @@
                                 </constraints>
                                 <state key="normal" title="Save"/>
                                 <connections>
-                                    <action selector="uploadButtonDidClicked:" destination="QZV-yZ-dWa" eventType="touchUpInside" id="wlW-LF-8st"/>
+                                    <action selector="saveButtonDidClicked:" destination="QZV-yZ-dWa" eventType="touchUpInside" id="peT-wi-i4x"/>
                                 </connections>
                             </button>
                         </subviews>

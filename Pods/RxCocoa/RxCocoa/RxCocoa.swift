@@ -52,7 +52,7 @@ extension RxCocoaError {
             return "Unobservable object `\(object)` was observed as `\(propertyName)` of `\(sourceObject)`."
         case .errorDuringSwizzling:
             return "Error during swizzling."
-        case .castingError(let object, let targetType):
+        case let .castingError(object, targetType):
             return "Error casting `\(object)` to `\(targetType)`"
         }
     }
@@ -149,3 +149,4 @@ func rxFatalError(_ lastMessage: String) -> Never  {
     // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
     fatalError(lastMessage)
 }
+

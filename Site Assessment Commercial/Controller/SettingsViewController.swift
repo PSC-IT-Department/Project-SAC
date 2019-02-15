@@ -10,6 +10,8 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+import GoogleSignIn
+
 class SettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -21,29 +23,25 @@ class SettingsViewController: UIViewController {
         self.title = "Settings"
         
         let items = Observable.just(
-            (0..<20).map { "\($0)" }
+            ["Google Drive", "Zoho CRM"]
         )
         
         items
             .bind(to: tableView.rx.items(cellIdentifier: "SettingsCell", cellType: SettingsCell.self)) { (row, element, cell) in
                 
-                cell.label.text = "\(element) @ row \(row)"
+                cell.label.text = element
             }
-            .disposed(by: disposeBag)
-        /*
-        tableView.rx
-            .modelSelected(String.self)
-            .subscribe(onNext:  { value in
-                print("Hello, World!")
-            })
             .disposed(by: disposeBag)
         
         tableView.rx
-            .itemAccessoryButtonTapped
-            .subscribe(onNext: { indexPath in
-                print("hello, World!")
+            .itemSelected
+            .subscribe(onNext:  { value in
+                if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
+                    self.tableView.deselectRow(at: selectedRowIndexPath, animated: true)
+                    
+                    print("Item Selected.")
+                }
             })
             .disposed(by: disposeBag)
-        */
     }
 }

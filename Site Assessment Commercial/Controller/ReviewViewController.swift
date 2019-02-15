@@ -14,8 +14,11 @@ import RxDataSources
 class ReviewViewController: UIViewController, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    @IBAction func uploadButtonDidClicked(_ sender: Any) {
+    
+    @IBAction func saveButtonDidClicked(_ sender: Any) {
+        print("Save all selection and photos.")
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

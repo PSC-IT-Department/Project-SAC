@@ -12,8 +12,7 @@ import RxCocoa
 struct MainViewModel {
     let status: String
     let projectAddress: String
-    
-    
+        
     static let data:[MainViewModel] = {
         let prj1 = MainViewModel(status: "P",
                                  projectAddress: "657 Black Lake Rd South-Perth-Ontario")

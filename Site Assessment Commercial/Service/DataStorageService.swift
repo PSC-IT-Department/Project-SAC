@@ -17,14 +17,45 @@ class DataStorageService {
         sharedDataStorageService = DataStorageService()
     }
     
+    private var answerDictionary: [String: String] = [:]
+
     private init() {
     }
     
     deinit {
     }
     
+    public func initAnserDictionary() {
+        self.answerDictionary = [:]
+    }
+    
+    public func writeToAnswerDictionary(value: String, key: String) {
+        self.answerDictionary.updateValue(value, forKey: key)
+        print(self.answerDictionary)
+    }
+    
+    public func readFromAnswerDictionary() -> [String: String] {
+        return self.answerDictionary
+    }
+    
     public func storeData() {
         // Store all data
+        
+        guard let data = SADTO.testData.first else {
+            print("Data is empty.")
+            return
+        }
+        
+        guard let appPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first else {
+            print("appPath is nil.")
+            return
+        }
+        
+        print("appPath = \(appPath)")
+        
+        let filePath = appPath.appendingFormat("/\(data.projectId).plist")
+        print("filePath = \(filePath)")
+
     }
     
     public func retrieveData()->[SADTO] {

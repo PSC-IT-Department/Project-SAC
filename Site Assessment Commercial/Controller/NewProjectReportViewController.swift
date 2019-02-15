@@ -71,25 +71,26 @@ struct QuestionnaireConfigsWrapper: Codable {
 
 class NewProjectReportViewController: UIViewController, UICollectionViewDelegateFlowLayout {
 
+    @IBOutlet weak var reviewButton: UIButton!
+    
     @IBOutlet weak var collectionView: UICollectionView!
     
     var sections = BehaviorRelay(value: [EachSection]())
     
     let disposeBag = DisposeBag()
     
-    var initialValue: [EachSection]?
-    
+    var initialValue: [EachSection]!
+        
     var images: NSArray! = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInsetReference = .fromLayoutMargins
 
-        
         initialValue = loadData()
         
+//        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInsetReference = .fromLayoutMargins
+
         let (configureCollectionViewCell, configureSupplementaryView) = NewProjectReportViewController.collectionViewDataSourceUI()
 
         let cvReloadDataSource = RxCollectionViewSectionedReloadDataSource (
@@ -97,13 +98,11 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
             configureSupplementaryView: configureSupplementaryView
         )
         
-        if let value = initialValue {
-            self.sections.accept(value)
+        self.sections.accept(initialValue)
 
-            self.sections.asObservable()
-                .bind(to: collectionView.rx.items(dataSource: cvReloadDataSource))
-                .disposed(by: disposeBag)
-        }
+        self.sections.asObservable()
+            .bind(to: collectionView.rx.items(dataSource: cvReloadDataSource))
+            .disposed(by: disposeBag)
         
         collectionView
             .rx
@@ -111,20 +110,20 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
             .subscribe(onNext: { [weak self] indexPath in
                 if let item = self?.initialValue?[indexPath.section].items[indexPath.item] {
                     switch item.QType {
-                    /*
+                    
+                        /*
                     case .singleSelection:
                         let cell = self?.collectionView.cellForItem(at: indexPath) as! SingleSelectionCell
-
-                        let alertController = UIAlertController(title: item.Name, message: "", preferredStyle: .alert)
                         
-                        item.Options.forEach({ (option) in
-                            let action = UIAlertAction(title: option, style: .default, handler: self!.actionHandler)
-                            alertController.addAction(action)
+                        cell.buttonGroup.forEach({ (button) in
+                            if button.isChecked, let text = button.title(for: .normal) {
+                                self?.answerDictionary.updateValue(text, forKey: item.Key)
+                                
+//                                print(self?.answerDictionary)
+                            }
                         })
-                        
-                        self?.present(alertController, animated: true, completion: nil)
-                     */
-                        
+                         */
+
                     case .singleInput:
                         let alertController = UIAlertController(title: item.Name, message: "", preferredStyle: .alert)
                         
@@ -142,11 +141,13 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                         
                         let confirmAction = UIAlertAction(title: "Confim", style: .default, handler: { (action: UIAlertAction) in
                             
-                            if let textField = alertController.textFields?.first, textField.text != nil {
-                                cell.textValue.text = textField.text
+                            if let textField = alertController.textFields?.first, let text = textField.text {
+                                cell.textValue.text = text
+
+                                DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: text, key: item.Key)
                             }
-                            
                         })
+                        
                         let cancelAction  = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
                         
                         alertController.addAction(confirmAction)
@@ -168,12 +169,19 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                         }
                         
                         let confirmAction = UIAlertAction(title: "Confirm", style: .default, handler: { (action: UIAlertAction) in
+                            var value = ""
                             if let textFields = alertController.textFields {
                                 textFields.forEach({ (textField) in
                                     let textValue = cell.viewWithTag(textField.tag) as! UITextField
-                                    textValue.text = textField.text
+                                    if let text = textField.text {
+                                        textValue.text = textField.text
+                                        value.append(contentsOf: "\(text),")
+                                    }
                                 })
                             }
+                            
+                            value.removeLast()
+                            DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: value, key: item.Key)
                         })
                         
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -196,12 +204,19 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                         }
                         
                         let confirmAction = UIAlertAction(title: "Confirm", style: .default, handler: { (action: UIAlertAction) in
+                            var value = ""
                             if let textFields = alertController.textFields {
                                 textFields.forEach({ (textField) in
                                     let textValue = cell.viewWithTag(textField.tag) as! UITextField
-                                    textValue.text = textField.text
+                                    if let text = textField.text {
+                                        textValue.text = textField.text
+                                        value.append(contentsOf: "\(text),")
+                                    }
                                 })
                             }
+                            
+                            value.removeLast()
+                            DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: value, key: item.Key)
                         })
                         
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -236,7 +251,6 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                         cell.textviewNotes.becomeFirstResponder()
                     default:
                         print("Do something.")
-                
                     }
                 }
             })
@@ -304,10 +318,10 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
     }
      */
     
-    func loadData()->[EachSection]? {
+    func loadData()->[EachSection] {
         guard let path = Bundle.main.url(forResource: "QuestionnaireConfigs", withExtension: "plist") else {
             print("QuestionnaireConfigs file cannot find.")
-            return nil
+            return []
         }
         
         if let plistData = try? Data(contentsOf: path) {
@@ -319,13 +333,13 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                 return allData.map { row in
                     return EachSection(model: row.Name, items: row.Questions)
                 }
-            } catch {
+            } catch let error as NSError {
                 print(error)
-                return nil
+                return []
             }
         }
         
-        return nil
+        return []
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -335,7 +349,8 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
         
         let section = indexPath.section
         
-        let type = initialValue![section].items[indexPath.item].QType
+        let type = initialValue[section].items[indexPath.item].QType
+        
         switch type {
         case .ar, .image, .notes:
             height = CGFloat(400)
@@ -346,8 +361,6 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
         }
         
         return CGSize(width: width, height: height)
-        
-        // return CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
     }
     
 }
@@ -396,6 +409,8 @@ extension NewProjectReportViewController {
                             
                             button.isChecked = true
                             
+                            let value = button.title(for: .normal)!
+                            DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: value, key: i.Key)
                         }
                     
                         cell.imageviewReference.isHidden = true
@@ -455,7 +470,13 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
     func photoPickerViewController(_ picker: YMSPhotoPickerViewController!, didFinishPicking image: UIImage!) {
         picker.dismiss(animated: true) {
 
-            self.images = [image]
+            let compressedImage = UIImage.resizeImage(image)
+            self.images = [compressedImage]
+            
+            if let indexPath = self.collectionView.indexPathsForSelectedItems?.first {
+                let item = self.initialValue[indexPath.section].items[indexPath.item]
+                DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: "Yes", key: item.Key)
+            }
             
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -480,7 +501,9 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                 let scale = UIScreen.main.scale
                 let targetSize = CGSize(width: (self.collectionView.bounds.width - 20*2) * scale, height: (self.collectionView.bounds.height - 20*2) * scale)
                 imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: { (image, info) in
-                    mutableImages.add(image!)
+                    
+                    let compressedImage = UIImage.resizeImage(image!)
+                    mutableImages.add(compressedImage)
                 })
             }
             
@@ -490,7 +513,11 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                 let cell = self.collectionView.cellForItem(at: indexPath) as! ImageCell
                     
                 cell.collectionView.images = mutableImages.copy() as? NSArray
-                    
+                
+                let item = self.initialValue[indexPath.section].items[indexPath.item]
+                
+                DataStorageService.sharedDataStorageService.writeToAnswerDictionary(value: "Yes", key: item.Key)
+
                 DispatchQueue.main.async {
                     cell.collectionView.reloadData()
                     
@@ -528,3 +555,4 @@ extension NewProjectReportViewController: UITextViewDelegate {
     }
 }
 */
+

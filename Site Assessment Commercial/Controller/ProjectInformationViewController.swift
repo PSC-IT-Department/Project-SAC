@@ -16,13 +16,6 @@ class ProjectInformationViewController: UIViewController {
     private var titleString: String!
     var data: [ProjectInformationViewModel]!
     let disposeBag = DisposeBag()
-
-    @IBAction func startButtonDidClicked(_ sender: Any) {
-        DispatchQueue.main.async {
-            let vc = NewProjectReportViewController()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
