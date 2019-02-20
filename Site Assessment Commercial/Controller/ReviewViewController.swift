@@ -19,8 +19,13 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
         print("Save all selection and photos.")
     }
     
+    private var answerDictionary: [String: String] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        answerDictionary = DataStorageService.sharedDataStorageService.readFromAnswerDictionary()
+    
     }
 
 }

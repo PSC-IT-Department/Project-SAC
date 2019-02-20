@@ -13,5 +13,7 @@ target 'Site Assessment Commercial' do
   pod 'RxAlamofire'
   pod 'Fusuma'
   pod 'YangMingShan'
+  pod 'GoogleAPIClientForREST/Drive'
   pod 'GoogleSignIn'
+  pod 'Firebase/Auth'
 end

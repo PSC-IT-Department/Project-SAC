@@ -26,14 +26,18 @@
 		DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */; };
 		DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2321A874D300A65352 /* InformationCell.swift */; };
 		DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2521A8AB8000A65352 /* MainViewModel.swift */; };
+		DD76DBD6221DBE7600DFC9D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */; };
+		DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */; };
 		DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */; };
 		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
 		DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */; };
 		DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */; };
 		DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD909D6521AF26A300BC9736 /* NetworkService.swift */; };
 		DD909D6B21B04F1E00BC9736 /* SADTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD909D6A21B04F1E00BC9736 /* SADTO.swift */; };
+		DDCDEA3B22176B3C0000B210 /* UIViewController+HideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */; };
 		DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154621B1D78700BF4083 /* DataStorageService.swift */; };
 		DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */; };
+		DDEDF4D9221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */; };
 		DDF025E422171798000CA671 /* UIImage+ResizeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,14 +65,18 @@
 		DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewController.swift; sourceTree = "<group>"; };
 		DD76BF2321A874D300A65352 /* InformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationCell.swift; sourceTree = "<group>"; };
 		DD76BF2521A8AB8000A65352 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleService.swift; sourceTree = "<group>"; };
 		DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
 		DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportViewModel.swift; sourceTree = "<group>"; };
 		DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableView.swift; sourceTree = "<group>"; };
 		DD909D6521AF26A300BC9736 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		DD909D6A21B04F1E00BC9736 /* SADTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SADTO.swift; sourceTree = "<group>"; };
+		DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+HideKeyboard.swift"; sourceTree = "<group>"; };
 		DDEC154621B1D78700BF4083 /* DataStorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorageService.swift; sourceTree = "<group>"; };
 		DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewModel.swift; sourceTree = "<group>"; };
+		DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartyAccessViewController.swift; sourceTree = "<group>"; };
 		DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+ResizeImage.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,6 +130,7 @@
 		DD76BEFC21A85D7600A65352 /* Site Assessment Commercial */ = {
 			isa = PBXGroup;
 			children = (
+				DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */,
 				DD76BEFD21A85D7600A65352 /* AppDelegate.swift */,
 				DD76BF0121A85D7600A65352 /* Main.storyboard */,
 				DD76BF1B21A86B4800A65352 /* Model */,
@@ -161,6 +170,7 @@
 				DD76BF1921A86AE200A65352 /* MainViewController.swift */,
 				DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */,
 				DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */,
+				DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -189,6 +199,7 @@
 				DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */,
 				DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */,
 				DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */,
+				DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -198,6 +209,7 @@
 			children = (
 				DDEC154621B1D78700BF4083 /* DataStorageService.swift */,
 				DD909D6521AF26A300BC9736 /* NetworkService.swift */,
+				DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -265,6 +277,7 @@
 			files = (
 				DD754C6E21AC699400253D58 /* QuestionnaireConfigs.plist in Resources */,
 				DD76BF0821A85D7800A65352 /* LaunchScreen.storyboard in Resources */,
+				DD76DBD6221DBE7600DFC9D5 /* GoogleService-Info.plist in Resources */,
 				DD76BF0521A85D7800A65352 /* Assets.xcassets in Resources */,
 				DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */,
 			);
@@ -324,7 +337,9 @@
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/Fusuma/Fusuma.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
@@ -340,7 +355,9 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fusuma.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
@@ -368,12 +385,15 @@
 				DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */,
 				DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */,
 				DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */,
+				DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */,
 				DD76BF1621A86A8200A65352 /* MainCell.swift in Sources */,
 				DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */,
 				DD909D6B21B04F1E00BC9736 /* SADTO.swift in Sources */,
+				DDCDEA3B22176B3C0000B210 /* UIViewController+HideKeyboard.swift in Sources */,
 				DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */,
 				DD76BF1021A85F7100A65352 /* SettingsViewController.swift in Sources */,
 				DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */,
+				DDEDF4D9221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift in Sources */,
 				DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */,
 				DD76BF1A21A86AE200A65352 /* MainViewController.swift in Sources */,
 				DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */,

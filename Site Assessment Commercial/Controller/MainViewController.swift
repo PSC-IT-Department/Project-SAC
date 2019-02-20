@@ -13,8 +13,11 @@ import RxCocoa
 import RxDataSources
 import RxReachability
 
+import GoogleSignIn
+
 class MainViewController: UIViewController, UITableViewDelegate {
     
+    @IBOutlet weak var labelCurrentUser: UILabel!
     @IBOutlet weak var tableView: UITableView!
 
     var allMightyData: [SADTO]!
@@ -27,6 +30,7 @@ class MainViewController: UIViewController, UITableViewDelegate {
         self.view.backgroundColor = UIColor.white
         
         loadData()
+        setupCurrentUser()
         setupViewModel()
         setupCellConfiguration()
         setupCellTapHandling()
@@ -39,6 +43,26 @@ extension MainViewController {
     
     private func loadData() {
         allMightyData = DataStorageService.sharedDataStorageService.retrieveData()
+    }
+    
+    private func setupCurrentUser() {
+        
+        if let user = UserDefaults.standard.object(forKey: "GoogleAccount") as? GIDGoogleUser {
+        // if let user = GIDSignIn.sharedInstance()?.currentUser {
+            labelCurrentUser.text = "Signed in as \(String(describing: user.profile.email))."
+            labelCurrentUser.isUserInteractionEnabled = false
+        } else {
+            let attributedText = NSAttributedString(string: "Please sign in.", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+            labelCurrentUser.attributedText = attributedText
+            
+            labelCurrentUser.isUserInteractionEnabled = true
+            labelCurrentUser.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.jumpToGoogleSignIn(_:))))
+        
+        }
+    }
+    
+    @objc func jumpToGoogleSignIn(_ sender: UITapGestureRecognizer) {
+        print("Jump to Google signin view controller.")
     }
     
     private func setupViewModel() {

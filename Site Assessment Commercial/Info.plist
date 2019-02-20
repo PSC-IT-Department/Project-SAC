@@ -47,5 +47,24 @@
 	<string>This app will use camera</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Please allow access to save photo in your photo library</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.300742485064-ilnp3terudulnvglkvb94cmkqt57umqa</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.polaronsolar.siteassessment.SiteAssessment</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

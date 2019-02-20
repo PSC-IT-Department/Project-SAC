@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import GoogleSignIn
+import GoogleAPIClientForREST
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,7 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         DataStorageService.instantiateSharedInstance()
         NetworkService.instantiateSharedInstance()
-    
+        
+        FirebaseApp.app(name: "SignIn")
+        FirebaseApp.configure()
+        GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+//        GIDSignIn.sharedInstance().clientID = "87652830736-8o7rkn6sv7b6geg2v67ehj1f4lg3ld0q.apps.googleusercontent.com"
+
         return true
     }
 

@@ -1,7 +1,25 @@
 PODS:
   - Alamofire (4.8.1)
   - Differentiator (3.1.0)
-  - Fusuma (1.3.2)
+  - Firebase/Auth (5.16.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (= 5.3.0)
+  - Firebase/CoreOnly (5.16.0):
+    - FirebaseCore (= 5.2.0)
+  - FirebaseAuth (5.3.0):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 5.2)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseAuthInterop (1.0.0)
+  - FirebaseCore (5.2.0):
+    - GoogleUtilities/Logger (~> 5.2)
+  - Fusuma (1.3.3)
+  - GoogleAPIClientForREST/Core (1.3.8):
+    - GTMSessionFetcher (>= 1.1.7)
+  - GoogleAPIClientForREST/Drive (1.3.8):
+    - GoogleAPIClientForREST/Core
+    - GTMSessionFetcher (>= 1.1.7)
   - GoogleSignIn (4.4.0):
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
@@ -14,7 +32,14 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.2.0)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
+  - GoogleUtilities/Environment (5.3.7)
+  - GoogleUtilities/Logger (5.3.7):
+    - GoogleUtilities/Environment
+  - GTMSessionFetcher (1.2.1):
+    - GTMSessionFetcher/Full (= 1.2.1)
   - GTMSessionFetcher/Core (1.2.1)
+  - GTMSessionFetcher/Full (1.2.1):
+    - GTMSessionFetcher/Core (= 1.2.1)
   - ReachabilitySwift (4.3.0)
   - RxAlamofire (4.3.0):
     - RxAlamofire/Core (= 4.3.0)
@@ -39,7 +64,9 @@ PODS:
   - YangMingShan/YMSPhotoPicker (2.0.1)
 
 DEPENDENCIES:
+  - Firebase/Auth
   - Fusuma
+  - GoogleAPIClientForREST/Drive
   - GoogleSignIn
   - RxAlamofire
   - RxCocoa (~> 4.0)
@@ -52,9 +79,15 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - Differentiator
+    - Firebase
+    - FirebaseAuth
+    - FirebaseAuthInterop
+    - FirebaseCore
     - Fusuma
+    - GoogleAPIClientForREST
     - GoogleSignIn
     - GoogleToolboxForMac
+    - GoogleUtilities
     - GTMSessionFetcher
     - ReachabilitySwift
     - RxAlamofire
@@ -68,9 +101,15 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
-  Fusuma: 1b4327f861ddb7f2d1d7135b9a08f11015d4fb67
+  Firebase: 749a8ff4962f9d8c79dda1966de20f6f77583d67
+  FirebaseAuth: c9b3ff063c223d2841d97240af547ce511bce19a
+  FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
+  FirebaseCore: ea2d1816723ef21492b8e9113303e1350db5e08c
+  Fusuma: 3bd08c8c5341ec60c0074fa28570fea8765966f0
+  GoogleAPIClientForREST: 5447a194eae517986cafe6421a5330b80b820591
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
+  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   RxAlamofire: 09624d0f2d48ed8b686e4eb4cf68e28cbd2df556
@@ -81,6 +120,6 @@ SPEC CHECKSUMS:
   RxSwift: 92fcf68dfef21f3e2ab1965363d9e7b3d787597e
   YangMingShan: 561cfbb769e8cf679d3f23d8ae7030402ddb6495
 
-PODFILE CHECKSUM: fd9240769f344bd7dfac38fbee86f308b6c4ec0a
+PODFILE CHECKSUM: 91f588034dcfa0e9c6ab2ae5c8119c73773f9ab1
 
 COCOAPODS: 1.6.0

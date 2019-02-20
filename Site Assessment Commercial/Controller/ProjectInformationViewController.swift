@@ -23,6 +23,8 @@ class ProjectInformationViewController: UIViewController {
         self.title = titleString
         self.view.backgroundColor = UIColor.white
         
+        self.navigationController?.navigationBar.items![0].title = "Back"
+
         setupViewModel()
         setupCell()
     }

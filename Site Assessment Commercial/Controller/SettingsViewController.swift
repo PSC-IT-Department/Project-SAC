@@ -39,7 +39,16 @@ class SettingsViewController: UIViewController {
                 if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
                     self.tableView.deselectRow(at: selectedRowIndexPath, animated: true)
                     
-                    print("Item Selected.")
+                    // Google Drive
+                    if selectedRowIndexPath.row == 0 {
+                        
+                        let vc = ThirdPartyAccessViewController.instantiateFromStoryBoard(withTitle: "Google Access")
+                    
+                        self.navigationController?.pushViewController(vc, animated: true)
+
+                    // Zoho CRM
+                    } else if selectedRowIndexPath.row == 1 {
+                    }
                 }
             })
             .disposed(by: disposeBag)

@@ -85,7 +85,9 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.hideKeyboardWhenTappedAround()
+                
         initialValue = loadData()
         
 //        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -255,8 +257,21 @@ class NewProjectReportViewController: UIViewController, UICollectionViewDelegate
                 }
             })
             .disposed(by: disposeBag)
+        
+        setupReviewButton()
 
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
+    }
+    
+    func setupReviewButton() {
+        let totalMissing = initialValue.reduce(0) { (result, section) -> Int in
+            return result + section.items.count
+        }
+        
+        print("totalMissing = \(totalMissing)")
+        
+        reviewButton.setTitleColor(UIColor.red, for: .normal)
+        reviewButton.setTitle("Missing \(totalMissing)", for: .normal)
     }
     
     func checkPermission() -> Bool {

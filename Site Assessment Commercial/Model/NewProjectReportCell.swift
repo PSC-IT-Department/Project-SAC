@@ -153,6 +153,8 @@ class NotesCell: UICollectionViewCell, UITextViewDelegate {
             textView.textColor = UIColor.lightGray
         }
         
+        print("textViewDidEndEditing")
+        
         textView.resignFirstResponder()
     }
 
