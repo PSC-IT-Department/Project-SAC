@@ -76,10 +76,8 @@ class SaveToCustomAlbum: NSObject {
         return nil
     }
     
-    func saveImages(images: [UIImage]) {
-        images.forEach { (image) in
-            self.save(image: image)
-        }
+    func saveImages(imageArray: [UIImage]) {
+        imageArray.forEach { self.save(image: $0) }
     }
     
     func save(image: UIImage) {
@@ -95,7 +93,7 @@ class SaveToCustomAlbum: NSObject {
                     
                 }, completionHandler: { (success, error) in
                     if success {
-                        print("Successfully saved image to Camera Roll.")
+                        print("Successfully saved image to \(SaveToCustomAlbum.albumName).")
                     } else {
                         print("Error writing to image library: \(error!.localizedDescription)")
                     }
@@ -128,8 +126,6 @@ class SaveToCustomAlbum: NSObject {
                         print("Error writing to movie library: \(error!.localizedDescription)")
                     }
                 })
-                
-                
             }
         }
         

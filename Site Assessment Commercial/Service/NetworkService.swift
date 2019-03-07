@@ -14,76 +14,81 @@ import RxAlamofire
 import Reachability
 import RxReachability
 
+enum ReachabilityStatus {
+    case unknown
+    case disconnected
+    case connected
+}
+
 class NetworkService {
     
     private let disposeBag = DisposeBag()
 
     public static var sharedNetworkService: NetworkService!
-    
-    private let reachabilityManager: NetworkReachabilityManager?
-    
+
+    private let reachability: Reachability!
+    public private(set) var reachabilityStatus: ReachabilityStatus
+
     public static func instantiateSharedInstance() {
         sharedNetworkService = NetworkService()
     }
     
     private init() {
-        self.reachabilityManager = NetworkReachabilityManager()
+        reachability = Reachability()
+        reachabilityStatus = .unknown
+        
+        beginListeningNetworkReachability()
+    }
+    
+    func beginListeningNetworkReachability() {
+
+        /*
+        reachability.rx.reachabilityChanged
+            .subscribe(onNext: { reachability in
+                print("Reachability changed: \(reachability.connection.description)")
+            })
+            .disposed(by: disposeBag)
+         */
+        
+        reachability.rx.status
+            .subscribe(onNext: { status in
+                switch status {
+                case .cellular, .wifi:
+                    self.reachabilityStatus = .connected
+                    
+                    NotificationCenter.default.post(name: .didReceiveComplete, object: "Online Mode")
+                case .none:
+                    self.reachabilityStatus = .disconnected
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        /*
+        reachability.rx.isReachable
+            .subscribe(onNext: { isReachable in
+                print("Is reachable: \(isReachable)")
+            })
+            .disposed(by: disposeBag)
+        
+        reachability.rx.isConnected
+            .subscribe(onNext: {
+                print("Is connected")
+            })
+            .disposed(by: disposeBag)
+        
+        reachability.rx.isDisconnected
+            .subscribe(onNext: {
+                print("Is disconnected")
+            })
+            .disposed(by: disposeBag)
+         */
+        
+        try? reachability.startNotifier()
+
     }
     
     deinit {
-    }
-    
-    public func syncFromZohoCreator() {
-        let assignedToShorten = "klozoho"
-    
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "creator.zoho.com"
-        urlComponents.path = "/api/json/site-assessment/view/Site_Assessment_Report"
-        
-        let queryItemToken = URLQueryItem(name: "authtoken", value: "d3b26c03684aa2db7158bb155e25a071")
-        let queryItemOwner = URLQueryItem(name: "zc_ownername", value: "zoho_it1346")
-        let queryItemScope = URLQueryItem(name: "scope", value: "creatorapi")
-        let queryItemRawJson = URLQueryItem(name: "raw", value: "true")
-        let queryItemCriteria = URLQueryItem(name: "criteria", value: "sa_assignedToShorten==\(assignedToShorten)&&sa_completed==false")
-        
-        urlComponents.queryItems = [queryItemOwner, queryItemScope, queryItemToken, queryItemRawJson, queryItemCriteria]
-        
-        // Zoho Creator Only
-        urlComponents.percentEncodedQuery = urlComponents.percentEncodedQuery?
-                .replacingOccurrences(of: "&&", with: "%26%26")
-        
-        guard let url = urlComponents.url else {
-            print("Error: url is wrong")
-            return
-        }
-        
-        let observable:Observable<(HTTPURLResponse, Any)> = requestJSON(.get, url)
-        observable
-            .subscribe(
-                onNext: { [weak self] (resp, json) in
-                    if resp.statusCode == 200 {
-                        let data = json as? [String: Any]
-                        let __data = data?["Site_Assessment"] as! [[String: Any]]
-                        
-                        print(__data)
-                        DataStorageService.sharedDataStorageService.storeData()
-                    }
-                    else {
-                        print(resp.statusCode)
-                    }
-                }, onError:{
-                    print("Error: Data is wrong. \($0)")
-            })
-        .disposed(by: disposeBag)
-    }
-
-    func uploadToGoogleDrive() {
-        
-    }
-    
-    func uploadToZohoCreator() {
-        
+        reachability.stopNotifier()
     }
     
 }

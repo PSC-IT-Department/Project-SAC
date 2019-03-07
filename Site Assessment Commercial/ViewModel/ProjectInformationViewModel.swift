@@ -16,9 +16,14 @@ enum ProjectStatus {
 }
 
 struct ProjectInformationViewModel {
-    let key: String
-    let value: String
+    var key: String
+    var value: String
     
+    init(key: String, value: String) {
+        self.key = key
+        self.value = value
+    }
+
     static let data: [ProjectInformationViewModel] = {
         let prjAddr = ProjectInformationViewModel(key: "Project Address", value: "123123123")
         let prjId = ProjectInformationViewModel(key: "Project ID", value: "123123123")

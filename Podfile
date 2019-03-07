@@ -16,4 +16,8 @@ target 'Site Assessment Commercial' do
   pod 'GoogleAPIClientForREST/Drive'
   pod 'GoogleSignIn'
   pod 'Firebase/Auth'
+  pod 'SwifterSwift/UIKit'
+  pod 'NotificationBannerSwift'
+  pod 'RxSkeleton'
 end
+

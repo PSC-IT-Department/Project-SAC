@@ -54,7 +54,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.300742485064-ilnp3terudulnvglkvb94cmkqt57umqa</string>
+				<string>com.googleusercontent.apps.87652830736-mj4tp3eh1feh72l4jk9rbalddoh7gjc5</string>
 			</array>
 		</dict>
 		<dict>
@@ -62,7 +62,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.polaronsolar.siteassessment.SiteAssessment</string>
+				<string>chyapp.Site-Assessment-Commercial</string>
 			</array>
 		</dict>
 	</array>

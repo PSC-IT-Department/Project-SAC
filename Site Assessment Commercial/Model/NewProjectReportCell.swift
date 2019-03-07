@@ -58,6 +58,8 @@ class ImageCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
     
+    private let disposeBag = DisposeBag()
+    
     var tapAction: ((UIButton)->())?
     @IBAction func buttonTapped(_ sender: UIButton) {
         tapAction?(sender)
@@ -75,7 +77,18 @@ class ImageCell: UICollectionViewCell {
         
         return layoutAttributes
     }
-
+    
+    func setupCell(question: QuestionaireConfigs_QuestionsWrapper) {
+        self.labelKey.text = question.Name
+        
+        let prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+        
+        let images = prjData.prjImageArray.first(where: {$0.key == question.Name})?.images.map({ (imgAttr) -> UIImage in
+            return UIImage(contentsOfFile: imgAttr.path) ?? UIImage()
+        })
+    
+        self.collectionView.images = images ?? []
+    }
 }
 
 class SingleInputCell: UICollectionViewCell {

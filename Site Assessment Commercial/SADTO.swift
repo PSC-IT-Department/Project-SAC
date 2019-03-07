@@ -6,106 +6,100 @@
 //  Copyright © 2018 chyapp.com. All rights reserved.
 //
 
-import Foundation
-
-public struct MultiSADTO: Codable, Equatable {
-    var list: [SADTO]
-    
-    enum CodingKeys: String, CodingKey {
-        case list
-    }
-}
-
 public struct SADTO: Codable, Equatable {
     
+    // SYSTEM
     var projectAddress: String
-    var projectId: String
+    var projectID: String
     var status: String
-    var scheduleDate: String
+    var scheduleDate: String?
+    var assignedDate: String?
+    var assignedTeam: String?
     
-    /*
-    var copyOfStructuralLayout: String
-    var copyOfFloorPlan: String
-    var copyOfElectricalDrawing: String
+    // LAYOUT
+    var copyOfStructuralLayout: String?
+    var copyOfFloorPlan: String?
+    var copyOfElectricalDrawing: String?
     
     // STRUCTURAL
-    var structuralType: String
-    var areaOfPropertySite: String
-    var buildingHeight: String
-    var mainBeamSpacing: String
-    var openWebSteelJoistSpacing_OWSJ: String
-    var openWebSteelJoistSpacing_D: String
-    var heightofwebsteelJoist: String
-    var endThreeWebMemberType: String
-    var endThreeWebMemberTypeNotes: String
-    var sizeOfEndThreeWebMember: String
-    var sizeOfBottomChord: String
+    var structuralType: String?
+    var areaOfPropertySite: String?
+    var buildingHeight: String?
+    var mainBeamSpacing: String?
+    var openWebSteelJoistSpacing_OWSJ: String?
+    var openWebSteelJoistSpacing_D: String?
+    var heightofwebsteelJoist: String?
+    var endThreeWebMemberType: String?
+    var endThreeWebMemberTypeNotes: String?
+    var sizeOfEndThreeWebMember: String?
+    var sizeOfBottomChord: String?
     
     // REQUIRED STRUCTURAL PHOTOS
-    var photos_mainBeam: String
-    var photos_openWebSteelJoist: String
-    var photos_bottomChord: String
-    var photos_webMember: String
+    var photos_mainBeam: String?
+    var photos_openWebSteelJoist: String?
+    var photos_bottomChord: String?
+    var photos_webMember: String?
     
     // ELECTRICAL
-    var electricalMeterRoomDimension: String
-    var service: String
-    var numberOfService: String
+    var electricalMeterRoomDimension: String?
+    var service: String?
+    var numberOfService: String?
  
-    var service1_capacity: String
-    var service1_serviceSwitchRating: String
-    var service1_distributionPanelRating: String
-    var service1_switchRating: String
-    var service1_circuitBreakerRating: String
+    var service1_capacity: String?
+    var service1_serviceSwitchRating: String?
+    var service1_distributionPanelRating: String?
+    var service1_switchRating: String?
+    var service1_circuitBreakerRating: String?
     
-    var service2_capacity: String
-    var service2_serviceSwitchRating: String
-    var service2_distributionPanelRating: String
-    var service2_switchRating: String
-    var service2_circuitBreakerRating: String
+    var service2_capacity: String?
+    var service2_serviceSwitchRating: String?
+    var service2_distributionPanelRating: String?
+    var service2_switchRating: String?
+    var service2_circuitBreakerRating: String?
     
-    var service3_capacity: String
-    var service3_serviceSwitchRating: String
-    var service3_distributionPanelRating: String
-    var service3_switchRating: String
-    var service3_circuitBreakerRating: String
+    var service3_capacity: String?
+    var service3_serviceSwitchRating: String?
+    var service3_distributionPanelRating: String?
+    var service3_switchRating: String?
+    var service3_circuitBreakerRating: String?
     
-    var service4_capacity: String
-    var service4_serviceSwitchRating: String
-    var service4_distributionPanelRating: String
-    var service4_switchRating: String
-    var service4_circuitBreakerRating: String
+    var service4_capacity: String?
+    var service4_serviceSwitchRating: String?
+    var service4_distributionPanelRating: String?
+    var service4_switchRating: String?
+    var service4_circuitBreakerRating: String?
     
-    var service5_capacity: String
-    var service5_serviceSwitchRating: String
-    var service5_distributionPanelRating: String
-    var service5_switchRating: String
-    var service5_circuitBreakerRating: String
+    var service5_capacity: String?
+    var service5_serviceSwitchRating: String?
+    var service5_distributionPanelRating: String?
+    var service5_switchRating: String?
+    var service5_circuitBreakerRating: String?
     
-    var transformerDetail: String
-    var multiMeter: String
-    var numberOfElectricalMeters: String
-    var electricalMeter1: String
-    var electricalMeter2: String
-    var electricalMeter3: String
-    var electricalMeter4: String
-    var electricalMeter5: String
-    var subPanelBoard: String
-    var subPanelBreakerRating: String
+    var transformerDetail: String?
+    var multiMeter: String?
+    var numberOfElectricalMeters: String?
+    var electricalMeter1: String?
+    var electricalMeter2: String?
+    var electricalMeter3: String?
+    var electricalMeter4: String?
+    var electricalMeter5: String?
+    var subPanelBoard: String?
+    var subPanelBreakerRating: String?
     
     // REQUIERED ELECTRICAL PHOTOS
-    var photos_transformer: String
-    var photos_electricalRoom: String
-    var photos_electricalMeter: String
-    var photos_distributionPanel: String
-    */
+    var photos_transformer: String?
+    var photos_electricalRoom: String?
+    var photos_electricalMeter: String?
+    var photos_distributionPanel: String?
 
     enum CodingKeys: String, CodingKey {
         case projectAddress                     = "sac_projectAddress"
-        case projectId                          = "sac_projectId"
+        case projectID                          = "sac_projectID"
         case status                             = "sac_status"
         case scheduleDate                       = "sac_scheduleDate"
-/*
+        case assignedDate                       = "sac_assignedDate"
+        case assignedTeam                       = "sac_assignedTeam"
+
         case copyOfStructuralLayout             = "sac_copyOfStructuralLayout"
         case copyOfFloorPlan                    = "sac_copyOfFloorPlan"
         case copyOfElectricalDrawing            = "sac_copyOfElectricalDrawing"
@@ -176,20 +170,26 @@ public struct SADTO: Codable, Equatable {
         case photos_electricalRoom              = "sac_photos_electricalRoom"
         case photos_electricalMeter             = "sac_photos_electricalMeter"
         case photos_distributionPanel           = "sac_photos_distributionPanel"
-*/
+
     }
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
+        // SYSTEM
         self.projectAddress                     = try values.decode(String.self, forKey: .projectAddress)
-        self.projectId                          = try values.decode(String.self, forKey: .projectId)
+        self.projectID                          = try values.decode(String.self, forKey: .projectID)
         self.status                             = try values.decode(String.self, forKey: .status)
         self.scheduleDate                       = try values.decode(String.self, forKey: .scheduleDate)
-/*
+        self.assignedDate                       = try values.decode(String.self, forKey: .assignedDate)
+        self.assignedTeam                       = try values.decode(String.self, forKey: .assignedTeam)
+
+        // LAYOUT
         self.copyOfStructuralLayout             = try values.decode(String.self, forKey: .copyOfStructuralLayout)
         self.copyOfFloorPlan                    = try values.decode(String.self, forKey: .copyOfFloorPlan)
         self.copyOfElectricalDrawing            = try values.decode(String.self, forKey: .copyOfElectricalDrawing)
+
+        // STRUCTURAL
         self.structuralType                     = try values.decode(String.self, forKey: .structuralType)
         self.areaOfPropertySite                 = try values.decode(String.self, forKey: .areaOfPropertySite)
         self.buildingHeight                     = try values.decode(String.self, forKey: .buildingHeight)
@@ -205,6 +205,8 @@ public struct SADTO: Codable, Equatable {
         self.photos_openWebSteelJoist           = try values.decode(String.self, forKey: .photos_openWebSteelJoist)
         self.photos_bottomChord                 = try values.decode(String.self, forKey: .photos_bottomChord)
         self.photos_webMember                   = try values.decode(String.self, forKey: .photos_webMember)
+
+        // ELECTRICAL
         self.electricalMeterRoomDimension       = try values.decode(String.self, forKey: .electricalMeterRoomDimension)
         self.service                            = try values.decode(String.self, forKey: .service)
         self.numberOfService                    = try values.decode(String.self, forKey: .numberOfService)
@@ -244,26 +246,15 @@ public struct SADTO: Codable, Equatable {
         self.subPanelBoard                      = try values.decode(String.self, forKey: .subPanelBoard)
         self.subPanelBreakerRating              = try values.decode(String.self, forKey: .subPanelBreakerRating)
         
-        
         self.photos_transformer                 = try values.decode(String.self, forKey: .photos_transformer)
         self.photos_electricalRoom              = try values.decode(String.self, forKey: .photos_electricalRoom)
         self.photos_electricalMeter             = try values.decode(String.self, forKey: .photos_electricalMeter)
         self.photos_distributionPanel           = try values.decode(String.self, forKey: .photos_distributionPanel)
- */
     }
     
-    init(prjAddr: String, prjId: String, status: String, scheduleDate: String) {
-        self.projectAddress = prjAddr
-        self.projectId = prjId
-        self.status = status
-        self.scheduleDate = scheduleDate
+    init() {
+        self.projectAddress = ""
+        self.projectID      = ""
+        self.status         = ""
     }
-
-    static var testData:[SADTO] = {
-        var data1 = SADTO(prjAddr: "657 Black Lake Rd South-Perth-Ontario", prjId: "1337133000000187876", status: "Pending", scheduleDate: "2018-09-30")
-        var data2 = SADTO(prjAddr: "12827 135 St NW-Edmonton-Alberta", prjId: "1337133000000217005", status: "Pending", scheduleDate: "2018-10-30")
-        var data3 = SADTO(prjAddr: "253 23012 Township Road 521-Sherwood Park-Alberta", prjId: "1337133000000316498", status: "Pending", scheduleDate: "2018-11-21")
-        
-        return [data1, data2, data3]
-    }()
 }

@@ -20,16 +20,26 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Settings"
+        setupView()
         
         let items = Observable.just(
-            ["Google Drive", "Zoho CRM"]
+            ["Google", "Zoho CRM"]
         )
         
         items
             .bind(to: tableView.rx.items(cellIdentifier: "SettingsCell", cellType: SettingsCell.self)) { (row, element, cell) in
                 
-                cell.label.text = element
+                switch row {
+                case 0:
+                    cell.label.text = element
+                    if let userEmail = GoogleService.sharedGoogleService.retrieveGoogleUserEmail() {
+                        cell.accessoryType = .checkmark
+                        
+                        cell.label.text?.append(" - \(userEmail)")
+                    }
+                default:
+                    cell.label.text = element
+                }
             }
             .disposed(by: disposeBag)
         
@@ -39,18 +49,26 @@ class SettingsViewController: UIViewController {
                 if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
                     self.tableView.deselectRow(at: selectedRowIndexPath, animated: true)
                     
-                    // Google Drive
-                    if selectedRowIndexPath.row == 0 {
+                    switch selectedRowIndexPath.row {
+                    // Google
+                    case 0:
+                        let vc = ThirdPartyAccessViewController.instantiateFromStoryBoard(withTitle: "Google") 
                         
-                        let vc = ThirdPartyAccessViewController.instantiateFromStoryBoard(withTitle: "Google Access")
-                    
                         self.navigationController?.pushViewController(vc, animated: true)
-
-                    // Zoho CRM
-                    } else if selectedRowIndexPath.row == 1 {
+                    default:
+                        print("Selected.")
+                        
                     }
                 }
             })
             .disposed(by: disposeBag)
     }
+}
+
+extension SettingsViewController {
+    
+    private func setupView() {
+        self.title = "Settings"
+    }
+    
 }

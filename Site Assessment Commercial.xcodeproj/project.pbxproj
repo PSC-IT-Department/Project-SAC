@@ -9,9 +9,13 @@
 /* Begin PBXBuildFile section */
 		272CB9C59BFB653EAFF22E0B /* Pods_Site_Assessment_Commercial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */; };
 		DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */; };
+		DD412EE5222EC00100D6FD2F /* LoadingIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD412EE4222EC00100D6FD2F /* LoadingIndicatorView.swift */; };
 		DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */; };
+		DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E490822284870004FE180 /* ReviewViewModel.swift */; };
 		DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */; };
 		DD754C6E21AC699400253D58 /* QuestionnaireConfigs.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD754C6D21AC699400253D58 /* QuestionnaireConfigs.plist */; };
+		DD767336222E0ED7001F87F7 /* NotificationCenter+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD767335222E0ED7001F87F7 /* NotificationCenter+Name.swift */; };
+		DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD767337222E1427001F87F7 /* BaseViewController.swift */; };
 		DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BEFD21A85D7600A65352 /* AppDelegate.swift */; };
 		DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD76BF0121A85D7600A65352 /* Main.storyboard */; };
 		DD76BF0521A85D7800A65352 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD76BF0421A85D7800A65352 /* Assets.xcassets */; };
@@ -26,7 +30,6 @@
 		DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */; };
 		DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2321A874D300A65352 /* InformationCell.swift */; };
 		DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2521A8AB8000A65352 /* MainViewModel.swift */; };
-		DD76DBD6221DBE7600DFC9D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */; };
 		DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */; };
 		DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */; };
 		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
@@ -35,10 +38,12 @@
 		DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD909D6521AF26A300BC9736 /* NetworkService.swift */; };
 		DD909D6B21B04F1E00BC9736 /* SADTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD909D6A21B04F1E00BC9736 /* SADTO.swift */; };
 		DDCDEA3B22176B3C0000B210 /* UIViewController+HideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */; };
+		DDCE69ED2224968000468CDE /* ZohoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE69EC2224968000468CDE /* ZohoService.swift */; };
+		DDDD234F221F00FD0067D6EF /* GoogleSignOut.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDDD234E221F00FD0067D6EF /* GoogleSignOut.xib */; };
+		DDDD2352221F07430067D6EF /* GoogleSIgnOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD2351221F07430067D6EF /* GoogleSIgnOutView.swift */; };
 		DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154621B1D78700BF4083 /* DataStorageService.swift */; };
 		DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */; };
 		DDEDF4D9221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */; };
-		DDF025E422171798000CA671 /* UIImage+ResizeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,9 +51,13 @@
 		CD3D4EF6F70EB09AC05F271F /* Pods-Site Assessment Commercial.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.debug.xcconfig"; sourceTree = "<group>"; };
 		D38745A09F38BE1C10B8782F /* Pods-Site Assessment Commercial.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.release.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.release.xcconfig"; sourceTree = "<group>"; };
 		DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionView.swift; sourceTree = "<group>"; };
+		DD412EE4222EC00100D6FD2F /* LoadingIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorView.swift; sourceTree = "<group>"; };
 		DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportCell.swift; sourceTree = "<group>"; };
+		DD4E490822284870004FE180 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewViewModel.swift; sourceTree = "<group>"; };
 		DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveToCustomAlbum.swift; sourceTree = "<group>"; };
 		DD754C6D21AC699400253D58 /* QuestionnaireConfigs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = QuestionnaireConfigs.plist; sourceTree = "<group>"; };
+		DD767335222E0ED7001F87F7 /* NotificationCenter+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Name.swift"; sourceTree = "<group>"; };
+		DD767337222E1427001F87F7 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		DD76BEFA21A85D7600A65352 /* Site Assessment Commercial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Site Assessment Commercial.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD76BEFD21A85D7600A65352 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD76BF0221A85D7600A65352 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -65,7 +74,6 @@
 		DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewController.swift; sourceTree = "<group>"; };
 		DD76BF2321A874D300A65352 /* InformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationCell.swift; sourceTree = "<group>"; };
 		DD76BF2521A8AB8000A65352 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
-		DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleService.swift; sourceTree = "<group>"; };
 		DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
@@ -74,10 +82,12 @@
 		DD909D6521AF26A300BC9736 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		DD909D6A21B04F1E00BC9736 /* SADTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SADTO.swift; sourceTree = "<group>"; };
 		DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+HideKeyboard.swift"; sourceTree = "<group>"; };
+		DDCE69EC2224968000468CDE /* ZohoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZohoService.swift; sourceTree = "<group>"; };
+		DDDD234E221F00FD0067D6EF /* GoogleSignOut.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GoogleSignOut.xib; sourceTree = "<group>"; };
+		DDDD2351221F07430067D6EF /* GoogleSIgnOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSIgnOutView.swift; sourceTree = "<group>"; };
 		DDEC154621B1D78700BF4083 /* DataStorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorageService.swift; sourceTree = "<group>"; };
 		DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewModel.swift; sourceTree = "<group>"; };
 		DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartyAccessViewController.swift; sourceTree = "<group>"; };
-		DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+ResizeImage.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,7 +140,6 @@
 		DD76BEFC21A85D7600A65352 /* Site Assessment Commercial */ = {
 			isa = PBXGroup;
 			children = (
-				DD76DBD5221DBE7600DFC9D5 /* GoogleService-Info.plist */,
 				DD76BEFD21A85D7600A65352 /* AppDelegate.swift */,
 				DD76BF0121A85D7600A65352 /* Main.storyboard */,
 				DD76BF1B21A86B4800A65352 /* Model */,
@@ -144,6 +153,7 @@
 				DD909D6A21B04F1E00BC9736 /* SADTO.swift */,
 				DD81CFE721C2F92C00FBE53E /* Layouts */,
 				DD85EC0A21ED02D5009C8F4A /* Extensions */,
+				DDDD2350221F01040067D6EF /* View */,
 			);
 			path = "Site Assessment Commercial";
 			sourceTree = "<group>";
@@ -171,6 +181,7 @@
 				DD76BF2121A8747600A65352 /* ProjectInformationViewController.swift */,
 				DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */,
 				DDEDF4D8221C9D9000F0C2F8 /* ThirdPartyAccessViewController.swift */,
+				DD767337222E1427001F87F7 /* BaseViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -181,6 +192,7 @@
 				DD76BF2521A8AB8000A65352 /* MainViewModel.swift */,
 				DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */,
 				DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */,
+				DD4E490822284870004FE180 /* ReviewViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -196,10 +208,11 @@
 		DD85EC0A21ED02D5009C8F4A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				DD412EE4222EC00100D6FD2F /* LoadingIndicatorView.swift */,
 				DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */,
 				DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */,
-				DDF025E322171798000CA671 /* UIImage+ResizeImage.swift */,
 				DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */,
+				DD767335222E0ED7001F87F7 /* NotificationCenter+Name.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -210,8 +223,18 @@
 				DDEC154621B1D78700BF4083 /* DataStorageService.swift */,
 				DD909D6521AF26A300BC9736 /* NetworkService.swift */,
 				DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */,
+				DDCE69EC2224968000468CDE /* ZohoService.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		DDDD2350221F01040067D6EF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DDDD234E221F00FD0067D6EF /* GoogleSignOut.xib */,
+				DDDD2351221F07430067D6EF /* GoogleSIgnOutView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -275,9 +298,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDDD234F221F00FD0067D6EF /* GoogleSignOut.xib in Resources */,
 				DD754C6E21AC699400253D58 /* QuestionnaireConfigs.plist in Resources */,
 				DD76BF0821A85D7800A65352 /* LaunchScreen.storyboard in Resources */,
-				DD76DBD6221DBE7600DFC9D5 /* GoogleService-Info.plist in Resources */,
 				DD76BF0521A85D7800A65352 /* Assets.xcassets in Resources */,
 				DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */,
 			);
@@ -340,13 +363,19 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/MarqueeLabel/MarqueeLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxReachability/RxReachability.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSkeleton/RxSkeleton.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SkeletonView/SkeletonView.framework",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwifterSwift/SwifterSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/YangMingShan/YangMingShan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -358,13 +387,19 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarqueeLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NotificationBannerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxReachability.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSkeleton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkeletonView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwifterSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YangMingShan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,11 +414,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDF025E422171798000CA671 /* UIImage+ResizeImage.swift in Sources */,
+				DD767336222E0ED7001F87F7 /* NotificationCenter+Name.swift in Sources */,
 				DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */,
 				DD76BF1E21A86BC900A65352 /* SettingsCell.swift in Sources */,
+				DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */,
 				DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */,
+				DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */,
 				DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */,
+				DDCE69ED2224968000468CDE /* ZohoService.swift in Sources */,
 				DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */,
 				DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */,
 				DD76BF1621A86A8200A65352 /* MainCell.swift in Sources */,
@@ -398,11 +436,13 @@
 				DD76BF1A21A86AE200A65352 /* MainViewController.swift in Sources */,
 				DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */,
 				DD76BF2021A86C7500A65352 /* ReviewCell.swift in Sources */,
+				DD412EE5222EC00100D6FD2F /* LoadingIndicatorView.swift in Sources */,
 				DD76BF1421A8629C00A65352 /* ReviewViewController.swift in Sources */,
 				DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */,
 				DD76BF1221A8622E00A65352 /* NewProjectReportViewController.swift in Sources */,
 				DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */,
 				DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */,
+				DDDD2352221F07430067D6EF /* GoogleSIgnOutView.swift in Sources */,
 				DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */,
 				DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */,
 			);

@@ -10,21 +10,11 @@ import RxSwift
 import RxCocoa
 
 struct MainViewModel {
-    let status: String
-    let projectAddress: String
-        
-    static let data:[MainViewModel] = {
-        let prj1 = MainViewModel(status: "P",
-                                 projectAddress: "657 Black Lake Rd South-Perth-Ontario")
-        let prj2 = MainViewModel(status: "D",
-                                 projectAddress: "12827 135 St NW-Edmonton-Alberta")
-        let prj3 = MainViewModel(status: "P",
-                                 projectAddress: "18308 99 Ave NW-Edmonton-Alberta")
-        
-        return [
-            prj1,
-            prj2,
-            prj3,
-        ]
-    }()
+    var status: String
+    var projectAddress: String
+    
+    init(status: String, projectAddress: String) {
+        self.status = status
+        self.projectAddress = projectAddress
+    }
 }

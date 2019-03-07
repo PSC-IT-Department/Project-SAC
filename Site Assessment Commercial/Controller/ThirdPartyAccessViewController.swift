@@ -10,17 +10,22 @@ import UIKit
 import GoogleSignIn
 import GoogleAPIClientForREST
 
-class ThirdPartyAccessViewController: UIViewController{
+class ThirdPartyAccessViewController: UIViewController {
     
     private var titleString: String!
+    
+    let service = GTLRDriveService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = titleString
         
-        setupGoogleSignIn()
-        
+        if let email = GoogleService.sharedGoogleService.retrieveGoogleUserEmail() {
+            setupForSignOut()
+        } else {
+            setupForSignIn()
+        }
     }
     
     static func instantiateFromStoryBoard(withTitle title: String) -> ThirdPartyAccessViewController {
@@ -29,7 +34,38 @@ class ThirdPartyAccessViewController: UIViewController{
         return viewController
     }
     
-    private func setupGoogleSignIn() {
+    private func setupForSignOut() {
+        
+        let signOutView = Bundle.main.loadNibNamed("GoogleSignOut", owner: self, options: nil)?.first as! GoogleSIgnOutView
+
+        signOutView.label.text = GoogleService.sharedGoogleService.retrieveGoogleUserEmail()
+        signOutView.signOutButton.addTarget(self, action: #selector(buttonSignOutDidClicked), for: .touchUpInside)
+        signOutView.center = view.center
+        
+        self.view.addSubview(signOutView)
+    }
+    
+    @objc func buttonSignOutDidClicked(_ sender: UIButton) {
+        let alertVC = UIAlertController(title: "Sign Out", message: "", preferredStyle: .alert)
+        
+        let actionConfrim = UIAlertAction(title: "Yes", style: .default, handler: { _ in
+            GIDSignIn.sharedInstance()?.signOut()
+            GoogleService.sharedGoogleService.resetGoogleUserInformation()
+            self.navigationController?.popToRootViewController(animated: true)
+
+        })
+        
+        let actionCancel = UIAlertAction(title: "No", style: .cancel, handler: { _ in
+            self.navigationController?.popToRootViewController(animated: true)
+        })
+        
+        alertVC.addAction(actionConfrim)
+        alertVC.addAction(actionCancel)
+        
+        self.present(alertVC, animated: true, completion: nil)
+    }
+    
+    private func setupForSignIn() {
 
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().uiDelegate = self
@@ -39,7 +75,6 @@ class ThirdPartyAccessViewController: UIViewController{
 
         let button = GIDSignInButton(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
         button.center = view.center
-//        button.isUserInteractionEnabled = false
         view.addSubview(button)
     }
 }
@@ -50,9 +85,8 @@ extension ThirdPartyAccessViewController: GIDSignInDelegate {
         if let error = error {
             print(error)
         } else {
-            UserDefaults.standard.set(user, forKey: "GoogleAccount")
-        
-            dismiss(animated: true, completion: nil)
+            GoogleService.sharedGoogleService.storeGoogleAccountInformation(signIn: signIn)
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
 }

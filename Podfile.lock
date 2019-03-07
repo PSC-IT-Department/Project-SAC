@@ -1,18 +1,18 @@
 PODS:
   - Alamofire (4.8.1)
   - Differentiator (3.1.0)
-  - Firebase/Auth (5.16.0):
+  - Firebase/Auth (5.18.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (= 5.3.0)
-  - Firebase/CoreOnly (5.16.0):
-    - FirebaseCore (= 5.2.0)
-  - FirebaseAuth (5.3.0):
+    - FirebaseAuth (= 5.4.0)
+  - Firebase/CoreOnly (5.18.0):
+    - FirebaseCore (= 5.3.1)
+  - FirebaseAuth (5.4.0):
     - FirebaseAuthInterop (~> 1.0)
     - FirebaseCore (~> 5.2)
     - GoogleUtilities/Environment (~> 5.2)
     - GTMSessionFetcher/Core (~> 1.1)
   - FirebaseAuthInterop (1.0.0)
-  - FirebaseCore (5.2.0):
+  - FirebaseCore (5.3.1):
     - GoogleUtilities/Logger (~> 5.2)
   - Fusuma (1.3.3)
   - GoogleAPIClientForREST/Core (1.3.8):
@@ -40,6 +40,10 @@ PODS:
   - GTMSessionFetcher/Core (1.2.1)
   - GTMSessionFetcher/Full (1.2.1):
     - GTMSessionFetcher/Core (= 1.2.1)
+  - MarqueeLabel/Swift (3.2.0)
+  - NotificationBannerSwift (2.0.1):
+    - MarqueeLabel/Swift (~> 3.2.0)
+    - SnapKit (~> 4.2.0)
   - ReachabilitySwift (4.3.0)
   - RxAlamofire (4.3.0):
     - RxAlamofire/Core (= 4.3.0)
@@ -57,8 +61,16 @@ PODS:
     - ReachabilitySwift (~> 4.3.0)
     - RxCocoa (~> 4)
     - RxSwift (~> 4)
+  - RxSkeleton (0.0.9):
+    - RxCocoa
+    - RxDataSources
+    - RxSwift
+    - SkeletonView
   - RxSwift (4.4.1):
     - RxAtomic (~> 4.4)
+  - SkeletonView (1.4.2)
+  - SnapKit (4.2.0)
+  - SwifterSwift/UIKit (4.6.0)
   - YangMingShan (2.0.1):
     - YangMingShan/YMSPhotoPicker (= 2.0.1)
   - YangMingShan/YMSPhotoPicker (2.0.1)
@@ -68,11 +80,14 @@ DEPENDENCIES:
   - Fusuma
   - GoogleAPIClientForREST/Drive
   - GoogleSignIn
+  - NotificationBannerSwift
   - RxAlamofire
   - RxCocoa (~> 4.0)
   - RxDataSources (~> 3.0)
   - RxReachability
+  - RxSkeleton
   - RxSwift (~> 4.0)
+  - SwifterSwift/UIKit
   - YangMingShan
 
 SPEC REPOS:
@@ -89,37 +104,49 @@ SPEC REPOS:
     - GoogleToolboxForMac
     - GoogleUtilities
     - GTMSessionFetcher
+    - MarqueeLabel
+    - NotificationBannerSwift
     - ReachabilitySwift
     - RxAlamofire
     - RxAtomic
     - RxCocoa
     - RxDataSources
     - RxReachability
+    - RxSkeleton
     - RxSwift
+    - SkeletonView
+    - SnapKit
+    - SwifterSwift
     - YangMingShan
 
 SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
-  Firebase: 749a8ff4962f9d8c79dda1966de20f6f77583d67
-  FirebaseAuth: c9b3ff063c223d2841d97240af547ce511bce19a
+  Firebase: 02f3281965c075426141a0ce1277e9de6649cab9
+  FirebaseAuth: d85d052354447f30b4b2a805ab91b511458b56a6
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
-  FirebaseCore: ea2d1816723ef21492b8e9113303e1350db5e08c
+  FirebaseCore: 52f851b30e11360f1e67cf04b1edfebf0a47a2d3
   Fusuma: 3bd08c8c5341ec60c0074fa28570fea8765966f0
   GoogleAPIClientForREST: 5447a194eae517986cafe6421a5330b80b820591
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
   GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
+  MarqueeLabel: 440a502b91a9179bd98f9fff00ba1150650a1c0e
+  NotificationBannerSwift: 007774aa590cc9680647b92b2f217bef5c00c32c
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   RxAlamofire: 09624d0f2d48ed8b686e4eb4cf68e28cbd2df556
   RxAtomic: f8d6adc1ccb87a767811269e4875887bc74dbf19
   RxCocoa: 2f35a76bf8887872e28a1914112395b11b8e0e64
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxReachability: 053f2d913db44998242ade488ccaef558f3ce7cb
+  RxSkeleton: b5a29725d68b68cbfdba63214a7f81ef5a2dcb56
   RxSwift: 92fcf68dfef21f3e2ab1965363d9e7b3d787597e
+  SkeletonView: c2523c3c8c6510e273e49a3bf364a434744c3914
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SwifterSwift: 812ffec6f301922f5430e75be3f2939ea3a80024
   YangMingShan: 561cfbb769e8cf679d3f23d8ae7030402ddb6495
 
-PODFILE CHECKSUM: 91f588034dcfa0e9c6ab2ae5c8119c73773f9ab1
+PODFILE CHECKSUM: 08c314147cc2fbab2c74f6f81c2f5806f0f8faae
 
 COCOAPODS: 1.6.0

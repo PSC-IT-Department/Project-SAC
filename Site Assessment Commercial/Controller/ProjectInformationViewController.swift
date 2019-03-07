@@ -14,37 +14,43 @@ class ProjectInformationViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     private var titleString: String!
-    var data: [ProjectInformationViewModel]!
+    private var prjData = SiteAssessmentDataStructure()
+    
     let disposeBag = DisposeBag()
     
+    var observableViewModel: Observable<[ProjectInformationViewModel]>!
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.title = titleString
-        self.view.backgroundColor = UIColor.white
-        
-        self.navigationController?.navigationBar.items![0].title = "Back"
-
+    
+        setupView()
         setupViewModel()
         setupCell()
     }
 
-    static func instantiateFromStoryBoard(withTitle title: String) -> ProjectInformationViewController {
+    static func instantiateFromStoryBoard(withProjectData data: SiteAssessmentDataStructure) -> ProjectInformationViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ProjectInformationViewController") as! ProjectInformationViewController
-        viewController.titleString = title
+        viewController.prjData = data
+        viewController.titleString = data.prjInformation["Project Address"]!
+        
         return viewController
     }
     
-    private func setupViewModel()
-    {
-        
+    private func setupView() {
+        self.title = titleString
+        self.view.backgroundColor = UIColor.white
+    }
+    
+    private func setupViewModel() {
+        let viewModel = prjData.prjInformation.map { (key, value) -> ProjectInformationViewModel in
+            return ProjectInformationViewModel(key: key, value: value)
+        }
+
+        observableViewModel = Observable.of(viewModel)
     }
     
     private func setupCell() {
-        
-        let observable = Observable.of(ProjectInformationViewModel.data)
-        
-        observable
+        observableViewModel
             .bind(to: tableView.rx.items) { (tableView, row, data) in
                 let cell = tableView.dequeueReusableCell(withIdentifier: "InformationCell", for: IndexPath(row: row, section: 0)) as! InformationCell
 
@@ -52,7 +58,11 @@ class ProjectInformationViewController: UIViewController {
                 return cell
             }
             .disposed(by: disposeBag)
-        
     }
 
+    @IBAction func buttonStartDidClicked(_ sender: Any) {
+        let viewController = NewProjectReportViewController.instantiateFromStoryBoard(withProjectData: prjData)
+        
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
 }
