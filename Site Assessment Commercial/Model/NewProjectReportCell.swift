@@ -15,14 +15,13 @@ import RxDataSources
 enum NewProjectReportCellType: String, Codable {
     case ar              = "AR"
     case singleSelection = "Single Selection"
+    case selectionWithImage = "Selection With Image"
     case image           = "Image"
     case singleInput     = "Single Input"
     case twoInputs       = "Two Inputs"
     case threeInputs     = "Three Inputs"
+    case inputsWithImage = "Inputs with Image"
     case notes           = "Notes"
-}
-
-class NewProjectReportCell: UICollectionViewCell {
 }
 
 class ARCell: UICollectionViewCell {
@@ -32,25 +31,25 @@ class ARCell: UICollectionViewCell {
     @IBOutlet weak var arView: ARSCNView!
 }
 
+protocol SelectionCellDelegate {
+    func buttonDidClicked(button: MyCheckBox, indexPath: IndexPath)
+}
+
 class SingleSelectionCell: UICollectionViewCell {
-    @IBOutlet weak var imageviewReference: UIImageView!
-    
     @IBOutlet var buttonGroup: [MyCheckBox]!
-    
     @IBOutlet weak var labelKey: UILabel!
-    
-    var tapAction: ((MyCheckBox) -> Void)?
+        
+    var indexPath: IndexPath!
+    var delegate: SelectionCellDelegate?
     
     @IBAction func buttonTapped(_ sender: MyCheckBox) {
-        tapAction?(sender)
+        delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        buttonGroup.forEach {$0.isChecked = false}
     }
 }
 
@@ -58,19 +57,11 @@ class ImageCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
     
-    private let disposeBag = DisposeBag()
-    
-    var tapAction: ((UIButton)->())?
-    @IBAction func buttonTapped(_ sender: UIButton) {
-        tapAction?(sender)
-    }
-    
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.collectionView.images = []
         self.collectionView.isUserInteractionEnabled = false
     }
-        
+    
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         
         layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
@@ -79,21 +70,43 @@ class ImageCell: UICollectionViewCell {
     }
     
     func setupCell(question: QuestionaireConfigs_QuestionsWrapper) {
-        self.labelKey.text = question.Name
         
-        let prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+        guard let prjFolder = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory else {
+            print("[retrieveData - FileManager.default.urls] failed.")
+            return
+        }
         
-        let images = prjData.prjImageArray.first(where: {$0.key == question.Name})?.images.map({ (imgAttr) -> UIImage in
-            return UIImage(contentsOfFile: imgAttr.path) ?? UIImage()
-        })
-    
-        self.collectionView.images = images ?? []
+        let questionImages = try? FileManager.default.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent.contains(question.Name) && $0.pathExtension == "png" }.map { (fileURL) -> UIImage in
+            guard let image = UIImage(contentsOfFile: fileURL.path)
+                else {
+                    print("[retrieveProjectList - JSONDecoder().decode failed]")
+                    return UIImage()
+            }
+            
+            return image
+        }
+        
+        labelKey.text = question.Name
+        collectionView.images = questionImages ?? []
+        collectionView.reloadData()
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        labelKey.text = nil
+        collectionView.images = nil
+    }
+    
 }
 
 class SingleInputCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var textValue: UITextField!
+    
+    override func prepareForReuse() {
+        textValue.text = nil
+    }
 }
 
 class TwoInputsCell: UICollectionViewCell {
@@ -101,84 +114,104 @@ class TwoInputsCell: UICollectionViewCell {
     @IBOutlet weak var labelOperator: UILabel!
     @IBOutlet var textFields: [UITextField]!
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        textFields.forEach {$0.text = nil}
     }
 }
 
 class ThreeInputsCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
-    
     @IBOutlet var labelOperators: [UILabel]!
     @IBOutlet var textFields: [UITextField]!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        textFields.forEach {$0.text = nil}
+    }
 }
 
-class NotesCell: UICollectionViewCell, UITextViewDelegate {
-    var disposeBag = DisposeBag()
+class NotesCell: UICollectionViewCell  {
 
-    @IBOutlet weak var textViewNotesHeight: NSLayoutConstraint!
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var textviewNotes: UITextView!
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        disposeBag = DisposeBag()
+        textviewNotes.text = "Notes: "
+        textviewNotes.textColor = UIColor.lightGray
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        self.textviewNotes.text = "Notes: "
-        self.textviewNotes.textColor = UIColor.lightGray
-        self.textviewNotes.delegate = self
+        textviewNotes.text = "Notes: "
+        textviewNotes.textColor = UIColor.lightGray
     }
-    
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-
-        return layoutAttributes
-    }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = UIColor.black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "Notes: "
-            textView.textColor = UIColor.lightGray
-        }
-        
-        print("textViewDidEndEditing")
-        
-        textView.resignFirstResponder()
-    }
-
 }
 
 class ImageGalleryCell: UICollectionViewCell {
-    @IBOutlet weak var buttonView: UIButton!
+    @IBOutlet weak var imageView: UIImageView!
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         
         return layoutAttributes
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.imageView.image = nil
+    }
+}
+
+class SelectionWithImageCell: UICollectionViewCell {
+    
+    @IBOutlet weak var labelQuestion: UILabel!
+    @IBOutlet var OptionGroup: [MyCheckBox]!
+    @IBOutlet weak var imageView: UIImageView!
+    
+    var delegate: SelectionCellDelegate?
+    var indexPath: IndexPath!
+
+    @IBAction func buttonTapped(_ sender: MyCheckBox) {
+        delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        labelQuestion.text = nil
+        imageView.image = nil
+        OptionGroup.forEach {$0.setTitle(nil, for: .normal)}
+    }
+}
+
+class InputsWithImageCell: UICollectionViewCell {
+
+    @IBOutlet weak var labelQuestion: UILabel!
+    @IBOutlet var textFieldGroup: [UITextField]!
+    @IBOutlet var labelOperatorGroup: [UILabel]!
+    @IBOutlet weak var imageView: UIImageView!
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        labelQuestion.text = nil
+        imageView.image = nil
+        labelOperatorGroup.forEach {$0.text = nil}
+        textFieldGroup.forEach {$0.text = nil}
     }
 }

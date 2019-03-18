@@ -14,212 +14,100 @@ import RxDataSources
 import RxReachability
 
 import GoogleSignIn
+import GoogleAPIClientForREST
+
 import NotificationBannerSwift
+import PopupDialog
 
-struct SiteAssessmentProjectInformationStructure: Codable {
-    var projectAddress  : String
-    var projectID       : String
-    var scheduleDate    : String
-    
-    init() {
-        self.projectAddress = ""
-        self.projectID = ""
-        self.scheduleDate = ""
-    }
+typealias MainSection = AnimatableSectionModel<String, MainViewModel>
+
+fileprivate extension Selector {
+    static let refreshData = #selector(MainViewController.refreshData)
+    static let shortcutToGoogleSignIn = #selector(MainViewController.shortcutToGoogleSignIn)
 }
 
-enum ImageAttributesStatus: String, Codable {
-    case pending     = "PENDING"
-    case uploading   = "UPLOADING"
-    case completed   = "COMPLETED"
-    case failed      = "FAILED"
-}
-
-struct ImageAttributes: Codable {
-    var name: String
-    var path: String
-    var status: ImageAttributesStatus
-    
-    private enum CodingKeys: CodingKey {
-        case name
-        case path
-        case status
-    }
-    
-    init() {
-        self.name = ""
-        self.path = ""
-        self.status = .pending
-    }
-    
-    init(name: String, path: String, status: ImageAttributesStatus = .pending) {
-        self.name = name
-        self.path = path
-        self.status = status
-    }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        name    = try values.decode(String.self, forKey: .name)
-        path    = try values.decode(String.self, forKey: .path)
-        status  = try values.decode(ImageAttributesStatus.self, forKey: .status)
-    }
-}
-
-struct SiteAssessmentImageArrayStructure: Codable {
-    var key: String
-    var images: [ImageAttributes]
-    
-    private enum CodingKeys: CodingKey {
-        case key
-        case images
-    }
-
-    init() {
-        self.key = ""
-        self.images = []
-    }
-    
-    init(key: String, images: [ImageAttributes]) {
-        self.key = key
-        self.images = images
-    }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        key        = try values.decode(String.self, forKey: .key)
-        images     = try values.decode([ImageAttributes].self, forKey: .images)
-    }
-    
-}
-
-struct SiteAssessmentDataStructure: Codable, Equatable {
-    
-    var prjInformation: [String: String]
-    var prjQuestionnaire: [QuestionaireConfigs_SectionsWrapper]
-    var prjImageArray: [SiteAssessmentImageArrayStructure]
-
-    private enum CodingKeys: String, CodingKey {
-        case prjInformation = "detail"
-        case prjQuestionnaire = "questionnaire"
-        case prjImageArray = "imageArray"
-    }
-    
-    init() {
-        self.prjInformation = [:]
-        self.prjQuestionnaire = []
-        self.prjImageArray = []
-    }
-
-    init(withProjectInformation info: [String: String], withProjectQuestionnaire questionnaire: [QuestionaireConfigs_SectionsWrapper], withProjectImageArray array: [SiteAssessmentImageArrayStructure]) {
-        self.prjInformation = info
-        self.prjQuestionnaire = questionnaire
-        self.prjImageArray = array
-    }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        prjInformation      = try values.decode([String: String].self, forKey: .prjInformation)
-        prjQuestionnaire    = try values.decode([QuestionaireConfigs_SectionsWrapper].self, forKey: .prjQuestionnaire)
-        prjImageArray       = try values.decode([SiteAssessmentImageArrayStructure].self, forKey: .prjImageArray)
-    }
-    
-    init(withZohoData data: [String: String]) {
-        
-        self.prjInformation = [:]
-        
-        if let prjAddr = data["sac_projectAddress"], let prjID = data["sac_projectID"], let status = data["sac_status"] {
-            self.prjInformation.updateValue(prjAddr, forKey: "Project Address")
-            self.prjInformation.updateValue(prjID, forKey: "Project ID")
-            self.prjInformation.updateValue(status, forKey: "Status")
-        }
-        
-        self.prjQuestionnaire = []
-        self.prjImageArray = []
-    }
-    
-    mutating func configureQuestionnaire(withConfigFileName fileName: String) {
-        if let path = Bundle.main.url(forResource: fileName, withExtension: "plist") {
-            if let plistData = try? Data(contentsOf: path) {
-                let decoder = PropertyListDecoder()
-                if let decodedData = try? decoder.decode([QuestionaireConfigs_SectionsWrapper].self, from: plistData) {
-                    self.prjQuestionnaire = decodedData
-                    return
-                }
-            }
-        }
-        
-        self.prjQuestionnaire = []
-    }
-    
-    static func == (lhs: SiteAssessmentDataStructure, rhs: SiteAssessmentDataStructure) -> Bool {
-        return lhs.prjInformation["Project Address"] == rhs.prjInformation["Project Address"] && lhs.prjInformation["Project ID"] == rhs.prjInformation["Project ID"]
-    }
-}
-
-class MainViewController: UIViewController, UITableViewDelegate {
+class MainViewController: UIViewController {
     
     @IBOutlet weak var labelCurrentUser: UILabel!
     @IBOutlet weak var tableView: UITableView!
-
+    @IBOutlet weak var barButtonFilter: UIBarButtonItem!
+    
     private let refreshControl = UIRefreshControl()
 
     private let disposeBag = DisposeBag()
 
     private var prjList: [SiteAssessmentDataStructure] = []
 
-    // private var observableViewModel: BehaviorRelay<[MainViewModel]>!
-    private var observableViewModel = BehaviorRelay(value: [MainViewModel]())
-
+    private var sections = BehaviorRelay(value: [MainSection]())
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loadData()
         setupView()
-        setupCurrentUser()
         setupViewModel()
-        setupCellConfiguration()
+        setupDataSource()
+        setupGoogleSignIn()
+        setupCurrentUser()
         setupCellTapHandling()
-        setupCellGestures()
-        setupNotificationCenter()
         setupRefreshControl()
-        
+        setupNotificationCenter()
+        setupDelegate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         super.viewWillAppear(animated)
 
         setupCurrentUser()
-
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
         super.viewWillDisappear(animated)
         
-        if self.refreshControl.isRefreshing {
-            self.refreshControl.endRefreshing()
-        }
-        
+        if self.refreshControl.isRefreshing { self.refreshControl.endRefreshing() }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-
         super.viewDidAppear(animated)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @IBAction func barButtonFilterDidClicked(_ sender: Any) {
+        let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .zoomIn)
+        
+        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
+            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+            
+            self.setupViewModel()
+        }
+        
+        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
+            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
+            
+            self.setupViewModel()
+
+        }
+    
+        let cancelAction = CancelButton(title: "Cancel", action: nil)
+        
+        popup.addButtons([statusButton, scheduleDateButton, cancelAction])
+        
+        self.present(popup, animated: true, completion: nil)
     }
 }
 
 extension MainViewController {
     
-
     private func loadData() {
         prjList = DataStorageService.sharedDataStorageService.retrieveProjectList()
     }
     
     func combineProjectList(zohoPrjList: [[String: String]]) {
         
-        let prjList = zohoPrjList.filter{prj in prj["sac_status"] == "Pending" && !self.prjList.contains(where: {$0.prjInformation["Project ID"] == prj["sac_projectID"]})}.compactMap {SiteAssessmentDataStructure(withZohoData: $0)}
+        let prjList = zohoPrjList.filter{prj in prj["sac_status"] == UploadStatus.pending.rawValue && !self.prjList.contains(where: {$0.prjInformation.projectID == prj["sac_projectID"]})}.compactMap {SiteAssessmentDataStructure(withZohoData: $0)}
         
         self.prjList.append(contentsOf: prjList)
         
@@ -229,9 +117,32 @@ extension MainViewController {
     
     private func setupView() {
         self.title = "Project List"
-        self.view.backgroundColor = UIColor.white
+        self.tableView.backgroundColor = UIColor.clear
+        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
+        self.setBackground(false)
     }
     
+    private func setupDataSource() {
+        let (configureCell, titleForSection) = tableViewDataSourceUI()
+        
+        let dataSource = RxTableViewSectionedReloadDataSource<MainSection>(
+            configureCell: configureCell,
+            titleForHeaderInSection: titleForSection
+        )
+        
+        self.sections.asObservable()
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupGoogleSignIn() {
+        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().delegate = self
+        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive]
+        GIDSignIn.sharedInstance().shouldFetchBasicProfile = true
+        GIDSignIn.sharedInstance().signInSilently()
+    }
+
     private func setupRefreshControl() {
         // Add Refresh Control to Table View
         if #available(iOS 10.0, *) {
@@ -246,7 +157,7 @@ extension MainViewController {
         refreshControl.attributedTitle = NSAttributedString(string: "Refreshing please wait", attributes: attributes)
         
         // Configure Refresh Control
-        refreshControl.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: .refreshData, for: .valueChanged)
     }
     
     private func refreshDataManually() {
@@ -265,26 +176,28 @@ extension MainViewController {
         }
     }
     
-    @objc private func refreshData(_ sender: Any) {
-        // Fetch Weather Data
-        self.fetchZohoData { (success) in
-            
-        }
+    @objc func refreshData(_ sender: Any) {
+        self.refreshControl.beginRefreshing()
+        
+        self.loadData()
+        self.fetchZohoData(onCompleted: nil)
     }
     
     private func fetchZohoData(onCompleted: ((Bool) -> ())?) {
         ZohoService.sharedZohoService.getProjectList { (projectListFromZoho) in
-            DispatchQueue.main.async {
-                guard let zohoPrjList = projectListFromZoho else {
-                    print("Offline mode")
-                    onCompleted?(false)
-                    return
+            guard let zohoPrjList = projectListFromZoho else {
+                print("fetchZohoData failed.")
+                DispatchQueue.main.async {
+                    self.refreshControl.endRefreshing()
+                    onCompleted?(true)
                 }
-                
-                self.combineProjectList(zohoPrjList: zohoPrjList)
-                self.setupViewModel()
+                return
+            }
+            
+            self.combineProjectList(zohoPrjList: zohoPrjList)
+            self.setupViewModel()
+            DispatchQueue.main.async {
                 self.refreshControl.endRefreshing()
-                
                 onCompleted?(true)
             }
         }
@@ -299,41 +212,83 @@ extension MainViewController {
         }
         
         labelCurrentUser.isUserInteractionEnabled = true
-        labelCurrentUser.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.shortcutToGoogleSignIn(_:))))
+        labelCurrentUser.addGestureRecognizer(UITapGestureRecognizer(target: self, action: .shortcutToGoogleSignIn))
     }
     
     @objc func shortcutToGoogleSignIn(_ sender: UITapGestureRecognizer) {
-        print("Jump to Google signin view controller.")
-        let viewController = ThirdPartyAccessViewController.instantiateFromStoryBoard(withTitle: "Google")
+        let viewController = GoogleAccessViewController.instantiateFromStoryBoard(withTitle: "Google")
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func setupViewModel() {
-        let viewModel = prjList.map { (prjData) -> MainViewModel in
-            let info = prjData.prjInformation.filter({ (key, value) -> Bool in
-                return (key == "Project Address" || key == "Status")
-            })
-            
-            return MainViewModel(status: info["Status"]!, projectAddress: info["Project Address"]!)
+    private func setGrouping(option: GroupingOptions) {
+        switch option {
+        case .status, .none:
+            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+ 
+        case .assignedTeam:
+            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .assignedTeam)
+
+        case .scheduleDate:
+            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
         }
-        
-        observableViewModel.accept(viewModel)
     }
     
-    private func setupCellConfiguration() {
-        observableViewModel
-            .bind(to: tableView.rx.items(cellIdentifier: "MainCell", cellType: MainCell.self)) {
-                    row, data, cell in
-                cell.configureWithData(data: data)
+    private func setupViewModel() {
+
+        let option = DataStorageService.sharedDataStorageService.retrieveGroupingOption()
+
+        switch option {
+        case .status, .none:
+            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue})
+            
+            let sections = dictionary.map { (key, value) -> MainSection in
+                let model = key
+                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
+
+                return MainSection(model: model, items: items)
             }
-            .disposed(by: disposeBag)
+            self.sections.accept(sections)
+            
+        case .assignedTeam:
+            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.assignedTeam})
+            
+            let sections = dictionary.map { (key, value) -> MainSection in
+                let model = key ?? ""
+                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
+                
+                
+                return MainSection(model: model, items: items)
+            }
+            
+            self.sections.accept(sections)
+
+        case .scheduleDate:
+            let dictionary = Dictionary(grouping: prjList,
+                                        by: { prj -> String in
+                                            let formatter = DateFormatter()
+                                            formatter.dateFormat = "yyyy-MM-dd"
+                                            var strDate = ""
+                                            if let date = prj.prjInformation.scheduleDate { strDate = formatter.string(from: date) }
+                                            
+                                            return strDate })
+            
+            let sections = dictionary.map { (key, value) -> MainSection in
+                
+                let model = key
+                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
+
+                return MainSection(model: model, items: items)
+            }
+            
+            self.sections.accept(sections)
+        }
     }
     
     private func setupCellTapHandling() {
         tableView
             .rx
-            .modelSelected(MainViewModel.self)
+            .itemSelected
             .subscribe(onNext: { _ in
                 if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
                     self.tableView.deselectRow(at: selectedRowIndexPath, animated: true)
@@ -346,137 +301,158 @@ extension MainViewController {
             })
             .disposed(by: disposeBag)
     }
-    
-    private func setupCellGestures() {
-        tableView
-            .rx
-            .itemDeleted
-            .subscribe {
-                 print($0)
-            }
-            .disposed(by: disposeBag)
-    }
-    
-    private func setupNotificationCenter() {
-        NotificationCenter.default.addObserver(self, selector: #selector(onDidReceiveComplete(_: )), name: .didReceiveComplete, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onDidReceiveProcessing(_: )), name: .didReceiveProcessing, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onDidReceiveError(_: )), name: .didReceiveError, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onDidReceiveWarning(_: )), name: .didReceiveWarning, object: nil)
-    }
-    
+
+}
+
+fileprivate extension Selector {
+    static let onDidReceiveCompleteMsg     = #selector(MainViewController.onDidReceiveCompleteMsg)
+    static let onDidReceiveProcessingMsg   = #selector(MainViewController.onDidReceiveProcessingMsg)
+    static let onDidReceiveErrorMsg        = #selector(MainViewController.onDidReceiveErrorMsg)
+    static let onDidReceiveWarningMsg      = #selector(MainViewController.onDidReceiveWarningMsg)
+    static let onDidReceiveReachabilityMsg = #selector(MainViewController.onDidReceiveReachabilityMsg)
 }
 
 extension MainViewController: NotificationBannerDelegate {
     
-    @objc func onDidReceiveComplete(_ msg: Notification) {
-        guard let msg = msg.object as? String else {
+    private func setupNotificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: .onDidReceiveCompleteMsg, name: .didReceiveCompleteMsg, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: .onDidReceiveProcessingMsg, name: .didReceiveProcessingMsg, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: .onDidReceiveErrorMsg, name: .didReceiveErrorMsg, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: .onDidReceiveWarningMsg, name: .didReceiveWarningMsg, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: .onDidReceiveReachabilityMsg, name: .didReceiveReachabilityMsg, object: nil)
+    }
+    
+    @objc func onDidReceiveCompleteMsg(_ msg: Notification) {
+        guard let prjID = msg.object as? String else {
             print("onDidReceiveComplete - Invalid message.")
             return
         }
         
-        let prjID = msg
-        var title = msg
-        if let index = prjList.firstIndex(where: {$0.prjInformation["Project ID"] == prjID}) {
-            title = "File(s) uploaded successfully."
+        if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
 
-            let status = "Completed"
-            prjList[index].prjInformation["Status"] = status
-            setupViewModel()
+            prjList[index].prjInformation.status = .completed
             
-            let indexPath = IndexPath(row: index, section: 0)
-            let cell = tableView.cellForRow(at: indexPath) as! MainCell
-            cell.stopAnimation(withStatus: status)
-        } else {
-            if msg == "Online Mode", NetworkService.sharedNetworkService.reachabilityStatus == .connected {
-                self.refreshDataManually()
-            }
+            DataStorageService.sharedDataStorageService.storeData(withData: prjList[index], onCompleted: nil)
+            setupViewModel()
         }
-        
-        showBanner(title: title, style: .success)
     }
     
-    @objc func onDidReceiveProcessing(_ msg: Notification) {
-        guard let msg = msg.object as? String else {
+    @objc func onDidReceiveProcessingMsg(_ msg: Notification) {
+        guard let prjID = msg.object as? String else {
             print("onDidReceiveProcessing - Invalid message.")
             return
         }
         
-        let prjID = msg
-        var title = msg
-        if let index = prjList.firstIndex(where: {$0.prjInformation["Project ID"] == prjID}) {
-            title = "Processing..."
-
-            let indexPath = IndexPath(row: index, section: 0)
-            let cell = tableView.cellForRow(at: indexPath) as! MainCell
-            
-            cell.startAnimation()
+        if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
+            prjList[index].prjInformation.status = .uploading
+            setupViewModel()
         }
         
-        showBanner(title: title, style: .info)
     }
     
-    @objc func onDidReceiveError(_ msg: Notification) {
-        guard let msg = msg.object as? String else {
+    @objc func onDidReceiveErrorMsg(_ msg: Notification) {
+        guard let prjID = msg.object as? String else {
             print("onDidReceiveError - Invalid message.")
             return
         }
         
-        let prjID = msg
-        var title = msg
-        if let index = prjList.firstIndex(where: {$0.prjInformation["Project ID"] == prjID}) {
-            title = "Errors encountered while uploading."
-
-            let status = "Pending"
-            prjList[index].prjInformation["Status"] = status
+        if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
+            prjList[index].prjInformation.status = .pending
             setupViewModel()
-            
-            let indexPath = IndexPath(row: index, section: 0)
-            let cell = tableView.cellForRow(at: indexPath) as! MainCell
-            cell.stopAnimation(withStatus: status)
         }
-        
-        showBanner(title: title, style: .danger)
     }
     
-    @objc func onDidReceiveWarning(_ msg: Notification) {
+    @objc func onDidReceiveWarningMsg(_ msg: Notification) {
+    }
+    
+    @objc func onDidReceiveReachabilityMsg(_ msg: Notification) {
         guard let msg = msg.object as? String else {
-            print("onDidReceiveWarning - Invalid message.")
+            print("onDidReceiveReachabilityMsg - Invalid message.")
             return
         }
         
-        /*
-        let prjID = msg
-        var title = msg
-        if let index = prjList.firstIndex(where: {$0.prjInformation["Project ID"] == prjID}) {
-            print("onDidReceiveWarning - Index = \(index)")
+        var style: BannerStyle = .none
+        if msg == "Online Mode", NetworkService.sharedNetworkService.reachabilityStatus == .connected {
+            style = .info
+            self.refreshDataManually()
+        } else if msg == "Offline Mode", NetworkService.sharedNetworkService.reachabilityStatus == .disconnected {
+            style = .warning
         }
-         */
         
-        showBanner(title: msg, style: .danger)
+        showBanner(title: msg, style: style)
+
     }
 
-    func showBanner(title: String, style: BannerStyle) {
+    private func showBanner(title: String, style: BannerStyle) {
         let banner = StatusBarNotificationBanner(title: title, style: style)
         banner.delegate = self
         banner.show(queuePosition: .front, bannerPosition: .top)
     }
 
     internal func notificationBannerWillAppear(_ banner: BaseNotificationBanner) {
-        print("[NotificationBannerDelegate] Banner will appear")
     }
     
     internal func notificationBannerDidAppear(_ banner: BaseNotificationBanner) {
-        print("[NotificationBannerDelegate] Banner did appear")
     }
     
     internal func notificationBannerWillDisappear(_ banner: BaseNotificationBanner) {
-        print("[NotificationBannerDelegate] Banner will disappear")
     }
     
     internal func notificationBannerDidDisappear(_ banner: BaseNotificationBanner) {
-        print("[NotificationBannerDelegate] Banner did disappear")
+    }
+}
+
+extension MainViewController: GIDSignInDelegate, GIDSignInUIDelegate {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let err = error {
+            showBanner(title: "Google SignIn Failed. Error: \(err.localizedDescription)", style: .danger)
+            return
+        } else {
+            guard let email = user.profile.email else { return }
+            GoogleService.sharedGoogleService.storeGoogleAccountInformation(signIn: signIn)
+        }
+    }
+}
+
+extension MainViewController {
+    func tableViewDataSourceUI() -> (
+        TableViewSectionedDataSource<MainSection>.ConfigureCell,
+        TableViewSectionedDataSource<MainSection>.TitleForHeaderInSection
+        ) {
+            return (
+                { (_, tv, ip, i) in
+                    let cell = tv.dequeueReusableCell(withIdentifier: "MainCell", for: ip) as! MainCell
+                    cell.configureWithData(data: i)
+                    //cell.labelProjectAddress.text = i
+                    return cell
+            },
+                { (ds, section) -> String? in
+                    return ds[section].model
+            })
+    }
+}
+
+extension MainViewController: UITableViewDelegate {
+    private func setupDelegate() {
+        tableView
+            .rx
+            .setDelegate(self)
+            .disposed(by: disposeBag)
+    }
+
+    // https://github.com/RxSwiftCommunity/RxDataSources/issues/91
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        view.tintColor = UIColor.clear
+        let header:UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 16.0)
+        header.textLabel?.textColor = UIColor.black
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
     }
 }

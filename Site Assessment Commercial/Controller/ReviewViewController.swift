@@ -11,21 +11,19 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
+import NotificationBannerSwift
+
 class ReviewViewController: UIViewController, UITableViewDelegate {
-    
+ 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var saveButton: UIButton!
     
-    private var answerDictionary: [String: String] = [:]
-    
-    private var prjData = SiteAssessmentDataStructure()
+    private var prjData: SiteAssessmentDataStructure!
     
     var observableViewModel: Observable<[ReviewViewModel]>!
 
     private let disposeBag = DisposeBag()
     
-    var strLabel = UILabel()
-    let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-
     static func instantiateFromStoryBoard(withProjectData data: SiteAssessmentDataStructure) -> ReviewViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier:
             "ReviewViewController") as! ReviewViewController
@@ -37,65 +35,82 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadData()
         setupView()
         setupViewModel()
         setupCell()
+        setupButton()
     }
     
     @IBAction func buttonSaveDidClicked(_ sender: Any) {
+        
+        guard let prjID = prjData.prjInformation.projectID else {
+            return
+        }
+        
         LoadingIndicatorView.show("Processing...")
-        DataStorageService.sharedDataStorageService.storeData(withData: self.prjData) { (success, error) in
-            if let err = error {
-                print("Store data failed. Error=\(err)")
-                return
-            }
-            
+        
+        DataStorageService.sharedDataStorageService.storeData(withData: prjData) { (success, error) in
+            var msg: Notification.Name = .didReceiveErrorMsg
+            var msgObject: Any = prjID
+
             if success {
+                print("DataStorageService.sharedDataStorageService.storeData successfully")
                 
                 if NetworkService.sharedNetworkService.reachabilityStatus == .connected {
-                    guard let prjID = self.prjData.prjInformation["Project ID"] else {
-                        return
-                    }
                     
-                    ZohoService.sharedZohoService.setRemoteToUploading(projectID: prjID) { (success) in
-                        if success {
-                            print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
-                            NotificationCenter.default.post(name: .didReceiveProcessing, object: prjID)
-                        } else {
-                            print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
-                            NotificationCenter.default.post(name: .didReceiveError, object: prjID)
-                        }
-                    }
+                    LoadingIndicatorView.hide()
                     
-                    GoogleService.sharedGoogleService.uploadProject(withData: self.prjData) { (success, error) in
-                        if let err = error {
-                            print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
-                            NotificationCenter.default.post(name: .didReceiveError, object: prjID)
-                            return
-                        }
-                        
-                        if success {
-                            print("GoogleService.sharedGoogleService.uploadProject successfully.")
-                            ZohoService.sharedZohoService.uploadProject(withData: self.prjData, onCompleted: { (success) in
-                                if success {
-                                    print("ZohoService.sharedZohoService.uploadProject successfully.")
-                                    NotificationCenter.default.post(name: .didReceiveComplete, object: prjID)
-                                } else {
-                                    print("ZohoService.sharedZohoService.uploadProject failed.")
-                                    NotificationCenter.default.post(name: .didReceiveError, object: prjID)
-                                    return
+                    self.navigationController?.popToRootViewController(animated: true)
+
+                    DispatchQueue.main.async {
+                        ZohoService.sharedZohoService.setRemoteToUploading(projectID: prjID) { (success) in
+                            if success {
+                                print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
+                                NotificationCenter.default.post(name: .didReceiveProcessingMsg, object: msgObject)
+                                
+                                GoogleService.sharedGoogleService.uploadProject(withData: self.prjData) { (success, error) in
+                                    if let err = error {
+                                        print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
+                                    }
+                                    
+                                    if success {
+                                        print("GoogleService.sharedGoogleService.uploadProject successfully.")
+                                        ZohoService.sharedZohoService.uploadProject(withData: self.prjData, onCompleted: { (success) in
+                                            if success {
+                                                print("ZohoService.sharedZohoService.uploadProject successfully.")
+                                                NotificationCenter.default.post(name: .didReceiveCompleteMsg, object: msgObject)
+                                            } else {
+                                                print("ZohoService.sharedZohoService.uploadProject failed.")
+                                            }
+                                        })
+                                    }
                                 }
-                            })
+                            } else {
+                                print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
+                            }
                         }
                     }
-                    
                 } else {
-                    NotificationCenter.default.post(name: .didReceiveWarning, object: "Offline Mode. File(s) saved sucessfully, will be uploaded later.")
+                    msg = .didReceiveWarningMsg
+                    msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
+                    LoadingIndicatorView.hide()
+                    NotificationCenter.default.post(name: msg, object: msgObject)
+                    self.navigationController?.popToRootViewController(animated: true)
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                
+                /*DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    LoadingIndicatorView.hide()
+                    
+                    self.navigationController?.popToRootViewController(animated: true)
+                    return
+                } */
+            } else {
+                print("Store data failed. Error=\(error!)")
+                DispatchQueue.main.async() {
                     LoadingIndicatorView.hide()
                     self.navigationController?.popToRootViewController(animated: true)
+                    NotificationCenter.default.post(name: msg, object: msgObject)
+                    return
                 }
             }
         }
@@ -104,21 +119,35 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
 
 extension ReviewViewController {
     
-    private func loadData() {
+    private func setupView() {
+        self.title = "Review"
+        self.setBackground()
     }
-    
+
     private func setupViewModel() {
-        let viewModel = prjData.prjInformation.map { (key, value) -> ReviewViewModel in
+        var viewModel = prjData.prjInformation.toDictionary().map { (key, value) -> ReviewViewModel in
             return ReviewViewModel(key: key, value: value)
+        }
+        
+        prjData.prjQuestionnaire.forEach { (section) in
+            let questions = section.Questions.map { (question) -> ReviewViewModel in
+                return ReviewViewModel(key: question.Name, value: question.Value)
+            }
+            
+            viewModel.append(contentsOf: questions)
+        }
+        
+        prjData.prjImageArray.forEach { (imageArray) in
+            let images = imageArray.images.map { (imageAttr) -> ReviewViewModel in
+                return ReviewViewModel(key: imageAttr.name, value: imageAttr.status.rawValue)
+            }
+            
+            viewModel.append(contentsOf: images)
         }
         
         observableViewModel = Observable.of(viewModel)
     }
 
-    private func setupView() {
-        self.title = "Review"
-    }
-    
     private func setupCell() {
         observableViewModel.asObservable()
             .bind(to: tableView.rx.items(cellIdentifier: "ReviewCell", cellType: ReviewCell.self)) { (row, element, cell) in
@@ -128,4 +157,13 @@ extension ReviewViewController {
             .disposed(by: disposeBag)
     }
     
+    private func setupButton() {
+        let status = prjData.prjInformation.status
+        
+        if status == .completed {
+            saveButton.isUserInteractionEnabled = false
+            saveButton.setTitle(UploadStatus.completed.rawValue, for: .normal)
+            saveButton.backgroundColor = UIColor.gray
+        }
+    }
 }

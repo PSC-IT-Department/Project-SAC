@@ -20,25 +20,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        if let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            print("documentsURL = \(documentsURL.path)")
-        }
-        
-        
         DataStorageService.instantiateSharedInstance()
         NetworkService.instantiateSharedInstance()
-        
-        let service = GTLRDriveService()
-        GoogleService.instantiateSharedInstance(service: service)
-        
+        GoogleService.instantiateSharedInstance()
         ZohoService.instantiateSharedInstance()
         
-        if GIDSignIn.sharedInstance()?.hasAuthInKeychain() == true {
-            GIDSignIn.sharedInstance()?.signInSilently()
-        }
-        
-        GIDSignIn.sharedInstance().clientID = "87652830736-mj4tp3eh1feh72l4jk9rbalddoh7gjc5.apps.googleusercontent.com"
+        GIDSignIn.sharedInstance().clientID = "644156199174-ug9k96eocdquskuc8a5465isp10n2feo.apps.googleusercontent.com"
 
+        print("homeDictionary = \(DataStorageService.sharedDataStorageService.homeDirectory.path)")
         return true
     }
     

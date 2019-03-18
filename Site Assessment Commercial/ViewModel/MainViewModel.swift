@@ -8,12 +8,14 @@
 
 import RxSwift
 import RxCocoa
+import RxDataSources
 
-struct MainViewModel {
-    var status: String
+struct MainViewModel: IdentifiableType, Equatable {
+    var identity: Int?
+    var status: UploadStatus
     var projectAddress: String
     
-    init(status: String, projectAddress: String) {
+    init(status: UploadStatus, projectAddress: String) {
         self.status = status
         self.projectAddress = projectAddress
     }

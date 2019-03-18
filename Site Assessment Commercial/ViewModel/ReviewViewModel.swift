@@ -10,14 +10,14 @@ import Foundation
 
 struct ReviewViewModel {
     var key: String
-    var value: String
+    var value: String?
     
     init() {
         self.key = ""
         self.value = ""
     }
     
-    init(key: String, value: String) {
+    init(key: String, value: String?) {
         self.key = key
         self.value = value
     }

@@ -56,9 +56,10 @@ class NetworkService {
                 case .cellular, .wifi:
                     self.reachabilityStatus = .connected
                     
-                    NotificationCenter.default.post(name: .didReceiveComplete, object: "Online Mode")
+                    NotificationCenter.default.post(name: .didReceiveReachabilityMsg, object: "Online Mode")
                 case .none:
                     self.reachabilityStatus = .disconnected
+                    NotificationCenter.default.post(name: .didReceiveReachabilityMsg, object: "Offline Mode")
                 }
             })
             .disposed(by: disposeBag)

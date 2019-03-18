@@ -13,8 +13,8 @@ import GTMSessionFetcher
 import SwifterSwift
 import RxReachability
 
-enum GDriveError: Error {
-    case NoDataAtPath
+enum GDriveError: String, Error {
+    case NoDataAtPath = "NO SUCH DATA AT THE PATH"
 }
 
 class GoogleService {
@@ -27,8 +27,8 @@ class GoogleService {
     
     public static var sharedGoogleService: GoogleService!
     
-    public static func instantiateSharedInstance(service: GTLRDriveService) {
-        sharedGoogleService = GoogleService(service)
+    public static func instantiateSharedInstance() {
+        sharedGoogleService = GoogleService()
     }
     
     init() {
@@ -40,10 +40,6 @@ class GoogleService {
         self.service = service
         self.signIn = GIDSignIn()
     }
-
-    func prepareForGoogleSignin() {
-        
-    }
     
     func storeGoogleAccountInformation(signIn: GIDSignIn) {
         
@@ -51,7 +47,6 @@ class GoogleService {
         self.signIn = signIn
         service.authorizer = user!.authentication.fetcherAuthorizer()
         
-        UserDefaults.standard.set(signIn.clientID, forKey: "GoogleClientID")
         UserDefaults.standard.set(user!.profile.email, forKey: "GoogleUser")
     }
     
@@ -61,11 +56,6 @@ class GoogleService {
     
     func resetGoogleUserInformation() {
         UserDefaults.standard.removeObject(forKey: "GoogleUser")
-        UserDefaults.standard.removeObject(forKey: "GoogleClientID")
-    }
-    
-    func retrieveGoogleClientID() -> String? {
-        return UserDefaults.standard.string(forKey: "GoogleClientID")
     }
     
     func retrieveGoogleUserEmail() -> String? {
@@ -96,13 +86,13 @@ class GoogleService {
     
     public func uploadProjectFlie(fileName: String, fileFormat: String, MIMEType: String, folderID: String, onCompleted: @escaping (Bool, Error?) -> ()) {
 
-        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            let error = CustomError(description: "Cannot find project folder", code: -1)
-            onCompleted(false, error)
+        guard let homeDirectory = DataStorageService.sharedDataStorageService.homeDirectory else {
+            print("homeDirectory is nil")
+            onCompleted(false, nil)
             return
         }
-        
-        let fileURL = documentsURL.appendingPathComponent(fileName).appendingPathExtension(fileFormat).path
+
+        let fileURL = homeDirectory.appendingPathComponent(fileName).appendingPathExtension(fileFormat).path
         self.upload(folderID, path: fileURL, MIMEType: MIMEType, onCompleted: { (fileID, error) in
             guard let fid = fileID else {
                 onCompleted(false, error)
@@ -128,15 +118,14 @@ class GoogleService {
                 result + imageArray.images.count
             })
             
-            print("totalAmount = \(totalAmount)")
-            
             saData.prjImageArray.forEach({ (imageArray) in
                 let sections = saData.prjQuestionnaire.filter{$0.Questions.contains(where: {$0.Name == imageArray.key})}
                 
                 if let section = sections.first {
                     imageArray.images.forEach({ (imageAttr) in
+                        let imgPath = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory.appendingPathComponent(imageAttr.name).appendingPathExtension("png").path
                         if let fid = sfids[section.Name] {
-                            self.upload(fid, path: imageAttr.path, MIMEType: "image/png", onCompleted: { (fileID, error) in
+                            self.upload(fid, path: imgPath, MIMEType: "image/png", onCompleted: { (fileID, error) in
                                 if let err = error {
                                     print("Error = \(err)")
                                 }
@@ -168,23 +157,20 @@ class GoogleService {
             
             let saData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
             
-            guard let prjId = saData.prjInformation["Project ID"] else {
-                let err = CustomError(description: "uploadProject - Project ID not found.", code: -1)
-                onCompleted?(false, err)
-                return
-            }
+            if let prjID = saData.prjInformation.projectID {
             
-            self.uploadProjectFlie(fileName: prjId, fileFormat: "json", MIMEType: "application/json", folderID: fid, onCompleted: { (success, error) in
-                if let err = error {
-                    onCompleted?(false, err)
-                    return
-                }
-                
-                if success {
-                    onCompleted?(true, nil)
-                    return
-                }
-            })
+                self.uploadProjectFlie(fileName: prjID, fileFormat: "json", MIMEType: "application/json", folderID: fid, onCompleted: { (success, error) in
+                    if let err = error {
+                        onCompleted?(false, err)
+                        return
+                    }
+                    
+                    if success {
+                        onCompleted?(true, nil)
+                        return
+                    }
+                })
+            }
         }
     }
     
@@ -192,7 +178,8 @@ class GoogleService {
         search(self.rootDir) { (folderID, error) in
             if let err = error {
                 print("Error = \(err)")
-            }
+                onCompleted?(false, err)
+           }
             
             if let fid = folderID {
                 print("fid = \(fid)")
@@ -313,27 +300,23 @@ class GoogleService {
     private func createProjectFolder(rfid: String, onCompleted: ((String?, Error?) -> ())?) {
         let prjdata = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
         
-        guard let prjAddr = prjdata.prjInformation["Project Address"] else {
-            let err = CustomError(description: "Project Address not found.", code: -1)
-            onCompleted?(nil, err)
-            return
+        if let prjAddr = prjdata.prjInformation.projectAddress {
+            
+            self.createSubfolder(prjAddr, rfid, onCompleted: { (folderID, error) in
+                if let err = error {
+                    print("Error: \(err.localizedDescription)")
+                }
+                
+                guard let fid = folderID else {
+                    onCompleted?(nil, error)
+                    return
+                }
+                
+                self.ggFolderIDs.updateValue(fid, forKey: "Project Address")
+                onCompleted?(fid, nil)
+                return
+            })
         }
-        
-        self.createSubfolder(prjAddr, rfid, onCompleted: { (folderID, error) in
-            if let err = error {
-                print("Error: \(err.localizedDescription)")
-                return
-            }
-            
-            guard let fid = folderID else {
-                onCompleted?(nil, error)
-                return
-            }
-            
-            self.ggFolderIDs.updateValue(fid, forKey: "Project Address")
-            onCompleted?(fid, nil)
-            return
-        })
     }
     
     private func createFolders(rootFolderID: String, onCompleted: (([String: String]?, Error?) -> ())?) {

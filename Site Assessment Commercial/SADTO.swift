@@ -6,6 +6,19 @@
 //  Copyright © 2018 chyapp.com. All rights reserved.
 //
 
+import Foundation
+import UIKit
+import RxSwift
+import RxCocoa
+import RxDataSources
+
+enum GroupingOptions: String {
+    case none         = "None"
+    case status       = "Status"
+    case scheduleDate = "Schedule Date"
+    case assignedTeam = "Assigned Team"
+}
+
 public struct SADTO: Codable, Equatable {
     
     // SYSTEM
@@ -256,5 +269,321 @@ public struct SADTO: Codable, Equatable {
         self.projectAddress = ""
         self.projectID      = ""
         self.status         = ""
+    }
+}
+
+enum UploadStatus: String, Codable {
+    case pending     = "Pending"
+    case uploading   = "Uploading"
+    case completed   = "Completed"
+}
+
+struct SiteAssessmentProjectInformationStructure: Codable {
+    var projectAddress  : String!
+    var projectID       : String!
+    var status          : UploadStatus!
+    
+    var scheduleDate    : Date?
+    var assignedTeam    : String!
+    var assignedDate    : Date!
+    var uploadedDate    : Date?
+    
+    private enum CodingKeys: String, CodingKey {
+        case projectAddress = "sac_projectAddress"
+        case projectID      = "sac_projectID"
+        case status         = "sac_status"
+        
+        case scheduleDate   = "sac_sheduleDate"
+        case assignedTeam   = "sac_assignedTeam"
+        case assignedDate   = "sac_assignedDate"
+        case uploadedDate   = "sac_uploadedDate"
+    }
+
+    init() {
+        self.projectAddress = ""
+        self.projectID      = ""
+        self.status         = .pending
+
+        self.scheduleDate   = nil
+        self.assignedTeam   = ""
+        self.assignedDate   = nil
+        self.uploadedDate   = nil
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values      = try decoder.container(keyedBy: CodingKeys.self)
+        projectAddress  = try values.decode(String.self, forKey: .projectAddress)
+        projectID       = try values.decode(String.self, forKey: .projectID)
+        status          = try values.decode(UploadStatus.self, forKey: .status)
+        scheduleDate    = try values.decode(Date.self, forKey: .scheduleDate)
+        assignedTeam    = try values.decode(String.self, forKey: .assignedTeam)
+        assignedDate    = try values.decode(Date.self, forKey: .assignedDate)
+        uploadedDate    = try values.decode(Date.self, forKey: .uploadedDate)
+    }
+    
+    init(withZohoData data: [String: String?]) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        self.projectAddress = data["sac_projectAddress"]!
+        self.projectID      = data["sac_projectID"]!
+        self.status         = .pending
+        
+        let scheduleDate = Date() // formatter.date(from: data["sac_sheduleDate"]! ?? "2019-10-13 12:18:12")
+        let assignedDate = Date() // formatter.date(from: data["sac_assignedDate"]! ?? "")
+        let uploadedDate = Date() // formatter.date(from: data["sac_uploadedDate"]! ?? "")
+
+        self.scheduleDate   = scheduleDate
+        self.assignedTeam   = data["sac_assignedTeam"]!
+        self.assignedDate   = assignedDate
+        self.uploadedDate   = uploadedDate
+    }
+    
+    func toDictionary() -> [String: String?] {
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let scheduleDate = formatter.string(from: self.scheduleDate ?? Date())
+        let assignedDate = formatter.string(from: self.assignedDate ?? Date())
+        let uploadedDate = formatter.string(from: self.uploadedDate ?? Date())
+
+        return [
+            "Project Address": self.projectAddress,
+            "Project ID": self.projectID,
+            "Status": self.status.rawValue,
+            "Schedule Date": scheduleDate,
+            "Assigned Team": self.assignedTeam,
+            "Assigned Date": assignedDate,
+            "Upload Date": uploadedDate
+        ]
+    }
+}
+
+struct ImageAttributes: Codable {
+    var name: String
+    var status: UploadStatus
+    
+    private enum CodingKeys: CodingKey {
+        case name
+        case status
+    }
+    
+    init() {
+        self.name = ""
+        self.status = .pending
+    }
+    
+    init(name: String, status: UploadStatus = .pending) {
+        self.name = name
+        self.status = status
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        name    = try values.decode(String.self, forKey: .name)
+        status  = try values.decode(UploadStatus.self, forKey: .status)
+    }
+}
+
+struct SiteAssessmentImageArrayStructure: Codable {
+    var key: String
+    var images: [ImageAttributes]
+    
+    private enum CodingKeys: CodingKey {
+        case key
+        case images
+    }
+    
+    init() {
+        self.key = ""
+        self.images = []
+    }
+    
+    init(key: String, images: [ImageAttributes]) {
+        self.key = key
+        self.images = images
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        key        = try values.decode(String.self, forKey: .key)
+        images     = try values.decode([ImageAttributes].self, forKey: .images)
+    }
+    
+}
+
+struct SiteAssessmentDataStructure: Codable, Equatable {
+    
+    var prjInformation: SiteAssessmentProjectInformationStructure
+    var prjQuestionnaire: [QuestionaireConfigs_SectionsWrapper]
+    var prjImageArray: [SiteAssessmentImageArrayStructure]
+    
+    private enum CodingKeys: String, CodingKey {
+        case prjInformation = "detail"
+        case prjQuestionnaire = "questionnaire"
+        case prjImageArray = "imageArray"
+    }
+    
+    init() {
+        self.prjInformation = SiteAssessmentProjectInformationStructure()
+        self.prjQuestionnaire = []
+        self.prjImageArray = []
+    }
+    
+    init(withProjectInformation info: SiteAssessmentProjectInformationStructure, withProjectQuestionnaire questionnaire: [QuestionaireConfigs_SectionsWrapper], withProjectImageArray array: [SiteAssessmentImageArrayStructure]) {
+        self.prjInformation = info
+        self.prjQuestionnaire = questionnaire
+        self.prjImageArray = array
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        prjInformation      = try values.decode(SiteAssessmentProjectInformationStructure.self, forKey: .prjInformation)
+        prjQuestionnaire    = try values.decode([QuestionaireConfigs_SectionsWrapper].self, forKey: .prjQuestionnaire)
+        prjImageArray       = try values.decode([SiteAssessmentImageArrayStructure].self, forKey: .prjImageArray)
+    }
+    
+    init(withZohoData data: [String: String]) {
+        self.prjInformation = SiteAssessmentProjectInformationStructure(withZohoData: data)
+        self.prjImageArray = []
+        
+        if let path = Bundle.main.url(forResource: "QuestionnaireConfigs", withExtension: "plist"),
+            let plistData = try? Data(contentsOf: path),
+            let allData = try? PropertyListDecoder().decode([QuestionaireConfigs_SectionsWrapper].self, from: plistData) {
+            self.prjQuestionnaire = allData
+            
+            allData.enumerated().forEach { (sectionNum, section) in
+                section.Questions.enumerated().forEach({ (questionIndex, question) in
+                    if let theData = data.first(where: { (key, value) -> Bool in
+                        key == question.Key
+                    }) {
+                        self.prjQuestionnaire[sectionNum].Questions[questionIndex].Value = theData.value
+                    }
+                })
+            }
+        } else {
+            self.prjQuestionnaire = []
+        }
+    }
+    
+    static func == (lhs: SiteAssessmentDataStructure, rhs: SiteAssessmentDataStructure) -> Bool {
+        return lhs.prjInformation.projectAddress == rhs.prjInformation.projectAddress && lhs.prjInformation.projectID == rhs.prjInformation.projectID
+    }
+}
+
+struct QuestionaireConfigs_QuestionsWrapper: IdentifiableType, Codable, Equatable, Hashable {
+    var identity: Int?
+    
+    var Name: String
+    var Key: String
+    var QType: NewProjectReportCellType
+    var Options: [String?]
+    var Default: String?
+    var Mandatory: String
+    var Value: String?
+    var Interdependence: String?
+    var Dependent: [String: String]?
+    
+    private enum CodingKeys: String, CodingKey {
+        case Name
+        case Key
+        case QType = "Type"
+        case Options
+        case Default
+        case Mandatory
+        case Value
+        case Interdependence
+        case Dependent
+    }
+    
+    static func == (lhs: QuestionaireConfigs_QuestionsWrapper, rhs: QuestionaireConfigs_QuestionsWrapper) -> Bool {
+        return lhs.Name == rhs.Name && lhs.Key == rhs.Key
+    }
+    
+    var hashValue: Int {
+        return self.Name.hashValue
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        Name        = try values.decode(String.self, forKey: .Name)
+        Key         = try values.decode(String.self, forKey: .Key)
+        QType       = try values.decode(NewProjectReportCellType.self, forKey: .QType)
+        Options     = try values.decode([String].self, forKey: .Options)
+        Default     = try values.decode(String.self, forKey: .Default)
+        Mandatory   = try values.decode(String.self, forKey: .Mandatory)
+        Interdependence = try values.decode(String.self, forKey: .Interdependence)
+        Dependent  = try values.decode([String: String].self, forKey: .Dependent)
+        Value       = try values.decode(String.self, forKey: .Value)
+        identity    = 0
+    }
+    
+    init(question: QuestionaireConfigs_QuestionsWrapper) {
+        self.Name        = question.Name
+        self.Key         = question.Key
+        self.QType       = question.QType
+        self.Options     = question.Options
+        self.Default     = question.Default
+        self.Mandatory   = question.Mandatory
+        self.Interdependence = question.Interdependence
+        self.Dependent  = question.Dependent
+        self.Value       = question.Value
+        self.identity    = question.identity
+    }
+    
+}
+
+struct QuestionaireConfigs_SectionsWrapper: Codable {
+    var Name: String
+    var Questions: [QuestionaireConfigs_QuestionsWrapper]
+    
+    init() {
+        self.Name = ""
+        self.Questions = []
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case Name
+        case Questions
+    }
+    
+    init(name: String, questions: [QuestionaireConfigs_QuestionsWrapper]) {
+        self.Name = name
+        self.Questions = questions
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        Name       = try values.decode(String.self, forKey: .Name)
+        Questions  = try values.decode([QuestionaireConfigs_QuestionsWrapper].self, forKey: .Questions)
+    }
+}
+
+struct QuestionnaireConfigsWrapper: Codable {
+    var QuestionaireConfigs: [QuestionaireConfigs_SectionsWrapper]
+}
+
+// https://stackoverflow.com/questions/25127700/two-dimensional-array-in-swift
+struct Matrix<T> {
+    let rows: Int, columns: Int
+    var grid: [T]
+    init(rows: Int, columns: Int,defaultValue: T) {
+        self.rows = rows
+        self.columns = columns
+        grid = Array(repeating: defaultValue, count: rows * columns) 
+    }
+    func indexIsValid(row: Int, column: Int) -> Bool {
+        return row >= 0 && row < rows && column >= 0 && column < columns
+    }
+    subscript(row: Int, column: Int) -> T {
+        get {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            return grid[(row * columns) + column]
+        }
+        set {
+            assert(indexIsValid(row: row, column: column), "Index out of range")
+            grid[(row * columns) + column] = newValue
+        }
     }
 }

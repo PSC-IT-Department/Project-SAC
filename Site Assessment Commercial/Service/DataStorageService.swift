@@ -34,6 +34,11 @@ struct CustomError: CustomErrorProtocol {
     }
 }
 
+enum SiteAssessmentError: String, LocalizedError {
+    case jsonEncodeFailed = "jsonEncodeFailed"
+    case createFolderFailed = "createFolderFailed"
+}
+
 class DataStorageService {
     public static var sharedDataStorageService: DataStorageService!
     
@@ -41,63 +46,57 @@ class DataStorageService {
         sharedDataStorageService = DataStorageService()
     }
     
-    private var answerDictionary: [String: String] = [:]
-    
-    private var prjData = SiteAssessmentDataStructure()
+    public var homeDirectory: URL!
+    public var currentProjectHomeDirectory: URL!
+    public var currentProjectID: String!
+        
+    private var prjData: SiteAssessmentDataStructure! {
+        didSet {
+            currentProjectHomeDirectory = homeDirectory.appendingPathComponent(prjData.prjInformation.projectID)
+            currentProjectID = prjData.prjInformation.projectID
+        }
+    }
 
     private init() {
+        getHomeDirectory()
     }
     
     deinit {
     }
     
-    public func initAnserDictionary() {
-        self.answerDictionary = [:]
-    }
-    
-    public func writeToAnswerDictionary(value: String, key: String) {
-        self.answerDictionary.updateValue(value, forKey: key)
-        print(self.answerDictionary)
-    }
-    
-    public func readFromAnswerDictionary() -> [String: String] {
-        return self.answerDictionary
-    }
-    
-    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {
+    private func getHomeDirectory() {
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             print("[storeData - FileManager.default.urls] failed.")
-            
-            let error = CustomError(description: "File not found.", code: -1)
-            onCompleted?(nil, error)
             return
         }
         
-        let prjFolder = documentsURL.appendingPathComponent(prjID)
-        
-        if !FileManager.default.fileExists(atPath: String(describing: prjFolder)) {
+        homeDirectory = documentsURL
+    }
+    
+    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {        
+        if !FileManager.default.fileExists(atPath: currentProjectHomeDirectory.path) {
             do {
-                try FileManager.default.createDirectory(at: prjFolder, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: currentProjectHomeDirectory, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")
+                onCompleted?(nil, SiteAssessmentError.createFolderFailed)
                 return
             }
         }
         
-        let imgAttrs = images.enumerated().map { (index, image) -> ImageAttributes in
-            var fileName = name
-            fileName.append("_\(index)")
-            let fileURL = prjFolder.appendingPathComponent(fileName).appendingPathExtension("png")
+        let imgAttrs = images.enumerated().compactMap { (index, image) -> ImageAttributes in
+            let fileName = name + "_\(index)"
+            let fileURL = currentProjectHomeDirectory.appendingPathComponent(fileName).appendingPathExtension("png")
+
             do {
                 try image.pngData()?.write(to: fileURL)
             } catch {
                 print("[storeImages - img.pngData()?.write] failed. Error=\(error)")
                 return ImageAttributes()
             }
+//            SaveToCustomAlbum.shared.save(image: image)
             
-            SaveToCustomAlbum.shared.save(image: image)
-            
-            return ImageAttributes(name: fileName, path: fileURL.path)
+            return ImageAttributes(name: fileName)
         }
     
         onCompleted?(imgAttrs, nil)
@@ -105,38 +104,21 @@ class DataStorageService {
     
     public func storeData(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> ())?) {
         
-        guard let prjId = saData.prjInformation["Project ID"] else {
-            let error = CustomError(description: "[storeData - saData.prjInformation[Project ID]] failed.", code: -1)
-            onCompleted?(false, error)
-            return
-        }
-        
-        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            let err = CustomError(description: "[storeData - FileManager.default.urls] failed.", code: -1)
-            onCompleted?(false, err)
-            return
-        }
-        
-        let fileURL = documentsURL.appendingPathComponent(prjId).appendingPathExtension("json")
-        do {
-            let jsonData = try JSONEncoder().encode(saData)
-            do {
-                let data = try NSKeyedArchiver.archivedData(withRootObject: jsonData, requiringSecureCoding: false)
-                do {
-                    try data.write(to: fileURL)
-                    onCompleted?(true, nil)
-
-                } catch {
-                    onCompleted?(false, error)
-                    return
-                }
-            } catch {
-                onCompleted?(false, error)
+        guard let jsonData = try? JSONEncoder().encode(saData),
+            let data = try? NSKeyedArchiver.archivedData(withRootObject: jsonData, requiringSecureCoding: false),
+            let prjID = saData.prjInformation.projectID
+            else {
+                onCompleted?(false, SiteAssessmentError.jsonEncodeFailed)
                 return
-            }
+        }
+        
+        let fileURL = homeDirectory.appendingPathComponent(prjID).appendingPathExtension("json")
+        
+        do {
+            try data.write(to: fileURL)
+            onCompleted?(true, nil)
         } catch {
             onCompleted?(false, error)
-            return
         }
     }
     
@@ -149,34 +131,17 @@ class DataStorageService {
     }
     
     public func retrieveProjectList() -> [SiteAssessmentDataStructure] {
-        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("[retrieveData - FileManager.default.urls] failed.")
-            return []
-        }
-        
         do {
-            return try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" }.map { (fileURL) -> SiteAssessmentDataStructure in
-                do {
-                    let data = try Data(contentsOf: fileURL)
-                    do {
-
-                        let unarchivedData = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! Data
-                        
-                        do {
-                            let decodedData = try JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
-                            return decodedData
-                        } catch {
-                            print("[retrieveData - JSONDecoder().decode] failed, error = \(error).")
-                            return SiteAssessmentDataStructure.init()
-                        }
-                    } catch {
-                        print("[retrieveData - NSKeyedUnarchiver.unarchiveTopLevelObjectWithData] failed, error = \(error).")
-                        return SiteAssessmentDataStructure.init()
-                    }
-                } catch {
-                    print("[retrieveData - Data(contentsOf: fileUrl)] failed, error = \(error).")
-                    return SiteAssessmentDataStructure.init()
+            return try FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" }.map { (fileURL) -> SiteAssessmentDataStructure in
+                guard let data = try? Data(contentsOf: fileURL),
+                    let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! Data,
+                    let decodedData = try? JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
+                    else {
+                        print("[retrieveProjectList - JSONDecoder().decode failed]")
+                        return SiteAssessmentDataStructure()
                 }
+                
+                return decodedData
             }
         } catch {
             print("[retrieveData - FileManager.default.contentsOfDirectory] failed, error = \(error).")
@@ -184,44 +149,18 @@ class DataStorageService {
         
         return []
     }
-    
-    public func retrieveQuestionnaire(){
-        if let path = Bundle.main.path(forResource: "QuestionnaireConfigs", ofType: "plist") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: path))
-                let decoder = PropertyListDecoder()
-                
-                let qlist = try decoder.decode(SADTO.self, from: data)
-                print(qlist)
-            } catch {
-                print(error)
-            }
-        }
+
+    public func storeGroupingOption(option: GroupingOptions) {
+        UserDefaults.standard.set(option.rawValue, forKey: "GroupingOption")
     }
     
-    public func loadProjectList() -> [SiteAssessmentDataStructure] {
+    public func retrieveGroupingOption() -> GroupingOptions {
         
-        let info = [
-            "Project Address"   : "12345678",
-            "Project ID"        : "12345678",
-            "Schedule Date"     : "2019-09-23",
-            "Status"            : "Pending"
-        ]
-        
-        let questionnaire: [QuestionaireConfigs_SectionsWrapper] = []
-        let array: [SiteAssessmentImageArrayStructure] = []
-        
-        let data = SiteAssessmentDataStructure(withProjectInformation: info, withProjectQuestionnaire: questionnaire, withProjectImageArray: array)
-        
-        let info2 = [
-            "Project Address"   : "37877213",
-            "Project ID"        : "37877213",
-            "Schedule Date"     : "2019-09-23",
-            "Status"            : "Pending"
-        ]
-        
-        let data2 = SiteAssessmentDataStructure(withProjectInformation: info2, withProjectQuestionnaire: questionnaire, withProjectImageArray: array)
-
-        return [data, data2]
+        if let value = UserDefaults.standard.value(forKey: "GroupingOption") as? String,
+            let option = GroupingOptions(rawValue: value) {
+            return option
+        } else {
+            return GroupingOptions.status
+        }
     }
 }

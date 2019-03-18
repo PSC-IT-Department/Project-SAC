@@ -9,26 +9,6 @@
 		<array>
 			<dict>
 				<key>Name</key>
-				<string>Project Address</string>
-				<key>Key</key>
-				<string>sac_projectAddress</string>
-				<key>Type</key>
-				<string>Single Input</string>
-				<key>Options</key>
-				<array>
-					<string>Project Address</string>
-				</array>
-				<key>Default</key>
-				<string></string>
-				<key>Mandatory</key>
-				<string>Yes</string>
-				<key>Value</key>
-				<string></string>
-				<key>Dependancy</key>
-				<string></string>
-			</dict>
-			<dict>
-				<key>Name</key>
 				<string>Copy of Structural Layout</string>
 				<key>Key</key>
 				<string>sac_copyOfStructuralLayout</string>
@@ -45,8 +25,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -66,8 +48,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -87,8 +71,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 		</array>
 	</dict>
@@ -103,7 +89,7 @@
 				<key>Key</key>
 				<string>sac_structuralType</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selection With Image</string>
 				<key>Options</key>
 				<array>
 					<string>Flat Roof</string>
@@ -115,8 +101,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
-				<string></string>
+				<key>Interdependence</key>
+				<string>Yes</string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -135,8 +123,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -155,8 +145,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Flat Roof</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -175,8 +170,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Flat Roof</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -195,8 +195,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Flat Roof</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -215,8 +220,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Flat Roof</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -227,7 +237,7 @@
 				<string>Single Input</string>
 				<key>Options</key>
 				<array>
-					<string>Height of web steel Joist-E (ft)</string>
+					<string>ft</string>
 				</array>
 				<key>Default</key>
 				<string></string>
@@ -235,8 +245,163 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Flat Roof</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Eave Height</string>
+				<key>Key</key>
+				<string>sac_eaveHeight</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Ridge Height</string>
+				<key>Key</key>
+				<string>sac_ridgeHeight</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Main Beam Spacing</string>
+				<key>Key</key>
+				<string>sac_mainBeamSpacing</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Main Beam Span</string>
+				<key>Key</key>
+				<string>sac_mainBeamSpan</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Second Beam Spacing</string>
+				<key>Key</key>
+				<string>sac_secondBeamSpacing</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Second Beam Size</string>
+				<key>Key</key>
+				<string>sac_secondBeamSize</string>
+				<key>Type</key>
+				<string>Single Input</string>
+				<key>Options</key>
+				<array>
+					<string>ft</string>
+				</array>
+				<key>Default</key>
+				<string></string>
+				<key>Mandatory</key>
+				<string>Yes</string>
+				<key>Value</key>
+				<string></string>
+				<key>Interdependence</key>
+				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_structuralType</key>
+					<string>Ridge Frame</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -244,7 +409,7 @@
 				<key>Key</key>
 				<string>sac_endThreeWebMemberType</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selection With Image</string>
 				<key>Options</key>
 				<array>
 					<string>H Section</string>
@@ -258,8 +423,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -276,8 +443,10 @@
 				<string>No</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -298,8 +467,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -307,7 +478,7 @@
 				<key>Key</key>
 				<string>sac_sizeOfBottomChord</string>
 				<key>Type</key>
-				<string>Three Inputs</string>
+				<string>Inputs with Image</string>
 				<key>Options</key>
 				<array>
 					<string>H (ft)</string>
@@ -320,8 +491,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -341,8 +514,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -362,8 +537,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -383,8 +560,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -404,8 +583,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 		</array>
 	</dict>
@@ -433,8 +614,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -454,8 +637,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -474,8 +659,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
-				<string></string>
+				<key>Interdependence</key>
+				<string>Yes</string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -495,8 +682,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfService</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -516,8 +708,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfService</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -537,8 +734,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfService</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -558,8 +760,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfService</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -579,8 +786,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfService</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -588,7 +800,7 @@
 				<key>Key</key>
 				<string>sac_transformerDetail</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Notes</string>
 				<key>Options</key>
 				<array>
 					<string>Transformer Detail</string>
@@ -599,8 +811,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -620,8 +834,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -632,7 +848,7 @@
 				<string>Single Input</string>
 				<key>Options</key>
 				<array>
-					<string>No. of Electrical Meters</string>
+					<string>1 - 5</string>
 				</array>
 				<key>Default</key>
 				<string></string>
@@ -640,12 +856,14 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
-				<string></string>
+				<key>Interdependence</key>
+				<string>Yes</string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
-				<string>Electrical Meter(V x A x PHASE)</string>
+				<string>Electrical Meter Reading(V x A x PHASE)</string>
 				<key>Key</key>
 				<string>sac_electricalMeter</string>
 				<key>Type</key>
@@ -662,8 +880,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfElectricalMeters</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -683,8 +906,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfElectricalMeters</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -704,8 +932,13 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict>
+					<key>sac_numberOfElectricalMeters</key>
+					<string>Value</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -725,8 +958,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -746,8 +981,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -767,8 +1004,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -788,8 +1027,10 @@
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
-				<key>Dependancy</key>
+				<key>Interdependence</key>
 				<string></string>
+				<key>Dependent</key>
+				<dict/>
 			</dict>
 		</array>
 	</dict>

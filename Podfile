@@ -18,6 +18,9 @@ target 'Site Assessment Commercial' do
   pod 'Firebase/Auth'
   pod 'SwifterSwift/UIKit'
   pod 'NotificationBannerSwift'
+  pod 'SkeletonView'
   pod 'RxSkeleton'
+  pod 'MYTableViewIndex'
+  pod 'PopupDialog', '~> 0.9'
 end
 

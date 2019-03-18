@@ -12,7 +12,7 @@ import RxSwift
 
 class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var images: [UIImage] = []
+    var images: [UIImage]? = []
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -22,7 +22,10 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count + 1
+                
+        let imagesCount = images?.count ?? 1
+        
+        return imagesCount == 1 ? 1 : imagesCount + 1
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -32,11 +35,14 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageGalleryCell", for: indexPath) as! ImageGalleryCell
         
-        if images.count == 1 || indexPath.row == images.count {
+        if indexPath.row == images?.count {
+            cell.imageView.image = UIImage(named: "Add_Pictures")
         } else {
-            let image = images[indexPath.row]
-            
-            cell.buttonView.setImage(image, for: .normal)
+            if let image = images?[indexPath.row] {
+                cell.imageView.image = image
+            } else {
+                cell.imageView.image = UIImage()
+            }
         }
         
         return cell

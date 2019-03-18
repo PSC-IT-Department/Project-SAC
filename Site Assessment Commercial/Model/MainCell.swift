@@ -10,40 +10,39 @@ import UIKit
 
 class MainCell: UITableViewCell {
 
-    @IBOutlet weak var buttonStatus: UIButton!
     @IBOutlet weak var labelProjectAddress: UILabel!
     
     private var activityIndicator = UIActivityIndicatorView(style: .gray)
 
-    
     func configureWithData(data: MainViewModel) {
-        buttonStatus.setTitle(data.status, for: .normal)
         labelProjectAddress.text = data.projectAddress
         
-        if data.status == "Pending" {
+        if data.status == .pending {
             accessoryView = nil
             accessoryType = .disclosureIndicator
-        } else if data.status == "Uploading" {
-            accessoryType = .none
+        } else if data.status == .uploading {
             accessoryView = activityIndicator
             startAnimation()
         } else {
-            stopAnimation(withStatus: "Completed")
+            stopAnimation(withStatus: .completed)
             accessoryView = nil
             accessoryType = .checkmark
         }
     }
     
+    func configureCell(text: String) {
+        labelProjectAddress.text = text
+    }
+    
     func startAnimation() {
-        accessoryType = .none
         accessoryView = activityIndicator
         activityIndicator.startAnimating()
     }
     
-    func stopAnimation(withStatus status: String) {
+    func stopAnimation(withStatus status: UploadStatus) {
         activityIndicator.stopAnimating()
 
-        if(status == "Completed") {
+        if(status == .completed) {
             accessoryView = nil
             accessoryType = .checkmark
         } else {
