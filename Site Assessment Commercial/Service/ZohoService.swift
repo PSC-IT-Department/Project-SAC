@@ -22,14 +22,18 @@ class ZohoService {
     // Site Assessment Commercial
     private let sacFormName          = "Site_Assessment_Commercial"
     private let sacReportName        = "Site_Assessment_Commercial_Report"
-    private let sacStatus            = "sac_status"
-    private let sacStatusUploading   = "Uploading"
-    private let sacProjectID         = "sac_projectID"
-    private let sacAssignedTeam      = "sac_assignedTeam"
+    
+    private let saFormName           = "Site_Assessment"
+    private let saReportName         = "Site_Assessment_Report"
+    
+    private let saStatus             = "sa_status"
+    private let saProjectID          = "sa_projectID"
+    private let saAssignedTeam       = "sa_assignedTeam"
     
     // Measurment Team Mapping
     private let mtmFormName          = "Measurement_Team_Mapping"
     private let mtmReportName        = "Measurement_Team_Mapping_Report"
+    
     private var mtmGoogleAccount     = "mtm_ggAccount"
     private let mtmGoogleEmail       = "mtm_ggEmail"
     private let mtmZohoAccount       = "mtm_zohoAccount"
@@ -99,27 +103,42 @@ class ZohoService {
         
     }
 
-    public func getProjectList(onCompleted: (([[String: String]]?) -> ())?) {
-        let downloadBaseURL = "\(baseURL)/api/\(format)/\(appName)/view/\(sacReportName)"
-
+    public func getProjectList(type: SiteAssessmentType, onCompleted: (([[String: String]]?) -> ())?) {
         self.lookupZohoUser { zohoAccount in
             guard let assignedTeam = zohoAccount else {
                 onCompleted?(nil)
                 return
             }
             
+            var downloadBaseURL = "\(self.baseURL)/api/\(self.format)/\(self.appName)/view/"
+            let criteriaValue2 = "sa_assignedToShorten==\(assignedTeam)&&sa_completed==false"
+            
+            let criteriaValue = "\(self.saAssignedTeam)==\(assignedTeam)&&\(self.saStatus)==Pending"
+
+            var criteria = ""
+            switch type {
+            case .SiteAssessmentCommercial:
+                downloadBaseURL.append(contentsOf: self.sacReportName)
+                criteria = criteriaValue
+            case .SiteAssessmentResidential:
+                downloadBaseURL.append(contentsOf: self.saReportName)
+                criteria = criteriaValue2
+            default:
+                print("default")
+                return
+            }
+                        
             guard var components = URLComponents(string: downloadBaseURL) else {
                 onCompleted?(nil)
                 return
             }
-            
-            let criteriaValue = "\(self.sacAssignedTeam)==\(assignedTeam)&&\(self.sacStatus)==Pending"
+
             let queryItems = [
                 URLQueryItem(name: "authtoken"   , value: self.authtokenValue),
                 URLQueryItem(name: "zc_ownername", value: self.zc_ownernameValue),
                 URLQueryItem(name: "scope"       , value: self.scopeValue),
                 URLQueryItem(name: "raw"         , value: self.rawValue),
-                URLQueryItem(name: "criteria"    , value: criteriaValue),
+                URLQueryItem(name: "criteria"    , value: criteria),
                 ]
             
             components.queryItems = queryItems
@@ -141,14 +160,17 @@ class ZohoService {
                     print("Error = \(err)")
                 }
                 
+                let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
+                
                 guard let responseData = data,
                     let jsonResponse = try? JSONSerialization.jsonObject(with:
                         responseData, options: []) as? [String: [[String: String]]],
-                    let zohoData = jsonResponse?[self.sacFormName]
+                    let zohoData = jsonResponse?[formName]
                     else {
                             onCompleted?(nil)
                             return
                 }
+                
                 onCompleted?(zohoData)
                 return
             }
@@ -166,7 +188,7 @@ class ZohoService {
             return
         }
         
-        let criteriaValue = "\(sacProjectID)=\(projectID)"
+        let criteriaValue = "\(saProjectID)=\(projectID)"
         let queryItems = [
             URLQueryItem(name: "authtoken"   ,value: authtokenValue),
             URLQueryItem(name: "scope"       ,value: scopeValue),
@@ -217,8 +239,8 @@ class ZohoService {
         
         if let prjID = saData.prjInformation.projectID {
         
-            sendData.updateValue(prjID, forKey: sacProjectID)
-            sendData.updateValue(UploadStatus.completed.rawValue, forKey: sacStatus)
+            sendData.updateValue(prjID, forKey: saProjectID)
+            sendData.updateValue(UploadStatus.completed.rawValue, forKey: saStatus)
             
             saData.prjQuestionnaire.forEach { (section) in
                 section.Questions.forEach{ (question) in
@@ -235,7 +257,7 @@ class ZohoService {
     }
     
     public func setRemoteToUploading(projectID: String, onCompleted: @escaping (Bool) -> ()) {
-        uploadData(projectID: projectID, saData: [sacStatus: sacStatusUploading]) { (success) in
+        uploadData(projectID: projectID, saData: [saStatus: UploadStatus.uploading.rawValue]) { (success) in
             onCompleted(success)
         }
     }

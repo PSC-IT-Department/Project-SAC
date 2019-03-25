@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SelectionWithOtherCell" id="yWd-xW-JGW" customClass="SelectionWithOtherCell" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="140"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                <rect key="frame" x="0.0" y="0.0" width="768" height="140"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W4S-q0-Xyd">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="140"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LtB-xM-rAx">
+                                <rect key="frame" x="8" y="8" width="760" height="19"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="top" spacing="150" translatesAutoresizingMaskIntoConstraints="NO" id="hrl-zy-mvg">
+                                <rect key="frame" x="8" y="35" width="752" height="97"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Wg0-q5-Gw0">
+                                        <rect key="frame" x="0.0" y="0.0" width="301" height="70"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XFa-UD-DYT" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 1. ABCDEFG" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="SGW-VU-USu"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Iw6-po-kf6" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="24" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 3. CDEFGHI" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="S7o-9v-10y"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pYb-CN-axi" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="48" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 5. EFGHIJK" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="eF1-oz-D0T"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="gxk-pR-hdQ">
+                                        <rect key="frame" x="451" y="0.0" width="301" height="70"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FZo-lY-x9g" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 2. BCDEFGH" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="FgO-FZ-iSc"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S6C-iv-GaZ" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="24" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 4. DEFGHIJ" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="ZHz-Jz-5I1"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jc7-L3-QJp" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="48" width="301" height="22"/>
+                                                <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" title=" 6. Other" image="CheckBox_Unchecked">
+                                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="buttonTapped:" destination="yWd-xW-JGW" eventType="touchUpInside" id="D2c-BG-OjP"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="hrl-zy-mvg" firstAttribute="leading" secondItem="W4S-q0-Xyd" secondAttribute="leading" constant="8" id="0uR-7n-jRA"/>
+                            <constraint firstItem="LtB-xM-rAx" firstAttribute="leading" secondItem="W4S-q0-Xyd" secondAttribute="leading" constant="8" id="SZk-BB-iUa"/>
+                            <constraint firstAttribute="trailing" secondItem="hrl-zy-mvg" secondAttribute="trailing" constant="8" id="iqb-3k-WZF"/>
+                            <constraint firstItem="hrl-zy-mvg" firstAttribute="top" secondItem="LtB-xM-rAx" secondAttribute="bottom" constant="8" id="j8p-q4-WC5"/>
+                            <constraint firstItem="LtB-xM-rAx" firstAttribute="top" secondItem="W4S-q0-Xyd" secondAttribute="top" constant="8" id="sf2-Na-EwB"/>
+                            <constraint firstAttribute="bottom" secondItem="hrl-zy-mvg" secondAttribute="bottom" constant="8" id="xZ1-Fr-NVP"/>
+                            <constraint firstAttribute="trailing" secondItem="LtB-xM-rAx" secondAttribute="trailing" id="ztL-xb-CU2"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="W4S-q0-Xyd" secondAttribute="bottom" id="IFC-P8-Dng"/>
+                <constraint firstAttribute="trailing" secondItem="W4S-q0-Xyd" secondAttribute="trailing" id="e10-hi-KpM"/>
+                <constraint firstItem="W4S-q0-Xyd" firstAttribute="top" secondItem="yWd-xW-JGW" secondAttribute="top" id="gNy-mh-geV"/>
+                <constraint firstItem="W4S-q0-Xyd" firstAttribute="leading" secondItem="yWd-xW-JGW" secondAttribute="leading" id="o7s-pf-vNU"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Q9k-bH-5hl"/>
+            <size key="customSize" width="392" height="21"/>
+            <connections>
+                <outlet property="labelKey" destination="LtB-xM-rAx" id="Qqw-Qo-dlf"/>
+                <outletCollection property="optionGroup" destination="XFa-UD-DYT" collectionClass="NSMutableArray" id="AbH-F9-hLa"/>
+                <outletCollection property="optionGroup" destination="FZo-lY-x9g" collectionClass="NSMutableArray" id="D7c-SG-EeK"/>
+                <outletCollection property="optionGroup" destination="Iw6-po-kf6" collectionClass="NSMutableArray" id="HDu-oZ-3w2"/>
+                <outletCollection property="optionGroup" destination="S6C-iv-GaZ" collectionClass="NSMutableArray" id="MVy-g1-yWj"/>
+                <outletCollection property="optionGroup" destination="pYb-CN-axi" collectionClass="NSMutableArray" id="vBd-hV-apG"/>
+                <outletCollection property="optionGroup" destination="Jc7-L3-QJp" collectionClass="NSMutableArray" id="8gy-bb-AMY"/>
+            </connections>
+            <point key="canvasLocation" x="-107.2" y="287.85607196401799"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="CheckBox_Unchecked" width="14" height="14"/>
+    </resources>
+</document>

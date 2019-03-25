@@ -21,16 +21,31 @@ extension PopupDialog {
             DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
         }
         
-        /*
-        let assignedTeamButton = DefaultButton(title: GroupingOptions.assignedTeam.rawValue) {
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .assignedTeam)
-        }
-         */
-        
         let cancelAction = CancelButton(title: "Cancel", action: nil)
-        
         popup.addButtons([statusButton, scheduleDateButton, cancelAction])
         
         return popup
+    }
+    
+    static func showMapTypeDialog() -> PopupDialog {
+        let popup = PopupDialog(title: "Map Type", message: nil, transitionStyle: .zoomIn)
+        
+        let standardButton = DefaultButton(title: "Standard") {
+            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .standard)
+        }
+
+        let satelliteButton = DefaultButton(title: "Satellite") {
+            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .satellite)
+        }
+        
+        let hybridButton = DefaultButton(title: "Hybrid") {
+            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .hybrid)
+        }
+                
+        let cancelAction = CancelButton(title: "Cancel", action: nil)
+        popup.addButtons([standardButton, satelliteButton, hybridButton, cancelAction])
+        
+        return popup
+        
     }
 }

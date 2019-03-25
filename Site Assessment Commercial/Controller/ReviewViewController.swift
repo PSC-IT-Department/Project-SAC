@@ -122,13 +122,16 @@ extension ReviewViewController {
     private func setupView() {
         self.title = "Review"
         self.setBackground()
+
+        // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
     }
 
     private func setupViewModel() {
         var viewModel = prjData.prjInformation.toDictionary().map { (key, value) -> ReviewViewModel in
             return ReviewViewModel(key: key, value: value)
         }
-        
+
         prjData.prjQuestionnaire.forEach { (section) in
             let questions = section.Questions.map { (question) -> ReviewViewModel in
                 return ReviewViewModel(key: question.Name, value: question.Value)

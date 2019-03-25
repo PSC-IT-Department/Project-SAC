@@ -106,13 +106,14 @@ class DataStorageService {
         
         guard let jsonData = try? JSONEncoder().encode(saData),
             let data = try? NSKeyedArchiver.archivedData(withRootObject: jsonData, requiringSecureCoding: false),
-            let prjID = saData.prjInformation.projectID
+            let prjID = saData.prjInformation.projectID,
+            let t = saData.prjInformation.type.rawValue.first // C or R
             else {
                 onCompleted?(false, SiteAssessmentError.jsonEncodeFailed)
                 return
         }
-        
-        let fileURL = homeDirectory.appendingPathComponent(prjID).appendingPathExtension("json")
+        let filename = String(t) + prjID
+        let fileURL = homeDirectory.appendingPathComponent(filename).appendingPathExtension("json")
         
         do {
             try data.write(to: fileURL)
@@ -130,24 +131,24 @@ class DataStorageService {
         self.prjData = data
     }
     
-    public func retrieveProjectList() -> [SiteAssessmentDataStructure] {
-        do {
-            return try FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" }.map { (fileURL) -> SiteAssessmentDataStructure in
+    public func retrieveProjectList(type: String) -> [SiteAssessmentDataStructure]? {        
+        if let t = type.first, let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" && ($0.lastPathComponent.contains(t))} {
+            let prjList = contents.compactMap { (fileURL) -> SiteAssessmentDataStructure? in
                 guard let data = try? Data(contentsOf: fileURL),
                     let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! Data,
                     let decodedData = try? JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
                     else {
                         print("[retrieveProjectList - JSONDecoder().decode failed]")
-                        return SiteAssessmentDataStructure()
+                        return nil
                 }
                 
                 return decodedData
             }
-        } catch {
-            print("[retrieveData - FileManager.default.contentsOfDirectory] failed, error = \(error).")
+            
+            return prjList
         }
         
-        return []
+        return nil
     }
 
     public func storeGroupingOption(option: GroupingOptions) {
@@ -160,7 +161,40 @@ class DataStorageService {
             let option = GroupingOptions(rawValue: value) {
             return option
         } else {
-            return GroupingOptions.status
+            let option = GroupingOptions.status
+            storeGroupingOption(option: option)
+            return option
         }
     }
+    
+    public func storeDefaultType(option: SiteAssessmentType) {
+        UserDefaults.standard.set(option.rawValue, forKey: "SiteAssessmentType")
+    }
+    
+    public func retrieveTypeOption() -> SiteAssessmentType {
+        if let value = UserDefaults.standard.value(forKey: "SiteAssessmentType") as? String,
+            let option = SiteAssessmentType(rawValue: value) {
+            return option
+        } else {
+            let option = SiteAssessmentType.SiteAssessmentResidential
+            storeDefaultType(option: option)
+            return option
+        }
+    }
+    
+    public func storeMapTypeOption(option: MapTypeOptions) {
+        UserDefaults.standard.set(option.rawValue, forKey: "MapTypeOptions")
+    }
+    
+    public func retrieveMapTypeOption() -> MapTypeOptions {
+        if let value = UserDefaults.standard.value(forKey: "MapTypeOptions") as? UInt,
+            let option = MapTypeOptions(rawValue: value) {
+            return option
+        } else {
+            let option = MapTypeOptions.standard
+            storeMapTypeOption(option: option)
+            return option
+        }
+    }
+
 }

@@ -28,6 +28,7 @@ fileprivate extension Selector {
 
 class MainViewController: UIViewController {
     
+    @IBOutlet weak var buttonTitle: UIButton!
     @IBOutlet weak var labelCurrentUser: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonFilter: UIBarButtonItem!
@@ -36,7 +37,7 @@ class MainViewController: UIViewController {
 
     private let disposeBag = DisposeBag()
 
-    private var prjList: [SiteAssessmentDataStructure] = []
+    private var prjList: [SiteAssessmentDataStructure]!
 
     private var sections = BehaviorRelay(value: [MainSection]())
     
@@ -45,7 +46,6 @@ class MainViewController: UIViewController {
         
         loadData()
         setupView()
-        setupViewModel()
         setupDataSource()
         setupGoogleSignIn()
         setupCurrentUser()
@@ -75,8 +75,33 @@ class MainViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    @IBAction func buttonTitleDidClicked(_ sender: Any) {
+        let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
+        
+        let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
+            print("residential ")
+            DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
+            self.buttonTitle.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
+            
+            self.reloadPrjList()
+        }
+        
+        let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
+            print("commercial ")
+            DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
+            
+            self.buttonTitle.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
+
+            self.reloadPrjList()
+        }
+        
+        popup.addButtons([resButton, comButton])
+        
+        self.present(popup, animated: true, completion: nil)
+    }
+    
     @IBAction func barButtonFilterDidClicked(_ sender: Any) {
-        let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .zoomIn)
+        let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
         
         let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
             DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
@@ -102,21 +127,35 @@ class MainViewController: UIViewController {
 extension MainViewController {
     
     private func loadData() {
-        prjList = DataStorageService.sharedDataStorageService.retrieveProjectList()
+        
+        if let typeValue = buttonTitle.title(for: .normal), let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: typeValue) {
+            self.prjList = prjList
+        }
     }
     
     func combineProjectList(zohoPrjList: [[String: String]]) {
         
-        let prjList = zohoPrjList.filter{prj in prj["sac_status"] == UploadStatus.pending.rawValue && !self.prjList.contains(where: {$0.prjInformation.projectID == prj["sac_projectID"]})}.compactMap {SiteAssessmentDataStructure(withZohoData: $0)}
+        let newPrjList = zohoPrjList.filter{prj in prj["sa_status"] == UploadStatus.pending.rawValue && !self.prjList.contains(where: {$0.prjInformation.projectID == prj["sa_projectID"]})}.compactMap { SiteAssessmentDataStructure(withZohoData: $0) }
         
-        self.prjList.append(contentsOf: prjList)
+        self.prjList.append(contentsOf: newPrjList)
         
         self.prjList.forEach{DataStorageService.sharedDataStorageService.storeData(withData: $0, onCompleted: nil)}
         
     }
     
+    func reloadPrjList() {
+        self.prjList = nil
+        
+        self.loadData()
+        self.refreshDataManually()
+    }
+    
     private func setupView() {
-        self.title = "Project List"
+        
+        let title = DataStorageService.sharedDataStorageService.retrieveTypeOption()
+        self.navigationItem.titleView = buttonTitle
+        buttonTitle.setTitle(title.rawValue, for: .normal)
+        
         self.tableView.backgroundColor = UIColor.clear
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground(false)
@@ -161,45 +200,40 @@ extension MainViewController {
     }
     
     private func refreshDataManually() {
-        
-        self.refreshControl.beginRefreshing()
-        self.fetchZohoData { (success) in
-            if success {
-                print("refreshDataManually success.")
-            } else {
-                print("refreshDataManually failed.")
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                self.refreshControl.endRefreshing()
-            }
-        }
+        perform(.refreshData, with: nil, afterDelay: 1)
     }
     
     @objc func refreshData(_ sender: Any) {
         self.refreshControl.beginRefreshing()
-        
-        self.loadData()
-        self.fetchZohoData(onCompleted: nil)
+        self.fetchZohoData { success in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.refreshControl.endRefreshing()
+            }
+            if success {
+                self.setupViewModel()
+            } else {
+                print("fetchZohoData failed.")
+            }
+        }
     }
     
     private func fetchZohoData(onCompleted: ((Bool) -> ())?) {
-        ZohoService.sharedZohoService.getProjectList { (projectListFromZoho) in
+        guard let title = self.buttonTitle.title(for: .normal),
+            let type = SiteAssessmentType(rawValue: title)
+            else {
+                onCompleted?(false)
+                return
+        }
+        
+        ZohoService.sharedZohoService.getProjectList(type: type) { (projectListFromZoho) in
             guard let zohoPrjList = projectListFromZoho else {
                 print("fetchZohoData failed.")
-                DispatchQueue.main.async {
-                    self.refreshControl.endRefreshing()
-                    onCompleted?(true)
-                }
+                onCompleted?(false)
                 return
             }
             
             self.combineProjectList(zohoPrjList: zohoPrjList)
-            self.setupViewModel()
-            DispatchQueue.main.async {
-                self.refreshControl.endRefreshing()
-                onCompleted?(true)
-            }
+            onCompleted?(true)
         }
     }
     
@@ -237,7 +271,7 @@ extension MainViewController {
     private func setupViewModel() {
 
         let option = DataStorageService.sharedDataStorageService.retrieveGroupingOption()
-
+    
         switch option {
         case .status, .none:
             let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue})
@@ -264,18 +298,11 @@ extension MainViewController {
             self.sections.accept(sections)
 
         case .scheduleDate:
-            let dictionary = Dictionary(grouping: prjList,
-                                        by: { prj -> String in
-                                            let formatter = DateFormatter()
-                                            formatter.dateFormat = "yyyy-MM-dd"
-                                            var strDate = ""
-                                            if let date = prj.prjInformation.scheduleDate { strDate = formatter.string(from: date) }
-                                            
-                                            return strDate })
+            let dictionary = Dictionary(grouping: prjList, by: { $0.prjInformation.scheduleDate})
             
             let sections = dictionary.map { (key, value) -> MainSection in
                 
-                let model = key
+                let model = key ?? ""
                 let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
 
                 return MainSection(model: model, items: items)
@@ -335,6 +362,11 @@ extension MainViewController: NotificationBannerDelegate {
         if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
 
             prjList[index].prjInformation.status = .completed
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd-MMM-yyyy"
+            let dateString = formatter.string(from: Date())
+            prjList[index].prjInformation.uploadedDate = dateString
             
             DataStorageService.sharedDataStorageService.storeData(withData: prjList[index], onCompleted: nil)
             setupViewModel()

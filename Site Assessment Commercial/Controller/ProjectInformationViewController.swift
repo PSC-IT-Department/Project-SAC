@@ -11,11 +11,7 @@ import RxSwift
 import RxCocoa
 
 import MapKit
-
-// https://www.thorntech.com/2016/01/how-to-search-for-location-using-apples-mapkit/
-protocol HandleMapSearch {
-    func dropPinZoomIn(placemark:MKPlacemark)
-}
+import Contacts
 
 class ProjectInformationViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
@@ -27,8 +23,7 @@ class ProjectInformationViewController: UIViewController {
 
     private let locationManager = CLLocationManager()
     private var currentCoordinate: CLLocationCoordinate2D?
-    fileprivate var selectedPin: MKPlacemark? = nil
-    fileprivate var handleMapSearchDelegate: HandleMapSearch? = nil
+    private var projectLocation: CLLocation!
 
     let disposeBag = DisposeBag()
     
@@ -37,11 +32,12 @@ class ProjectInformationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-//        configureLocationServices()
+        configureLocationServices()
 
         setupView()
         setupViewModel()
         setupCell()
+        setupCellTapHandling()
         setupStartButton()
     }
 
@@ -76,14 +72,20 @@ extension ProjectInformationViewController {
 
     private func setupView() {
         self.title = titleString
+        // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground()
     }
     
     private func setupViewModel() {
-        let viewModel = prjData.prjInformation.toDictionary().compactMap { (key, value) -> ProjectInformationViewModel in
-            return ProjectInformationViewModel(key: key, value: value)
-        }
+        let viewModel = [
+            ProjectInformationViewModel(key: "Project Address", value: prjData.prjInformation.projectAddress),
+            ProjectInformationViewModel(key: "Status",          value: prjData.prjInformation.status.rawValue),
+            ProjectInformationViewModel(key: "Type",            value: prjData.prjInformation.type.rawValue),
+            ProjectInformationViewModel(key: "Schedule Date",   value: prjData.prjInformation.scheduleDate),
+            ProjectInformationViewModel(key: "Assigned Date",   value: prjData.prjInformation.assignedDate)
+        ]
         
         observableViewModel = Observable.of(viewModel)
     }
@@ -96,6 +98,17 @@ extension ProjectInformationViewController {
                 cell.setupCell(viewModel: data)
                 return cell
             }
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupCellTapHandling() {
+        tableView
+            .rx
+            .itemSelected
+            .subscribe(onNext: { _ in
+                guard let indexPath = self.tableView.indexPathForSelectedRow else { return }
+                self.tableView.deselectRow(at: indexPath, animated: true)
+            })
             .disposed(by: disposeBag)
     }
     
@@ -113,7 +126,10 @@ extension ProjectInformationViewController {
 extension ProjectInformationViewController: CLLocationManagerDelegate {
     private func configureLocationServices() {
         locationManager.delegate = self
-        handleMapSearchDelegate = self
+        mapView.delegate = self
+        
+        let option = DataStorageService.sharedDataStorageService.retrieveMapTypeOption()
+        mapView.mapType = MKMapType(rawValue: option.rawValue)!
 
         let status = CLLocationManager.authorizationStatus()
         
@@ -129,71 +145,37 @@ extension ProjectInformationViewController: CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
         
-        /*
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = prjData.prjInformation.projectAddress
-        request.region = mapView.region
+        let geoCoder = CLGeocoder()
+        geoCoder.geocodeAddressString(prjData.prjInformation.projectAddress) { (placemarks, error) in
+            guard let placemarks = placemarks,
+                let location = placemarks.first?.location
+                else { return }
+            
+            self.setupLocation(with: location)
+        }
+    }
+    
+    private func setupLocation(with location: CLLocation) {
         
-        let search = MKLocalSearch(request: request)
-        search.start { response, _ in
-            guard let response = response else {
-                return
-            }
-            if let matchingItem = response.mapItems.first {
-                let selectedItem = matchingItem.placemark
-
-                self.zoomToLatestLocation(with: selectedItem.coordinate)
-                self.handleMapSearchDelegate?.dropPinZoomIn(placemark: selectedItem)
-            }
-        }
-         */
-
-    }
-    
-    func parseAddress(selectedItem: MKPlacemark) -> String {
-        // put a space between "4" and "Melrose Place"
-        let firstSpace = (selectedItem.subThoroughfare != nil && selectedItem.thoroughfare != nil) ? " " : ""
-        // put a comma between street and city/state
-        let comma = (selectedItem.subThoroughfare != nil || selectedItem.thoroughfare != nil) && (selectedItem.subAdministrativeArea != nil || selectedItem.administrativeArea != nil) ? ", " : ""
-        // put a space between "Washington" and "DC"
-        let secondSpace = (selectedItem.subAdministrativeArea != nil && selectedItem.administrativeArea != nil) ? " " : ""
-        let addressLine = String(
-            format:"%@%@%@%@%@%@%@",
-            // street number
-            selectedItem.subThoroughfare ?? "",
-            firstSpace,
-            // street name
-            selectedItem.thoroughfare ?? "",
-            comma,
-            // city
-            selectedItem.locality ?? "",
-            secondSpace,
-            // state
-            selectedItem.administrativeArea ?? ""
-        )
-        return addressLine
-    }
-    
-    @objc func getDirections(){
-        if let selectedPin = selectedPin {
-            let mapItem = MKMapItem(placemark: selectedPin)
-            let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
-            mapItem.openInMaps(launchOptions: launchOptions)
-        }
-    }
-    
-    private func zoomToLatestLocation(with coordinate: CLLocationCoordinate2D) {
-        let zoomRegion = MKCoordinateRegion(center: coordinate, latitudinalMeters: 10000, longitudinalMeters: 10000)
-        mapView.setRegion(zoomRegion, animated: true)
+        self.projectLocation = location
+        
+        let annotation = MKPointAnnotation()
+        
+        annotation.coordinate = location.coordinate
+        annotation.title = prjData.prjInformation.projectAddress
+        
+        mapView.removeAnnotations(mapView.annotations)
+        mapView.addAnnotation(annotation)
+        
+        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        let region = MKCoordinateRegion(center: location.coordinate, span: span)
+        
+        mapView.setRegion(region, animated: true)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let latestLocation = locations.first else { return }
-        
-        if currentCoordinate == nil {
-            zoomToLatestLocation(with: latestLocation.coordinate)
-        }
-        
+    
         currentCoordinate = latestLocation.coordinate
     }
     
@@ -204,48 +186,36 @@ extension ProjectInformationViewController: CLLocationManagerDelegate {
     }
 }
 
-extension ProjectInformationViewController: HandleMapSearch {
-    func dropPinZoomIn(placemark: MKPlacemark) {
-        // cache the pin
-        selectedPin = placemark
-        // clear existing pins
-        mapView.removeAnnotations(mapView.annotations)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = placemark.coordinate
-        annotation.title = placemark.name
-        if let city = placemark.locality,
-            let state = placemark.administrativeArea {
-            annotation.subtitle = "\(city) \(state)"
-        }
-        mapView.addAnnotation(annotation)
-        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        let region = MKCoordinateRegion(center: placemark.coordinate, span: span)
-        mapView.setRegion(region, animated: true)
-    }
-}
+extension ProjectInformationViewController: MKMapViewDelegate {
 
-fileprivate extension Selector {
-    static let getDirections = #selector(ProjectInformationViewController.getDirections)
-}
-
-extension ProjectInformationViewController : MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        if annotation is MKUserLocation {
-            //return nil so map view draws "blue dot" for standard user location
-            return nil
-        }
-        
-        let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-        pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-        pinView?.pinTintColor = UIColor.orange
-        pinView?.canShowCallout = true
-        let smallSquare = CGSize(width: 30, height: 30)
-        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: smallSquare))
-        button.setBackgroundImage(UIImage(named: "Navigation"), for: .normal)
-        button.addTarget(self, action: .getDirections, for: .touchUpInside)
-        pinView?.leftCalloutAccessoryView = button
-        return pinView
-    }
-}
 
+        let identifier = "marker"
+        var view: MKMarkerAnnotationView
+
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            as? MKMarkerAnnotationView {
+            dequeuedView.annotation = annotation
+            view = dequeuedView
+        } else {
+            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            view.canShowCallout = true
+            view.calloutOffset = CGPoint(x: -5, y: 5)
+            view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        }
+        return view
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView,
+                 calloutAccessoryControlTapped control: UIControl) {
+        
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+        
+        let addressDict = [CNPostalAddressStreetKey: prjData.prjInformation.projectAddress!]
+        let placeMark = MKPlacemark(coordinate: projectLocation.coordinate, addressDictionary: addressDict)
+        let mapItem = MKMapItem(placemark: placeMark)
+        
+        mapItem.openInMaps(launchOptions: launchOptions)
+    }
+
+}
