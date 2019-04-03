@@ -19,7 +19,7 @@ class GoogleAccessViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = titleString
+        self.title = "Google"
         
         if let email = GoogleService.sharedGoogleService.retrieveGoogleUserEmail() {
             setupForSignOut()
@@ -28,9 +28,8 @@ class GoogleAccessViewController: UIViewController {
         }
     }
     
-    static func instantiateFromStoryBoard(withTitle title: String) -> GoogleAccessViewController {
+    static func instantiateFromStoryBoard() -> GoogleAccessViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ThirdPartyAccessViewController") as! GoogleAccessViewController
-        viewController.titleString = title
         return viewController
     }
     

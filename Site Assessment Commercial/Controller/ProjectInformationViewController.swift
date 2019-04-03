@@ -33,12 +33,14 @@ class ProjectInformationViewController: UIViewController {
         super.viewDidLoad()
     
         configureLocationServices()
-
+        
         setupView()
         setupViewModel()
         setupCell()
         setupCellTapHandling()
         setupStartButton()
+        setupStartButtonTapHandling()
+        
     }
 
     static func instantiateFromStoryBoard(withProjectData data: SiteAssessmentDataStructure) -> ProjectInformationViewController {
@@ -47,19 +49,6 @@ class ProjectInformationViewController: UIViewController {
         viewController.titleString = data.prjInformation.projectAddress
         
         return viewController
-    }
-    
-    @IBAction func buttonStartDidClicked(_ sender: Any) {
-        let status = prjData.prjInformation.status
-        
-        if status == .completed {
-            let viewController = ReviewViewController.instantiateFromStoryBoard(withProjectData: prjData)
-            self.navigationController?.pushViewController(viewController, animated: true)
-        } else {
-            let viewController = NewProjectReportViewController.instantiateFromStoryBoard(withProjectData: prjData)
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
     }
     
     deinit {
@@ -74,6 +63,11 @@ extension ProjectInformationViewController {
         self.title = titleString
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
         self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+
+        // Auto Layout
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 42
+        
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground()
     }
@@ -105,9 +99,9 @@ extension ProjectInformationViewController {
         tableView
             .rx
             .itemSelected
-            .subscribe(onNext: { _ in
-                guard let indexPath = self.tableView.indexPathForSelectedRow else { return }
-                self.tableView.deselectRow(at: indexPath, animated: true)
+            .subscribe(onNext: { [weak self] _ in
+                guard let indexPath = self?.tableView.indexPathForSelectedRow else { return }
+                self?.tableView.deselectRow(at: indexPath, animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -120,6 +114,26 @@ extension ProjectInformationViewController {
         } else {
             startButton.setTitle("Start", for: .normal)
         }
+    }
+    
+    private func setupStartButtonTapHandling() {
+        startButton
+            .rx
+            .tap
+            .subscribe(onNext: { [unowned self] (_) in
+                let status = self.prjData.prjInformation.status
+                
+                switch status {
+                case .completed?:
+                    let viewController = ReviewViewController.instantiateFromStoryBoard(withProjectData: self.prjData)
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                
+                default:
+                    let viewController = NewProjectReportViewController.instantiateFromStoryBoard(withProjectData: self.prjData)
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 

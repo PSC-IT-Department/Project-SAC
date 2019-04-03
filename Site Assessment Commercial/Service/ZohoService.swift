@@ -87,8 +87,8 @@ class ZohoService {
             }
             
             guard let responseData = data,
-                let jsonResponse = try? JSONSerialization.jsonObject(with:
-                    responseData, options: []) as? [String: [[String: String]]],
+                let jsonResponse = ((try? JSONSerialization.jsonObject(with:
+                    responseData, options: []) as? [String: [[String: String]]]) as [String : [[String : String]]]??),
                 let zohoAccount = jsonResponse?[self.mtmFormName]?.first?[self.mtmZohoAccount]
                 else {
                     onCompleted?(nil)
@@ -163,8 +163,8 @@ class ZohoService {
                 let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
                 
                 guard let responseData = data,
-                    let jsonResponse = try? JSONSerialization.jsonObject(with:
-                        responseData, options: []) as? [String: [[String: String]]],
+                    let jsonResponse = ((try? JSONSerialization.jsonObject(with:
+                        responseData, options: []) as? [String: [[String: String]]]) as [String : [[String : String]]]??),
                     let zohoData = jsonResponse?[formName]
                     else {
                             onCompleted?(nil)

@@ -229,22 +229,28 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         self.prjInformation = ProjectInformationStructure(withZohoData: data)
         self.prjImageArray = []
         
-        if let path = Bundle.main.url(forResource: self.prjInformation.type.rawValue, withExtension: "plist"),
-            let plistData = try? Data(contentsOf: path),
-            let allData = try? PropertyListDecoder().decode([SectionStructure].self, from: plistData) {
+        guard let path = Bundle.main.url(forResource: self.prjInformation.type.rawValue, withExtension: "plist") else { self.prjQuestionnaire = []
+            return
+        }
+        
+        let result = Result {try Data(contentsOf: path)}.flatMap { (data) -> Result<[SectionStructure], Error> in
+            return Result {try PropertyListDecoder().decode([SectionStructure].self, from: data)}
+        }
+        
+        switch result {
+        case .success(let allData):
             self.prjQuestionnaire = allData
             
             allData.enumerated().forEach { (sectionNum, section) in
                 section.Questions.enumerated().forEach({ (questionIndex, question) in
                     if let theData = data.first(where: { (key, value) -> Bool in
-                        key == question.Key
-                    }) {
+                        key == question.Key }) {
                         self.prjQuestionnaire[sectionNum].Questions[questionIndex].Value = theData.value
                     }
                 })
             }
-        } else {
-            print("decoder failed.")
+        case .failure(let error):
+            print("Decoder failed. Error = \(error.localizedDescription)")
             self.prjQuestionnaire = []
         }
     }
@@ -260,8 +266,9 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
     var Name: String
     var Key: String
     var QType: NewProjectReportCellType
-    var Options: [String?]
+    var Options: [String]?
     var Default: String?
+    var Image: String?
     var Mandatory: String
     var Value: String?
     var Interdependence: String?
@@ -273,6 +280,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         case QType = "Type"
         case Options
         case Default
+        case Image
         case Mandatory
         case Value
         case Interdependence
@@ -283,9 +291,15 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         return lhs.Name == rhs.Name && lhs.Key == rhs.Key
     }
     
+    func hash(into: Int) {
+        
+    }
+    
+    /* deprecated
     var hashValue: Int {
         return self.Name.hashValue
     }
+    */
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -294,6 +308,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         QType       = try values.decode(NewProjectReportCellType.self, forKey: .QType)
         Options     = try values.decode([String].self, forKey: .Options)
         Default     = try values.decode(String.self, forKey: .Default)
+        Image       = try values.decode(String.self, forKey: .Image)
         Mandatory   = try values.decode(String.self, forKey: .Mandatory)
         Interdependence = try values.decode(String.self, forKey: .Interdependence)
         Dependent  = try values.decode([String: String].self, forKey: .Dependent)
@@ -308,8 +323,9 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         self.Options     = question.Options
         self.Default     = question.Default
         self.Mandatory   = question.Mandatory
+        self.Image       = question.Image
         self.Interdependence = question.Interdependence
-        self.Dependent  = question.Dependent
+        self.Dependent   = question.Dependent
         self.Value       = question.Value
         self.identity    = question.identity
     }

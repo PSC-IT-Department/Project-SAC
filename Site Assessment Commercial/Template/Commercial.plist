@@ -13,13 +13,15 @@
 				<key>Key</key>
 				<string>sac_copyOfStructuralLayout</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -36,13 +38,15 @@
 				<key>Key</key>
 				<string>sac_copyOfFloorPlan</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -59,13 +63,15 @@
 				<key>Key</key>
 				<string>sac_copyOfElectricalDrawing</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -89,7 +95,7 @@
 				<key>Key</key>
 				<string>sac_structuralType</string>
 				<key>Type</key>
-				<string>Selection With Image</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Flat Roof</string>
@@ -97,6 +103,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string>Combined</string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -112,12 +120,14 @@
 				<key>Key</key>
 				<string>sac_areaOfPropertySite</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Area of Property Site (sq. ft)</string>
+					<string>sq. ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -134,12 +144,14 @@
 				<key>Key</key>
 				<string>sac_buildingHeight</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Building Height (ft)</string>
+					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -159,12 +171,14 @@
 				<key>Key</key>
 				<string>sac_mainBeamSpacing</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Main Beam Spacing-C (ft)</string>
+					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -184,12 +198,14 @@
 				<key>Key</key>
 				<string>sac_openWebSteelJoistSpacing_OWSJ</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Open Web Steel Joist Spacing-OWSJ (ft)</string>
+					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -209,12 +225,14 @@
 				<key>Key</key>
 				<string>sac_openWebSteelJoistSpacing_D</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Open Web Steel Joist Spacing-D (ft)</string>
+					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -234,12 +252,14 @@
 				<key>Key</key>
 				<string>sac_heightofwebsteelJoist</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -259,12 +279,14 @@
 				<key>Key</key>
 				<string>sac_eaveHeight</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -284,12 +306,14 @@
 				<key>Key</key>
 				<string>sac_ridgeHeight</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -309,12 +333,14 @@
 				<key>Key</key>
 				<string>sac_mainBeamSpacing</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -334,12 +360,14 @@
 				<key>Key</key>
 				<string>sac_mainBeamSpan</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -359,12 +387,14 @@
 				<key>Key</key>
 				<string>sac_secondBeamSpacing</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -384,12 +414,14 @@
 				<key>Key</key>
 				<string>sac_secondBeamSize</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>ft</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -409,7 +441,7 @@
 				<key>Key</key>
 				<string>sac_endThreeWebMemberType</string>
 				<key>Type</key>
-				<string>Selection With Image</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>H Section</string>
@@ -418,6 +450,8 @@
 					<string>Z Section</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -439,6 +473,8 @@
 				<array/>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>No</string>
 				<key>Value</key>
@@ -454,7 +490,7 @@
 				<key>Key</key>
 				<string>sac_sizeOfEndThreeWebMember</string>
 				<key>Type</key>
-				<string>Three Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>H (mm)</string>
@@ -462,6 +498,8 @@
 					<string>B (mm)</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -478,7 +516,7 @@
 				<key>Key</key>
 				<string>sac_sizeOfBottomChord</string>
 				<key>Type</key>
-				<string>Inputs with Image</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>H (ft)</string>
@@ -487,6 +525,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string>Size of Bottom Chord</string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -509,6 +549,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -533,6 +575,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -555,6 +599,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -579,6 +625,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -601,7 +649,7 @@
 				<key>Key</key>
 				<string>sac_electricalMeterRoomDimension</string>
 				<key>Type</key>
-				<string>Three Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>L (ft)</string>
@@ -609,6 +657,8 @@
 					<string>H (ft)</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -625,13 +675,15 @@
 				<key>Key</key>
 				<string>sac_service</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Single</string>
 					<string>Multiple</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -648,12 +700,14 @@
 				<key>Key</key>
 				<string>sac_numberOfService</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>Number of Service</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -670,13 +724,15 @@
 				<key>Key</key>
 				<string>sac_service_serviceSwitchRating</string>
 				<key>Type</key>
-				<string>Two Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
 					<string>A</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -696,13 +752,15 @@
 				<key>Key</key>
 				<string>sac_service_type</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Single Phase</string>
 					<string>Three Phase</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -722,13 +780,15 @@
 				<key>Key</key>
 				<string>sac_service_distributionPanelRating</string>
 				<key>Type</key>
-				<string>Two Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
 					<string>A</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -748,13 +808,15 @@
 				<key>Key</key>
 				<string>sac_service_switchRating</string>
 				<key>Type</key>
-				<string>Two Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
 					<string>A</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -774,13 +836,15 @@
 				<key>Key</key>
 				<string>sac_service_circuitBreakerRating</string>
 				<key>Type</key>
-				<string>Two Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
 					<string>A</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -807,8 +871,10 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -822,13 +888,15 @@
 				<key>Key</key>
 				<string>sac_multiMeter</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -845,12 +913,14 @@
 				<key>Key</key>
 				<string>sac_numberOfElectricalMeters</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>1 - 5</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -867,7 +937,7 @@
 				<key>Key</key>
 				<string>sac_electricalMeter</string>
 				<key>Type</key>
-				<string>Three Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
@@ -875,6 +945,8 @@
 					<string>Phase</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -894,13 +966,15 @@
 				<key>Key</key>
 				<string>sac_subPanelBoard</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -920,13 +994,15 @@
 				<key>Key</key>
 				<string>sac_subPanelBreakerRating</string>
 				<key>Type</key>
-				<string>Two Inputs</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>V</string>
 					<string>A</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -954,6 +1030,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -976,6 +1054,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1000,6 +1080,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -1022,6 +1104,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>

@@ -11,29 +11,6 @@ import RxCocoa
 import RxSwift
 import NotificationBannerSwift
 
-
-protocol CustomErrorProtocol: LocalizedError {
-    
-    var title: String? { get }
-    var code: Int { get }
-}
-
-struct CustomError: CustomErrorProtocol {
-    
-    var title: String?
-    var code: Int
-    var errorDescription: String? { return _description }
-    var failureReason: String? { return _description }
-    
-    private var _description: String
-    
-    init(title: String? = "Error", description: String, code: Int) {
-        self.title = title
-        self._description = description
-        self.code = code
-    }
-}
-
 enum SiteAssessmentError: String, LocalizedError {
     case jsonEncodeFailed = "jsonEncodeFailed"
     case createFolderFailed = "createFolderFailed"
@@ -66,37 +43,53 @@ class DataStorageService {
     
     private func getHomeDirectory() {
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("[storeData - FileManager.default.urls] failed.")
+            writeToLog("[storeData - FileManager.default.urls] failed.")
             return
         }
         
         homeDirectory = documentsURL
     }
     
-    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {        
+    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {
+        
         if !FileManager.default.fileExists(atPath: currentProjectHomeDirectory.path) {
-            do {
-                try FileManager.default.createDirectory(at: currentProjectHomeDirectory, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                print("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")
+            let result = Result {try FileManager.default.createDirectory(at: currentProjectHomeDirectory, withIntermediateDirectories: true, attributes: nil)}
+            switch result {
+            case .success(_):
+                writeToLog("[storeImages - FileManager.default.createDirectory] success.")
+            case .failure(let error):
+                writeToLog("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")
                 onCompleted?(nil, SiteAssessmentError.createFolderFailed)
                 return
             }
         }
         
-        let imgAttrs = images.enumerated().compactMap { (index, image) -> ImageAttributes in
+        let result = Result {try FileManager.default.contentsOfDirectory(at: currentProjectHomeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "png" && ($0.lastPathComponent.contains(name))}}
+        switch result {
+        case .success(let urls):
+            urls.forEach({ url in
+                _ = Result {try FileManager.default.removeItem(at: url)}
+            })
+        case .failure(_):
+            writeToLog("No such files.")
+        }
+        
+        let imgAttrs = images.enumerated().compactMap { (index, image) -> ImageAttributes? in
             let fileName = name + "_\(index)"
             let fileURL = currentProjectHomeDirectory.appendingPathComponent(fileName).appendingPathExtension("png")
 
-            do {
-                try image.pngData()?.write(to: fileURL)
-            } catch {
-                print("[storeImages - img.pngData()?.write] failed. Error=\(error)")
-                return ImageAttributes()
+            let result = Result { try image.pngData()?.write(to: fileURL) }
+            switch result {
+            case .success:
+                //            SaveToCustomAlbum.shared.save(image: image)
+
+                writeToLog("[storeImages - img.pngData()?.write] success.")
+                return ImageAttributes(name: fileName)
+            case .failure(let error):
+                writeToLog("[storeImages - img.pngData()?.write] failed. Error=\(error)")
+                return nil
             }
-//            SaveToCustomAlbum.shared.save(image: image)
-            
-            return ImageAttributes(name: fileName)
+
         }
     
         onCompleted?(imgAttrs, nil)
@@ -112,15 +105,18 @@ class DataStorageService {
                 onCompleted?(false, SiteAssessmentError.jsonEncodeFailed)
                 return
         }
+                
         let filename = String(t) + prjID
-        let fileURL = homeDirectory.appendingPathComponent(filename).appendingPathExtension("json")
+        let file = homeDirectory.appendingPathComponent(filename).appendingPathExtension("json")
         
-        do {
-            try data.write(to: fileURL)
+        let result = Result {try data.write(to: file)}
+        switch result {
+        case .success:
             onCompleted?(true, nil)
-        } catch {
+        case .failure(let error):
             onCompleted?(false, error)
         }
+
     }
     
     public func retrieveCurrentProjectData() -> SiteAssessmentDataStructure {
@@ -135,10 +131,10 @@ class DataStorageService {
         if let t = type.first, let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" && ($0.lastPathComponent.contains(t))} {
             let prjList = contents.compactMap { (fileURL) -> SiteAssessmentDataStructure? in
                 guard let data = try? Data(contentsOf: fileURL),
-                    let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! Data,
+                    let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Data,
                     let decodedData = try? JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
                     else {
-                        print("[retrieveProjectList - JSONDecoder().decode failed]")
+                        writeToLog("[retrieveProjectList - JSONDecoder().decode failed]")
                         return nil
                 }
                 
@@ -196,5 +192,32 @@ class DataStorageService {
             return option
         }
     }
+    
+    public func getLog() -> Data? {
+        let file = homeDirectory.appendingPathComponent("log.txt")
+        
+        let result = Result {try Data(contentsOf: file)}
+        switch result {
+        case .success(let data):
+            return data
+        default:
+            return nil
+        }
+    }
 
+    public func writeToLog(_ msg: String!) {
+        let file = homeDirectory.appendingPathComponent("log.txt")
+        
+        DispatchQueue.main.async {
+            let result = Result {try FileHandle(forWritingTo: file)}
+            switch result {
+            case .success(let handle):
+                handle.seekToEndOfFile()
+                handle.write(msg.data(using: .utf8)!)
+                handle.closeFile()
+            case .failure(let error):
+                print("Error = \(error.localizedDescription)")
+            }
+        }
+    }
 }

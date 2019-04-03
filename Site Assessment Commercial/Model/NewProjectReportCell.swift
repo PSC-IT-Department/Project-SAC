@@ -14,41 +14,108 @@ import RxDataSources
 
 enum NewProjectReportCellType: String, Codable {
     case ar                 = "AR"
-    case singleSelection    = "Single Selection"
-    case selectionWithImage = "Selection With Image"
     case image              = "Image"
-    case singleInput        = "Single Input"
-    case twoInputs          = "Two Inputs"
-    case threeInputs        = "Three Inputs"
-    case inputsWithImage    = "Inputs with Image"
     case notes              = "Notes"
-    case selectionWithOther = "Selection With Other Option"
     case multipleSelection  = "Multiple Selection"
+    case inputs             = "Inputs"
+    case TrussType          = "Truss Type"
+    case selectionsWithImageOther = "Selections With Image Other"
 }
+typealias ImageGallerySection = AnimatableSectionModel<String, String>
 
 class TrussTypeCell: UICollectionViewCell {
     
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var collectionView: ImageGalleryCollectionView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
-    func setupCell(with question: QuestionStructure) {
+    let data = [
+        ImageGallerySection(model: "", items: ["Add_Picture"])
+    ]
+
+    var sections = BehaviorRelay(value: [ImageGallerySection]())
+    
+    var images: [UIImage]! {
+        didSet {
+            images.append(UIImage(named: "Add_Pictures")!)
+        }
+    }
+
+    var disposeBag = DisposeBag()
+    
+    func setupDataSource() {
+        
+        let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
+            configureCell: { (_, cv, indexPath, element) in
+                let cell = cv.dequeueReusableCell(withReuseIdentifier: "ImageGalleryCell", for: indexPath) as! ImageGalleryCell
+                
+                if let image = UIImage(named: element) {
+                    cell.imageView.image = image
+                } else {
+                    cell.imageView.image = nil
+                }
+                return cell
+        },
+            configureSupplementaryView: { (ds, cv, kind, ip) in
+                let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! CollectionReusableView
+                section.labelSectionName.text = "\(ds[ip.section].model)"
+                return section
+            }
+        )
+        
+        sections
+            .asObservable()
+            .bind(to: collectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+    }
+
+    func setupCell(question: QuestionStructure, imageAttrs: [ImageAttributes]?) {
         labelKey.text = question.Name
+
+        if let imgName = question.Image {
+            imageView.image = UIImage(named: imgName)
+        } else {
+            imageView.image = nil
+        }
+        
+        if let value = question.Value {
+            textField.text = value
+        } else {
+            if let option = question.Options?.first {
+                textField.placeholder = option
+            } else {
+                textField.placeholder = "Please select a shape."
+            }
+        }
+
+        /*
+        if let imgAttrs = imageAttrs {
+            let images = imgAttrs.compactMap { UIImage(contentsOfFile: $0.name) }
+            
+            print("images.count = \(images.count)")
+            self.images = images
+        }
+         */
+
+        collectionView.reloadData()
     }
     
     override func prepareForReuse() {
+        disposeBag = DisposeBag()
+
         labelKey.text = nil
         imageView.image = nil
         textField.text = nil
-        collectionView.images = nil
+        images = nil
     }
 }
 
 class MultipleSelectionCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet var optionGroup: [MyCheckBox]!
-
+    
+    var disposeBag = DisposeBag()
     var indexPath: IndexPath!
     var delegate: SelectionCellDelegate?
     
@@ -60,50 +127,18 @@ class MultipleSelectionCell: UICollectionViewCell {
         labelKey.text = question.Name
         
         optionGroup.forEach { $0.isHidden = true }
-        for (index, option) in question.Options.enumerated() {
-            
-            optionGroup[index].setTitle(option, for: .normal)
-            optionGroup[index].isHidden = false
-            
-            question.Value?.split(separator: ",").compactMap({String($0)}).forEach({
-                if optionGroup[index].title(for: .normal) == $0 {
-                    optionGroup[index].isChecked = true
-                }
-            })
-        }
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
         
-        labelKey.text = nil
-        optionGroup.forEach {$0.isChecked = false}
-    }
-}
-
-class SelectionWithOtherCell: UICollectionViewCell {
-    @IBOutlet weak var labelKey: UILabel!
-    
-    @IBOutlet var optionGroup: [MyCheckBox]!
-    
-    var indexPath: IndexPath!
-    var delegate: SelectionCellDelegate?
-
-    @IBAction func buttonTapped(_ sender: MyCheckBox) {
-        delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
-    }
-    
-    func setupCell(with question: QuestionStructure) {
-        labelKey.text = question.Name
-
-        optionGroup.forEach { $0.isHidden = true }
-        question.Options.enumerated().forEach {
-            optionGroup[$0.offset].setTitle($0.element, for: .normal)
-            optionGroup[$0.offset].isHidden = false
-            
-            if let value = question.Value,
-                optionGroup[$0.offset].title(for: .normal) == value {
-                optionGroup[$0.offset].isChecked = true
+        if let options = question.Options {
+            for (index, option) in options.enumerated() {
+                
+                optionGroup[index].setTitle(option, for: .normal)
+                optionGroup[index].isHidden = false
+                
+                question.Value?.split(separator: ",").compactMap({String($0)}).forEach({
+                    if optionGroup[index].title(for: .normal) == $0 {
+                        optionGroup[index].isChecked = true
+                    }
+                })
             }
         }
     }
@@ -111,8 +146,10 @@ class SelectionWithOtherCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        disposeBag = DisposeBag()
+
         labelKey.text = nil
-        optionGroup.forEach { $0.isChecked = false }
+        optionGroup.forEach {$0.isChecked = false}
     }
 }
 
@@ -121,11 +158,15 @@ class ARCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var arView: ARSCNView!
     
+    var disposeBag = DisposeBag()
+
     func setupCell(with question: QuestionStructure) {
         labelKey.text = question.Name
     }
     
     override func prepareForReuse() {
+        disposeBag = DisposeBag()
+
         super.prepareForReuse()
     }
 }
@@ -134,50 +175,11 @@ protocol SelectionCellDelegate {
     func buttonDidClicked(button: MyCheckBox, indexPath: IndexPath)
 }
 
-class SingleSelectionCell: UICollectionViewCell {
-    @IBOutlet var buttonGroup: [MyCheckBox]!
-    @IBOutlet weak var labelKey: UILabel!
-        
-    var indexPath: IndexPath!
-    var delegate: SelectionCellDelegate?
-    
-    @IBAction func buttonTapped(_ sender: MyCheckBox) {
-        delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
-    }
-    
-    func setupCell(with question: QuestionStructure) {
-        labelKey.text = question.Name
-        
-        buttonGroup.forEach {$0.isHidden = true}
-        for (index, option) in question.Options.enumerated(){
-            
-            buttonGroup[index].setTitle(option, for: .normal)
-            buttonGroup[index].isHidden = false
-            
-            if let value = question.Value,
-                buttonGroup[index].title(for: .normal) == value {
-                buttonGroup[index].isChecked = true
-            }
-        }
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        labelKey.text = nil
-        buttonGroup.forEach {$0.isChecked = false}
-    }
-}
-
 class ImageCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.collectionView.isUserInteractionEnabled = false
-    }
-    
+    var disposeBag = DisposeBag()
+
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         
         layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
@@ -185,7 +187,7 @@ class ImageCell: UICollectionViewCell {
         return layoutAttributes
     }
     
-    func setupCell(question: QuestionStructure) {
+    func setupCell(question: QuestionStructure, imageAttrs: [ImageAttributes]?) {
         
         guard let prjFolder = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory else {
             print("[retrieveData - FileManager.default.urls] failed.")
@@ -203,85 +205,29 @@ class ImageCell: UICollectionViewCell {
         }
         
         labelKey.text = question.Name
+
+        collectionView.isUserInteractionEnabled = false
         collectionView.images = questionImages ?? []
         collectionView.reloadData()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+        disposeBag = DisposeBag()
+
         labelKey.text = nil
-        collectionView.images = nil
+        collectionView.images = [UIImage(named: "Add_Pictures")!]
     }
     
-}
-
-class SingleInputCell: UICollectionViewCell {
-    @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet weak var textValue: UITextField!
-    
-    func setupCell(question: QuestionStructure) {
-        labelKey.text = question.Name
-        textValue.text = question.Value
-        textValue.keyboardType = .numberPad
-    }
-    
-    override func prepareForReuse() {
-        textValue.text = nil
-    }
-}
-
-class TwoInputsCell: UICollectionViewCell {
-    @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet weak var labelOperator: UILabel!
-    @IBOutlet var textFields: [UITextField]!
-
-    func setupCell(question: QuestionStructure) {
-        labelKey.text = question.Name
-        
-        if let values = question.Value {
-            values.split(separator: ",", maxSplits: 2, omittingEmptySubsequences: true).compactMap({String($0)}).enumerated().forEach({ textFields[$0.offset].text = $0.element })
-        }
-        
-        textFields.forEach({$0.keyboardType = .numberPad})
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        labelKey.text = nil
-        textFields.forEach {$0.text = nil}
-    }
-}
-
-class ThreeInputsCell: UICollectionViewCell {
-    @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet var labelOperators: [UILabel]!
-    @IBOutlet var textFields: [UITextField]!
-
-    func setupCell(question: QuestionStructure) {
-        labelKey.text = question.Name
-        
-        if let values = question.Value {
-            values.split(separator: ",", maxSplits: 3, omittingEmptySubsequences: true).compactMap({String($0)}).enumerated().forEach({ textFields[$0.offset].text = $0.element })
-        }
-        
-        textFields.forEach({$0.keyboardType = .numberPad})
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        labelKey.text = nil
-        textFields.forEach {$0.text = nil}
-    }
 }
 
 class NotesCell: UICollectionViewCell  {
 
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var textView: UITextView!
-    
+
+    var disposeBag = DisposeBag()
+
     func setupCell(question: QuestionStructure) {
         labelKey.text = question.Name
 
@@ -304,6 +250,7 @@ class NotesCell: UICollectionViewCell  {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        disposeBag = DisposeBag()
         labelKey.text = nil
         setupTextView()
     }
@@ -312,92 +259,109 @@ class NotesCell: UICollectionViewCell  {
 class ImageGalleryCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        
-        return layoutAttributes
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         self.imageView.image = nil
     }
 }
 
-class SelectionWithImageCell: UICollectionViewCell {
+class InputsCell: UICollectionViewCell {
     
     @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet var optionGroup: [MyCheckBox]!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var textField: UITextField!
     
+    var disposeBag = DisposeBag()
+
+    func setupCell(question: QuestionStructure) {
+        labelKey.text = question.Name
+        
+        setupTextField(options: question.Options, value: question.Value)
+        
+        if let imageName = question.Image, imageName != "" {
+            imageView.image = UIImage(named: imageName)
+            imageView.isUserInteractionEnabled = true
+        } else {
+            imageView.image = nil
+            imageView.isUserInteractionEnabled = false
+        }
+    }
+    
+    func setupTextField(options: [String]?, value: String?) {
+        textField.isUserInteractionEnabled = false
+        textField.keyboardType = .numberPad
+        
+        if let value = value, value != "" {
+            textField.text = value
+        } else {
+            if let options = options {
+                let placeholder = options.joined(separator: " x ")
+                textField.placeholder = placeholder
+            }
+        }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        disposeBag = DisposeBag()
+
+        labelKey.text = nil
+        imageView.image = nil
+        textField.text = nil
+    }
+}
+
+class SelectionsWithImageOtherCell: UICollectionViewCell {
+    
+    @IBOutlet weak var labelKey: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet var optionGroup: [MyCheckBox]!
+
+    var disposeBag = DisposeBag()
     var delegate: SelectionCellDelegate?
     var indexPath: IndexPath!
 
     @IBAction func buttonTapped(_ sender: MyCheckBox) {
         delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
     }
-
+    
     func setupCell(question: QuestionStructure) {
         labelKey.text = question.Name
         
-        optionGroup.forEach {$0.isHidden = true}
-        for (index, option) in question.Options.enumerated() {
-            
-            optionGroup[index].setTitle(option, for: .normal)
-            optionGroup[index].isHidden = false
-            
-            if let value = question.Value, optionGroup[index].title(for: .normal) == value {
-                optionGroup[index].isChecked = true
-            }
+        optionGroup.forEach {
+            $0.isHidden = true
+            $0.isChecked = false
         }
         
-        if question.Key == "sac_structuralType" {
-            imageView.image = UIImage(named: "Combined")
-        } else if question.Key == "sac_endThreeWebMemberType" {
-            imageView.image = UIImage(named: "End Three Web Member Type")
+        if let options = question.Options {
+            for (index, option) in options.enumerated() {
+                
+                let button = optionGroup[index]
+                button.setTitle(option, for: .normal)
+                button.isHidden = false
+           }
+        }
+
+        if let value = question.Value, value != "" {
+            optionGroup.first(where: {$0.title(for: .normal) == value})?.isChecked = true
+        }
+        
+        if let imageName = question.Image, imageName != "" {
+            imageView.image = UIImage(named: imageName)
+            imageView.isUserInteractionEnabled = true
         } else {
-            imageView.image = UIImage(named: "Image Placeholder")
+            imageView.image = nil
+            imageView.isUserInteractionEnabled = false
         }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        disposeBag = DisposeBag()
         labelKey.text = nil
         imageView.image = nil
-        optionGroup.forEach {$0.setTitle(nil, for: .normal)}
-    }
-}
-
-class InputsWithImageCell: UICollectionViewCell {
-
-    @IBOutlet weak var labelKey: UILabel!
-    @IBOutlet var textFields: [UITextField]!
-    @IBOutlet var labelOperatorGroup: [UILabel]!
-    @IBOutlet weak var imageView: UIImageView!
-    
-    func setupCell(question: QuestionStructure) {
-        labelKey.text = question.Name
-        
-        if let values = question.Value {
-            values.split(separator: ",", maxSplits: 3, omittingEmptySubsequences: true).compactMap({String($0)}).enumerated().forEach({ textFields[$0.offset].text = $0.element })
-        }
-        
-        if question.Key == "sac_sizeOfBottomChord" {
-            imageView.image = UIImage(named: "Size of Bottom Chord")
-        } else {
-            imageView.image = UIImage(named: "Image Placeholder")
-        }
-        
-        textFields.forEach({$0.keyboardType = .numberPad})
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        labelKey.text = nil
-        imageView.image = nil
-        labelOperatorGroup.forEach {$0.text = nil}
-        textFields.forEach {$0.text = nil}
+        optionGroup.forEach { $0.isChecked = false }
     }
 }

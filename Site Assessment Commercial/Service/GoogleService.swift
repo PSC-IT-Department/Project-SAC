@@ -175,6 +175,17 @@ class GoogleService {
     }
     
     public func uploadProject(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> ())?) {
+ 
+        let count = saData.prjImageArray.compactMap({$0.images}).joined().filter({ $0.name != "" }).count
+        
+        print("count = \(count)")
+        
+        if count == 0 {
+            print("No Need to upload to Google Drive, success.")
+            onCompleted?(true, nil)
+            return
+        }
+        
         search(self.rootDir) { (folderID, error) in
             if let err = error {
                 print("Error = \(err)")

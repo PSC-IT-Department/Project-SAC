@@ -49,7 +49,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
         
         LoadingIndicatorView.show("Processing...")
         
-        DataStorageService.sharedDataStorageService.storeData(withData: prjData) { (success, error) in
+        DataStorageService.sharedDataStorageService.storeData(withData: prjData) { [weak self] (success, error) in
             var msg: Notification.Name = .didReceiveErrorMsg
             var msgObject: Any = prjID
 
@@ -60,22 +60,22 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
                     
                     LoadingIndicatorView.hide()
                     
-                    self.navigationController?.popToRootViewController(animated: true)
+                    self?.navigationController?.popToRootViewController(animated: true)
 
                     DispatchQueue.main.async {
                         ZohoService.sharedZohoService.setRemoteToUploading(projectID: prjID) { (success) in
-                            if success {
+                            if success, let prjData = self?.prjData {
                                 print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
                                 NotificationCenter.default.post(name: .didReceiveProcessingMsg, object: msgObject)
                                 
-                                GoogleService.sharedGoogleService.uploadProject(withData: self.prjData) { (success, error) in
+                                GoogleService.sharedGoogleService.uploadProject(withData: prjData) { (success, error) in
                                     if let err = error {
                                         print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
                                     }
                                     
                                     if success {
                                         print("GoogleService.sharedGoogleService.uploadProject successfully.")
-                                        ZohoService.sharedZohoService.uploadProject(withData: self.prjData, onCompleted: { (success) in
+                                        ZohoService.sharedZohoService.uploadProject(withData: prjData, onCompleted: { (success) in
                                             if success {
                                                 print("ZohoService.sharedZohoService.uploadProject successfully.")
                                                 NotificationCenter.default.post(name: .didReceiveCompleteMsg, object: msgObject)
@@ -95,7 +95,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
                     msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
                     LoadingIndicatorView.hide()
                     NotificationCenter.default.post(name: msg, object: msgObject)
-                    self.navigationController?.popToRootViewController(animated: true)
+                    self?.navigationController?.popToRootViewController(animated: true)
                 }
                 
                 /*DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -108,7 +108,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
                 print("Store data failed. Error=\(error!)")
                 DispatchQueue.main.async() {
                     LoadingIndicatorView.hide()
-                    self.navigationController?.popToRootViewController(animated: true)
+                    self?.navigationController?.popToRootViewController(animated: true)
                     NotificationCenter.default.post(name: msg, object: msgObject)
                     return
                 }
@@ -122,6 +122,9 @@ extension ReviewViewController {
     private func setupView() {
         self.title = "Review"
         self.setBackground()
+        
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 42.0
 
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
         self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
@@ -152,7 +155,8 @@ extension ReviewViewController {
     }
 
     private func setupCell() {
-        observableViewModel.asObservable()
+        observableViewModel
+            .asObservable()
             .bind(to: tableView.rx.items(cellIdentifier: "ReviewCell", cellType: ReviewCell.self)) { (row, element, cell) in
                 cell.labelKey.text = element.key
                 cell.labelValue.text = element.value

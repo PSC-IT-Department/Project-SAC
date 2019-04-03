@@ -10,6 +10,8 @@ target 'Site Assessment Commercial' do
   pod 'RxCocoa',    '~> 4.0'
   pod 'RxDataSources', '~> 3.0'
   pod 'RxReachability'
+  pod 'RxGesture',  '~> 2.0'
+  pod 'RxSwiftExt'
   pod 'RxAlamofire'
   pod 'Fusuma'
   pod 'YangMingShan'

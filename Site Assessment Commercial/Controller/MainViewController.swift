@@ -28,7 +28,7 @@ fileprivate extension Selector {
 
 class MainViewController: UIViewController {
     
-    @IBOutlet weak var buttonTitle: UIButton!
+    @IBOutlet weak var titleProjectType: UIButton!
     @IBOutlet weak var labelCurrentUser: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonFilter: UIBarButtonItem!
@@ -53,6 +53,9 @@ class MainViewController: UIViewController {
         setupRefreshControl()
         setupNotificationCenter()
         setupDelegate()
+        
+        setupButtonTitleTapHandling()
+        setupBarButtonFilterTapHandling()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,61 +77,13 @@ class MainViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    @IBAction func buttonTitleDidClicked(_ sender: Any) {
-        let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
-        
-        let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
-            print("residential ")
-            DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
-            self.buttonTitle.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
-            
-            self.reloadPrjList()
-        }
-        
-        let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
-            print("commercial ")
-            DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
-            
-            self.buttonTitle.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
-
-            self.reloadPrjList()
-        }
-        
-        popup.addButtons([resButton, comButton])
-        
-        self.present(popup, animated: true, completion: nil)
-    }
-    
-    @IBAction func barButtonFilterDidClicked(_ sender: Any) {
-        let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
-        
-        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
-            
-            self.setupViewModel()
-        }
-        
-        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
-            
-            self.setupViewModel()
-
-        }
-    
-        let cancelAction = CancelButton(title: "Cancel", action: nil)
-        
-        popup.addButtons([statusButton, scheduleDateButton, cancelAction])
-        
-        self.present(popup, animated: true, completion: nil)
-    }
 }
 
 extension MainViewController {
     
     private func loadData() {
         
-        if let typeValue = buttonTitle.title(for: .normal), let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: typeValue) {
+        if let typeValue = titleProjectType.title(for: .normal), let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: typeValue) {
             self.prjList = prjList
         }
     }
@@ -153,12 +108,17 @@ extension MainViewController {
     private func setupView() {
         
         let title = DataStorageService.sharedDataStorageService.retrieveTypeOption()
-        self.navigationItem.titleView = buttonTitle
-        buttonTitle.setTitle(title.rawValue, for: .normal)
+        self.navigationItem.titleView = titleProjectType
+        titleProjectType.setTitle(title.rawValue, for: .normal)
+        
+        // Auto Layout
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 42.0
         
         self.tableView.backgroundColor = UIColor.clear
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground(false)
+        
     }
     
     private func setupDataSource() {
@@ -182,6 +142,64 @@ extension MainViewController {
         GIDSignIn.sharedInstance().signInSilently()
     }
 
+    private func setupButtonTitleTapHandling() {
+        titleProjectType
+            .rx
+            .tap
+            .subscribe(onNext: { [unowned self] (_) in
+                let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
+                
+                let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
+                    DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
+                    self.titleProjectType.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
+                    
+                    self.reloadPrjList()
+                }
+                
+                let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
+                    DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
+                    
+                    self.titleProjectType.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
+                    
+                    self.reloadPrjList()
+                }
+                
+                popup.addButtons([resButton, comButton])
+                
+                self.present(popup, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupBarButtonFilterTapHandling() {
+        barButtonFilter
+            .rx
+            .tap
+            .subscribe(onNext: { [unowned self] (_) in
+                let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
+                
+                let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
+                    DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+                    
+                    self.setupViewModel()
+                }
+                
+                let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
+                    DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
+                    
+                    self.setupViewModel()
+                    
+                }
+                
+                let cancelAction = CancelButton(title: "Cancel", action: nil)
+                
+                popup.addButtons([statusButton, scheduleDateButton, cancelAction])
+                
+                self.present(popup, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func setupRefreshControl() {
         // Add Refresh Control to Table View
         if #available(iOS 10.0, *) {
@@ -205,34 +223,34 @@ extension MainViewController {
     
     @objc func refreshData(_ sender: Any) {
         self.refreshControl.beginRefreshing()
-        self.fetchZohoData { success in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.refreshControl.endRefreshing()
+        self.fetchZohoData { [weak self] success in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.refreshControl.endRefreshing()
             }
             if success {
-                self.setupViewModel()
+                self?.setupViewModel()
             } else {
-                print("fetchZohoData failed.")
+                print("Refresh data failed.")
             }
         }
     }
     
     private func fetchZohoData(onCompleted: ((Bool) -> ())?) {
-        guard let title = self.buttonTitle.title(for: .normal),
+        guard let title = self.titleProjectType.title(for: .normal),
             let type = SiteAssessmentType(rawValue: title)
             else {
                 onCompleted?(false)
                 return
         }
         
-        ZohoService.sharedZohoService.getProjectList(type: type) { (projectListFromZoho) in
+        ZohoService.sharedZohoService.getProjectList(type: type) { [weak self] (projectListFromZoho) in
             guard let zohoPrjList = projectListFromZoho else {
-                print("fetchZohoData failed.")
+                print("Fetch Zoho data failed.")
                 onCompleted?(false)
                 return
             }
             
-            self.combineProjectList(zohoPrjList: zohoPrjList)
+            self?.combineProjectList(zohoPrjList: zohoPrjList)
             onCompleted?(true)
         }
     }
@@ -250,7 +268,7 @@ extension MainViewController {
     }
     
     @objc func shortcutToGoogleSignIn(_ sender: UITapGestureRecognizer) {
-        let viewController = GoogleAccessViewController.instantiateFromStoryBoard(withTitle: "Google")
+        let viewController = GoogleAccessViewController.instantiateFromStoryBoard()
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -316,13 +334,13 @@ extension MainViewController {
         tableView
             .rx
             .itemSelected
-            .subscribe(onNext: { _ in
-                if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
-                    self.tableView.deselectRow(at: selectedRowIndexPath, animated: true)
+            .subscribe(onNext: { [weak self] _ in
+                if let indexPath = self?.tableView.indexPathForSelectedRow, let prjData = self?.prjList[indexPath.row] {
+                    self?.tableView.deselectRow(at: indexPath, animated: true)
 
-                    let viewController = ProjectInformationViewController.instantiateFromStoryBoard(withProjectData: self.prjList[selectedRowIndexPath.row])
+                    let viewController = ProjectInformationViewController.instantiateFromStoryBoard(withProjectData: prjData)
 
-                    self.navigationController?.pushViewController(viewController, animated: true)
+                    self?.navigationController?.pushViewController(viewController, animated: true)
                 }
                 
             })
@@ -475,7 +493,7 @@ extension MainViewController: UITableViewDelegate {
             .setDelegate(self)
             .disposed(by: disposeBag)
     }
-
+    
     // https://github.com/RxSwiftCommunity/RxDataSources/issues/91
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         view.tintColor = UIColor.clear
@@ -487,4 +505,5 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
     }
+
 }

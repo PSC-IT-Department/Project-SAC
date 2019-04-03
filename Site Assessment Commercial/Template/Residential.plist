@@ -13,7 +13,7 @@
 				<key>Key</key>
 				<string>sa_shingleMaterial</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Asphalt Shingles</string>
@@ -24,6 +24,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -40,13 +42,15 @@
 				<key>Key</key>
 				<string>sa_missingShingles</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -63,13 +67,15 @@
 				<key>Key</key>
 				<string>sa_missingRidgeCap</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -86,13 +92,15 @@
 				<key>Key</key>
 				<string>sa_curvedPlywood</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -109,7 +117,7 @@
 				<key>Key</key>
 				<string>sa_overallRoofCondition</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Suitable</string>
@@ -118,6 +126,8 @@
 					<string>Replacement Required</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -134,13 +144,15 @@
 				<key>Key</key>
 				<string>sa_full3DSiteImaging</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -165,6 +177,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -187,6 +201,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -211,6 +227,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -233,13 +251,15 @@
 				<key>Key</key>
 				<string>sa_meterLocation</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Outdoor</string>
 					<string>Indoor</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -256,13 +276,15 @@
 				<key>Key</key>
 				<string>sa_connectionType</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Underground</string>
 					<string>Overhead</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -279,7 +301,7 @@
 				<key>Key</key>
 				<string>sa_exteriorWallMaterial</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Clay Brick</string>
@@ -290,6 +312,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -306,7 +330,7 @@
 				<key>Key</key>
 				<string>sa_meterHeight</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Standard</string>
@@ -315,6 +339,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -331,13 +357,15 @@
 				<key>Key</key>
 				<string>sa_gasMeterLocation</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>&gt;= 1M</string>
 					<string>&lt; 1M</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -354,7 +382,7 @@
 				<key>Key</key>
 				<string>sa_meterObstruction</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -362,12 +390,14 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
 				<dict/>
 			</dict>
@@ -388,6 +418,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string>No</string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -396,7 +428,10 @@
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_meterObstruction</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -404,21 +439,26 @@
 				<key>Key</key>
 				<string>sa_obstructionDistance</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>M</string>
 				</array>
 				<key>Default</key>
+				<string>No</string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_meterObstruction</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -426,7 +466,7 @@
 				<key>Key</key>
 				<string>sa_trenchingRequired</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -434,12 +474,14 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
 				<dict/>
 			</dict>
@@ -449,7 +491,7 @@
 				<key>Key</key>
 				<string>sa_trenchingOverDriveway</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -457,14 +499,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -472,7 +519,7 @@
 				<key>Key</key>
 				<string>sa_trenchingMaterial</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Grass</string>
@@ -484,14 +531,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -499,7 +551,7 @@
 				<key>Key</key>
 				<string>sa_trenchingObstructions</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -507,14 +559,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -522,7 +579,7 @@
 				<key>Key</key>
 				<string>sa_trenchingObstructionType</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Multiple Selection</string>
 				<key>Options</key>
 				<array>
 					<string>Rocks</string>
@@ -532,14 +589,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingObstructions</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -547,21 +609,26 @@
 				<key>Key</key>
 				<string>sa_trenchingDistance</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
 				<array>
 					<string>M</string>
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -576,6 +643,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -600,6 +669,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -622,6 +693,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -646,6 +719,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -669,14 +744,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_meterObstruction</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -691,6 +771,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -715,14 +797,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -738,14 +825,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_trenchingRequired</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 		</array>
 	</dict>
@@ -760,7 +852,7 @@
 				<key>Key</key>
 				<string>sa_breakerPanelAmp</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>60</string>
@@ -771,6 +863,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -787,7 +881,7 @@
 				<key>Key</key>
 				<string>sa_breakerPanelLocation</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Basement</string>
@@ -796,6 +890,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -812,13 +908,15 @@
 				<key>Key</key>
 				<string>sa_availableBreakerSlot</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -835,7 +933,7 @@
 				<key>Key</key>
 				<string>sa_breakerPanelObstruction</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -843,12 +941,14 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
 				<dict/>
 			</dict>
@@ -868,14 +968,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_breakerPanelObstruction</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -883,13 +988,18 @@
 				<key>Key</key>
 				<string>sa_mainBreakerPanelDiagram</string>
 				<key>Type</key>
-				<string>Single Input</string>
+				<string>Inputs</string>
 				<key>Options</key>
-                <array>
-                    <string>Please measure the distances surrounding the electrical breaker panel and clearly indicate the dimensions below:</string>
-                </array>
+				<array>
+					<string>Top</string>
+					<string>Right</string>
+					<string>Bottom</string>
+					<string>Left</string>
+				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string>Main_Breaker_Panel_Diagram</string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -912,6 +1022,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -936,6 +1048,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -958,6 +1072,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -982,6 +1098,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -1004,13 +1122,15 @@
 				<key>Key</key>
 				<string>sa_locationElectricalMeter</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1027,13 +1147,15 @@
 				<key>Key</key>
 				<string>sa_locationGasMeter</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1050,13 +1172,15 @@
 				<key>Key</key>
 				<string>sa_locationObstruction</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1073,13 +1197,15 @@
 				<key>Key</key>
 				<string>sa_locationMainBreakerPanel</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1096,13 +1222,15 @@
 				<key>Key</key>
 				<string>sa_distanceElectricalMeterToFrontCornerOfHouse</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1119,13 +1247,15 @@
 				<key>Key</key>
 				<string>sa_distanceElectricalMeterToGasMeter</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1142,13 +1272,15 @@
 				<key>Key</key>
 				<string>sa_distanceElectricalMeterToYardDoor</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1165,13 +1297,15 @@
 				<key>Key</key>
 				<string>sa_distanceElectricalMeterToObstruction</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1195,7 +1329,7 @@
 				<key>Key</key>
 				<string>sa_roofSheathing</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Plywood</string>
@@ -1204,6 +1338,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1220,13 +1356,15 @@
 				<key>Key</key>
 				<string>sa_signsOfMold</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1243,7 +1381,7 @@
 				<key>Key</key>
 				<string>sa_signsOfWaterLeakage</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -1251,12 +1389,14 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
 				<dict/>
 			</dict>
@@ -1266,7 +1406,7 @@
 				<key>Key</key>
 				<string>sa_waterLeakageType</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Ongoing</string>
@@ -1275,14 +1415,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_signsOfWaterLeakage</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -1290,7 +1435,7 @@
 				<key>Key</key>
 				<string>sa_signsOfDamage</string>
 				<key>Type</key>
-				<string>Single Selection</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -1298,12 +1443,14 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
-				<string></string>
+				<string>Yes</string>
 				<key>Dependent</key>
 				<dict/>
 			</dict>
@@ -1313,7 +1460,7 @@
 				<key>Key</key>
 				<string>sa_typeOfDamage</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Cracked Truss/Rafter</string>
@@ -1323,14 +1470,19 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
 				<string></string>
 				<key>Dependent</key>
-				<dict/>
+				<dict>
+					<key>sa_signsOfDamage</key>
+					<string>Yes</string>
+				</dict>
 			</dict>
 			<dict>
 				<key>Name</key>
@@ -1338,7 +1490,7 @@
 				<key>Key</key>
 				<string>sa_trussSpacing</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>16</string>
@@ -1347,6 +1499,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1363,7 +1517,7 @@
 				<key>Key</key>
 				<string>sa_trussMemberSize</string>
 				<key>Type</key>
-				<string>Selection With Other Option</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>2x4</string>
@@ -1372,6 +1526,8 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1388,14 +1544,15 @@
 				<key>Key</key>
 				<string>sa_trussType</string>
 				<key>Type</key>
-				<string>Image</string>
+				<string>Truss Type</string>
 				<key>Options</key>
 				<array>
-					<string>Yes</string>
-					<string>No</string>
+					<string>A - J, or Others</string>
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string>Truss_Type</string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -1418,6 +1575,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1442,6 +1601,8 @@
 				</array>
 				<key>Default</key>
 				<string></string>
+				<key>Image</key>
+				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -1464,6 +1625,8 @@
 					<string>No</string>
 				</array>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>
@@ -1491,6 +1654,8 @@
 				<key>Options</key>
 				<array/>
 				<key>Default</key>
+				<string></string>
+				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
 				<string>Yes</string>

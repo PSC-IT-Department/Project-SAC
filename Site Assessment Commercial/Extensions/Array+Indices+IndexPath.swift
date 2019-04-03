@@ -21,7 +21,7 @@ import Foundation
 extension Array where Element : Collection, Element.Index == Int {
     func indices(where predicate: (Element.Iterator.Element) -> Bool) -> (Int, Int)? {
         for (i, row) in self.enumerated() {
-            if let j = row.index(where: predicate) {
+            if let j = row.firstIndex(where: predicate) {
                 return (i, j)
             }
         }
@@ -30,7 +30,7 @@ extension Array where Element : Collection, Element.Index == Int {
     
     func indexPath(where predicate: (Element.Iterator.Element) -> Bool) -> IndexPath? {
         for (i, row) in self.enumerated() {
-            if let j = row.index(where: predicate) {
+            if let j = row.firstIndex(where: predicate) {
                 return IndexPath(indexes: [i, j])
             }
         }
