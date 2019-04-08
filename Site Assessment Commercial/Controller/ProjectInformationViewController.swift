@@ -47,7 +47,7 @@ class ProjectInformationViewController: UIViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ProjectInformationViewController") as! ProjectInformationViewController
         viewController.prjData = data
         viewController.titleString = data.prjInformation.projectAddress
-        
+        DataStorageService.sharedDataStorageService.storeCurrentProjectData(data: data)
         return viewController
     }
     

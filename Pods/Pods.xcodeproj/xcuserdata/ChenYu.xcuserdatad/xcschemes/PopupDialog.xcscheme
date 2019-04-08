@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2449DB6F38AE24C97365B917590F9B1C"
+               BlueprintIdentifier = "B179FED6F3F8A6FD26D1CDACA7A20888"
                BlueprintName = "PopupDialog"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "PopupDialog.framework">

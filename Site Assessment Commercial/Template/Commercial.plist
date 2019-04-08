@@ -154,7 +154,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -181,7 +181,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -208,7 +208,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -235,7 +235,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -262,7 +262,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -289,7 +289,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -316,7 +316,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -343,7 +343,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -370,7 +370,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -397,7 +397,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -424,7 +424,7 @@
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
-				<string>Yes</string>
+				<string>No</string>
 				<key>Value</key>
 				<string></string>
 				<key>Interdependence</key>
@@ -472,7 +472,7 @@
 				<key>Options</key>
 				<array/>
 				<key>Default</key>
-				<string></string>
+				<string>Notes:</string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
@@ -870,7 +870,7 @@
 					<string>Transformer Detail</string>
 				</array>
 				<key>Default</key>
-				<string></string>
+				<string>Notes: </string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>

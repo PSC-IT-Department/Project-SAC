@@ -36,11 +36,7 @@ class TrussTypeCell: UICollectionViewCell {
 
     var sections = BehaviorRelay(value: [ImageGallerySection]())
     
-    var images: [UIImage]! {
-        didSet {
-            images.append(UIImage(named: "Add_Pictures")!)
-        }
-    }
+    var images: [UIImage]! = []
 
     var disposeBag = DisposeBag()
     

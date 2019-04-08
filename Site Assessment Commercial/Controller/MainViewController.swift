@@ -500,6 +500,7 @@ extension MainViewController: UITableViewDelegate {
         let header:UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 16.0)
         header.textLabel?.textColor = UIColor.black
+        header.accessibilityIdentifier = "MainTableViewHeader"
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

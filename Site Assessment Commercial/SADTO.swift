@@ -330,6 +330,19 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         self.identity    = question.identity
     }
     
+    init() {
+        self.Name        = ""
+        self.Key         = ""
+        self.QType       = .inputs
+        self.Options     = nil
+        self.Default     = nil
+        self.Mandatory   = "No"
+        self.Image       = nil
+        self.Interdependence = nil
+        self.Dependent   = nil
+        self.Value       = nil
+        self.identity    = nil
+    }
 }
 
 struct SectionStructure: Codable {

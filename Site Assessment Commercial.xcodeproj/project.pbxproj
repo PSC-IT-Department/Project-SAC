@@ -35,6 +35,8 @@
 		DD76BF2421A874D300A65352 /* InformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2321A874D300A65352 /* InformationCell.swift */; };
 		DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BF2521A8AB8000A65352 /* MainViewModel.swift */; };
 		DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */; };
+		DD79259C2256891200855B68 /* Site_Assessment_CommercialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79259B2256891200855B68 /* Site_Assessment_CommercialUITests.swift */; };
+		DD7925AA2256891900855B68 /* Site_Assessment_CommercialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */; };
 		DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */; };
 		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
 		DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */; };
@@ -64,6 +66,23 @@
 		DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */; };
 		DDEDF4D9221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEDF4D8221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DD79259E2256891200855B68 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD76BEF221A85D7600A65352 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD76BEF921A85D7600A65352;
+			remoteInfo = "Site Assessment Commercial";
+		};
+		DD7925AC2256891900855B68 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD76BEF221A85D7600A65352 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD76BEF921A85D7600A65352;
+			remoteInfo = "Site Assessment Commercial";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Site_Assessment_Commercial.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +117,12 @@
 		DD76BF2321A874D300A65352 /* InformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationCell.swift; sourceTree = "<group>"; };
 		DD76BF2521A8AB8000A65352 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleService.swift; sourceTree = "<group>"; };
+		DD7925992256891200855B68 /* Site Assessment CommercialUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Site Assessment CommercialUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD79259B2256891200855B68 /* Site_Assessment_CommercialUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site_Assessment_CommercialUITests.swift; sourceTree = "<group>"; };
+		DD79259D2256891200855B68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD7925A72256891800855B68 /* Site Assessment CommercialTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Site Assessment CommercialTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site_Assessment_CommercialTests.swift; sourceTree = "<group>"; };
+		DD7925AB2256891900855B68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
 		DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportViewModel.swift; sourceTree = "<group>"; };
@@ -137,6 +162,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD7925962256891200855B68 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD7925A42256891800855B68 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -161,6 +200,8 @@
 			isa = PBXGroup;
 			children = (
 				DD76BEFC21A85D7600A65352 /* Site Assessment Commercial */,
+				DD79259A2256891200855B68 /* Site Assessment CommercialUITests */,
+				DD7925A82256891900855B68 /* Site Assessment CommercialTests */,
 				DD76BEFB21A85D7600A65352 /* Products */,
 				4631FC4B05A8355C15852061 /* Pods */,
 				4E53E563F6490B7A26162B96 /* Frameworks */,
@@ -171,6 +212,8 @@
 			isa = PBXGroup;
 			children = (
 				DD76BEFA21A85D7600A65352 /* Site Assessment Commercial.app */,
+				DD7925992256891200855B68 /* Site Assessment CommercialUITests.xctest */,
+				DD7925A72256891800855B68 /* Site Assessment CommercialTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,6 +279,24 @@
 				DD4E490822284870004FE180 /* ReviewViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DD79259A2256891200855B68 /* Site Assessment CommercialUITests */ = {
+			isa = PBXGroup;
+			children = (
+				DD79259B2256891200855B68 /* Site_Assessment_CommercialUITests.swift */,
+				DD79259D2256891200855B68 /* Info.plist */,
+			);
+			path = "Site Assessment CommercialUITests";
+			sourceTree = "<group>";
+		};
+		DD7925A82256891900855B68 /* Site Assessment CommercialTests */ = {
+			isa = PBXGroup;
+			children = (
+				DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */,
+				DD7925AB2256891900855B68 /* Info.plist */,
+			);
+			path = "Site Assessment CommercialTests";
 			sourceTree = "<group>";
 		};
 		DD81CFE721C2F92C00FBE53E /* Layouts */ = {
@@ -334,19 +395,63 @@
 			productReference = DD76BEFA21A85D7600A65352 /* Site Assessment Commercial.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DD7925982256891200855B68 /* Site Assessment CommercialUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD7925A22256891200855B68 /* Build configuration list for PBXNativeTarget "Site Assessment CommercialUITests" */;
+			buildPhases = (
+				DD7925952256891200855B68 /* Sources */,
+				DD7925962256891200855B68 /* Frameworks */,
+				DD7925972256891200855B68 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD79259F2256891200855B68 /* PBXTargetDependency */,
+			);
+			name = "Site Assessment CommercialUITests";
+			productName = "Site Assessment CommercialUITests";
+			productReference = DD7925992256891200855B68 /* Site Assessment CommercialUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		DD7925A62256891800855B68 /* Site Assessment CommercialTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD7925AE2256891900855B68 /* Build configuration list for PBXNativeTarget "Site Assessment CommercialTests" */;
+			buildPhases = (
+				DD7925A32256891800855B68 /* Sources */,
+				DD7925A42256891800855B68 /* Frameworks */,
+				DD7925A52256891800855B68 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD7925AD2256891900855B68 /* PBXTargetDependency */,
+			);
+			name = "Site Assessment CommercialTests";
+			productName = "Site Assessment CommercialTests";
+			productReference = DD7925A72256891800855B68 /* Site Assessment CommercialTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		DD76BEF221A85D7600A65352 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = chyapp.com;
 				TargetAttributes = {
 					DD76BEF921A85D7600A65352 = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
+					};
+					DD7925982256891200855B68 = {
+						CreatedOnToolsVersion = 10.2;
+						TestTargetID = DD76BEF921A85D7600A65352;
+					};
+					DD7925A62256891800855B68 = {
+						CreatedOnToolsVersion = 10.2;
+						TestTargetID = DD76BEF921A85D7600A65352;
 					};
 				};
 			};
@@ -364,6 +469,8 @@
 			projectRoot = "";
 			targets = (
 				DD76BEF921A85D7600A65352 /* Site Assessment Commercial */,
+				DD7925982256891200855B68 /* Site Assessment CommercialUITests */,
+				DD7925A62256891800855B68 /* Site Assessment CommercialTests */,
 			);
 		};
 /* End PBXProject section */
@@ -388,6 +495,20 @@
 				DD76BF0521A85D7800A65352 /* Assets.xcassets in Resources */,
 				DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */,
 				DDCC6327224A90A20060A1D9 /* NotesCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD7925972256891200855B68 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD7925A52256891800855B68 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,7 +569,6 @@
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/MYTableViewIndex/MYTableViewIndex.framework",
 				"${BUILT_PRODUCTS_DIR}/MarqueeLabel/MarqueeLabel.framework",
 				"${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework",
@@ -477,7 +597,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MYTableViewIndex.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarqueeLabel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NotificationBannerSwift.framework",
@@ -569,7 +688,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD7925952256891200855B68 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD79259C2256891200855B68 /* Site_Assessment_CommercialUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD7925A32256891800855B68 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD7925AA2256891900855B68 /* Site_Assessment_CommercialTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DD79259F2256891200855B68 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD76BEF921A85D7600A65352 /* Site Assessment Commercial */;
+			targetProxy = DD79259E2256891200855B68 /* PBXContainerItemProxy */;
+		};
+		DD7925AD2256891900855B68 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD76BEF921A85D7600A65352 /* Site Assessment Commercial */;
+			targetProxy = DD7925AC2256891900855B68 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		DD76BF0121A85D7600A65352 /* Main.storyboard */ = {
@@ -745,6 +893,88 @@
 			};
 			name = Release;
 		};
+		DD7925A02256891200855B68 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BN4H5C83Z9;
+				INFOPLIST_FILE = "Site Assessment CommercialUITests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Site Assessment Commercial";
+			};
+			name = Debug;
+		};
+		DD7925A12256891200855B68 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BN4H5C83Z9;
+				INFOPLIST_FILE = "Site Assessment CommercialUITests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Site Assessment Commercial";
+			};
+			name = Release;
+		};
+		DD7925AF2256891900855B68 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BN4H5C83Z9;
+				INFOPLIST_FILE = "Site Assessment CommercialTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Site Assessment Commercial.app/Site Assessment Commercial";
+			};
+			name = Debug;
+		};
+		DD7925B02256891900855B68 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BN4H5C83Z9;
+				INFOPLIST_FILE = "Site Assessment CommercialTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Site Assessment Commercial.app/Site Assessment Commercial";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -762,6 +992,24 @@
 			buildConfigurations = (
 				DD76BF0D21A85D7800A65352 /* Debug */,
 				DD76BF0E21A85D7800A65352 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD7925A22256891200855B68 /* Build configuration list for PBXNativeTarget "Site Assessment CommercialUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD7925A02256891200855B68 /* Debug */,
+				DD7925A12256891200855B68 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD7925AE2256891900855B68 /* Build configuration list for PBXNativeTarget "Site Assessment CommercialTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD7925AF2256891900855B68 /* Debug */,
+				DD7925B02256891900855B68 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

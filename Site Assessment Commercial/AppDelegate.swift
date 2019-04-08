@@ -9,7 +9,6 @@
 import UIKit
 import GoogleSignIn
 import GoogleAPIClientForREST
-import Firebase
 import Reachability
 import RxReachability
 
@@ -20,9 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-// https://stackoverflow.com/questions/43276199/how-can-i-delay-splash-launch-screen-programatically-in-swift-xcode-ios
-//        RunLoop.current.run(until: NSDate(timeIntervalSinceNow:2) as Date)
-
         DataStorageService.instantiateSharedInstance()
         NetworkService.instantiateSharedInstance()
         GoogleService.instantiateSharedInstance()

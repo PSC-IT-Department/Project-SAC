@@ -232,7 +232,7 @@ extension NewProjectReportViewController {
                             guard let values = alertController.textFields?.compactMap({CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0.text ?? "")) ? $0.text : "" }).joined(separator: " x ") else { return }
                             
                             self?.updateValue(indexPath: indexPath, value: values)
-                            self?.reloadData(indexPath: indexPath)
+                            self?.reloadData()
                         }
                         
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -256,7 +256,7 @@ extension NewProjectReportViewController {
                             guard let value = alertController.textFields?.first?.text else { return }
                             
                             self?.updateValue(indexPath: indexPath, value: value)
-                            self?.reloadData(indexPath: indexPath)
+                            self?.reloadData()
                         })
                         
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -338,7 +338,7 @@ extension NewProjectReportViewController {
         updateIndexItems(indexPath: indexPath, checked: checked)
     }
     
-    func reloadData(indexPath: IndexPath) {
+    func reloadData() {
         sections.accept(self.initialValue)
     }
     
@@ -346,7 +346,7 @@ extension NewProjectReportViewController {
         
         let eachSections = self.prjData.prjQuestionnaire.compactMap { section -> EachSection in
             
-            let questions = section.Questions.filter({$0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil)})
+            let questions = section.Questions.filter({$0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil) || ($0.Default != "" && $0.Default != nil)})
             return EachSection(model: section.Name, items: questions)
         }
         
@@ -368,6 +368,10 @@ extension NewProjectReportViewController {
 
                         let imgAttrs = self.prjData.prjImageArray.first(where: {$0.key == item.Name})?.images
                         cell.setupCell(question: item, imageAttrs: imgAttrs)
+                        
+                        if cell.collectionView.images.count > 1 {
+                            self.updateValue(indexPath: indexPath, value: "Yes")
+                        }
                         return cell
                         
                     case .ar:
@@ -384,7 +388,7 @@ extension NewProjectReportViewController {
                             .rx
                             .didBeginEditing
                             .subscribe(onNext: {
-                                if let textView = cell.textView, textView.text == "Notes: " {
+                                if let textView = cell.textView, textView.text == item.Default {
                                     textView.text = ""
                                     textView.textColor = UIColor.black
                                 }
@@ -671,7 +675,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                     }
                     
                     self?.updateValue(indexPath: indexPath, value: "Yes")
-                    self?.reloadData(indexPath: indexPath)
+                    self?.reloadData()
                 }
             }
         }
@@ -733,27 +737,35 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         self.updateValue(indexPath: indexPath, value: value)
 
         if question.Interdependence == "Yes" {
-            let relatedQuestions = self.prjData.prjQuestionnaire[indexPath.section].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value})
             
-            let array = self.initialValue.map({$0.items}).joined().filter({$0.Value != nil && $0.Value != ""})
+            let secNum = indexPath.section
+            var questionnaire = self.prjData.prjQuestionnaire
+            var secQuestions = questionnaire[secNum].Questions
+            
+            secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value == value}).forEach({ secQuestions[$0.offset].Mandatory = "Yes" })
+        
+            secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value}).forEach({ secQuestions[$0.offset].Mandatory = "No" })
+
+            let relatedQuestions = secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value})
+            
+            let array = self.initialValue.map({$0.items}).joined().filter({ question in
+                question.Value != nil && question.Value != "" && !relatedQuestions.contains(where: {$0.element.Name == question.Name})})
             
             array.forEach { (question) in
-                self.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
+                questionnaire.enumerated().forEach({ (offset, element) in
                     if let row = element.Questions.firstIndex(where: {$0.Name == question.Name}) {
-                        self.prjData.prjQuestionnaire[offset].Questions[row].Value = question.Value
+                        secQuestions[row].Value = question.Value
                     }
                 })
             }
             
-            let eachSections = self.prjData.prjQuestionnaire.map { EachSection(model: $0.Name, items: $0.Questions) }
+            questionnaire[secNum].Questions = secQuestions
+            self.prjData.prjQuestionnaire = questionnaire
             
-            self.initialValue = eachSections
-            
-            if let firstIndex = relatedQuestions.first?.offset, let lastIndex = relatedQuestions.last?.offset {
-                self.initialValue[indexPath.section].items.replaceSubrange(firstIndex ... lastIndex, with: [])
-            }
-            
-            self.reloadData(indexPath: indexPath)
+            self.initialValue = self.loadData()
+
+            self.reloadData()
+            self.reloadIndexItems()
         }
     }
 }
@@ -776,6 +788,10 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
         }
         
         return Array(uiViews.joined())
+    }
+    
+    func reloadIndexItems() {
+        self.tableViewIndexController.tableViewIndex.reloadData()
     }
     
     func updateIndexItems(indexPath: IndexPath, checked: Bool) {
