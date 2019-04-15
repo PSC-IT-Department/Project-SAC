@@ -59,9 +59,9 @@ class NewProjectReportViewController: UIViewController {
         }
     }
     
-    static func instantiateFromStoryBoard(withProjectData data: SiteAssessmentDataStructure) -> NewProjectReportViewController {
+    static func instantiateFromStoryBoard() -> NewProjectReportViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "NewProjectReportViewController") as! NewProjectReportViewController
-        viewController.prjData = data
+        viewController.prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
         
         return viewController
     }
@@ -160,31 +160,45 @@ extension NewProjectReportViewController {
         tableViewIndex = tableViewIndexController.tableViewIndex
     }
     
-    func addQuestions(indexPath: IndexPath, question: QuestionStructure) {
+    func addQuestions(indexPath: IndexPath, value: String) {
+        
+        guard let question = self.getQuestionByIndexPath(indexPath: indexPath) else { return }
+        
         let relatedQuestions = self.initialValue[indexPath.section].items.enumerated().filter({$0.element.Dependent?.first?.key == question.Key})
         
-        guard let questionValue = question.Value,
-            let count = Int(questionValue),
+        guard let count = Int(value),
+            let range = question.Options?.first?.split(separator: "-").compactMap({Int($0.trimmingCharacters(in: .whitespaces))}),
+            let first = range.first,
+            let last = range.last,
+            (first ... last).contains(count),
             let firstIndex = relatedQuestions.first?.offset,
             let lastIndex = relatedQuestions.last?.offset
             else { return }
         
-        let array = Array(repeating: relatedQuestions, count: count).joined().enumerated().compactMap { (offset, element) -> QuestionStructure in
-            
-            var q = element.element
-            q.Value = nil
-            
+        
+        let _relatedQuestions = relatedQuestions.compactMap({$0.element})
+        
+        let array = Array(repeating: _relatedQuestions, count: count).enumerated().compactMap { (offset, element) -> [QuestionStructure] in
+
+            var e = element
             if offset > 0 {
-                q.Key.append("_\(offset)")
-                q.Name.append("_\(offset)")
+                e = e.compactMap({ question -> QuestionStructure in
+                    var q = question
+                    
+                    q.Key.append("_\(offset)")
+                    q.Name.append("_\(offset)")
+                    
+                    return q
+                })
             }
             
-            return q
-        }
+            return e
+        }.joined()
         
         self.initialValue[indexPath.section].items.replaceSubrange(firstIndex ... lastIndex, with: array)
 
-        setupViewModel()
+        self.reloadData()
+        self.reloadIndexItems()
     }
     
     func setupCellTapHandling() {
@@ -224,6 +238,14 @@ extension NewProjectReportViewController {
                             alertController.addTextField(configurationHandler: { textField in
                                 textField.placeholder  = option
                                 textField.keyboardType = .numberPad
+                                
+                                // Fix for UIButtonBarStackView constraints problem
+                                // https://openradar.appspot.com/32355534
+                                
+                                textField.autocorrectionType = .no
+                                textField.inputAssistantItem.leadingBarButtonGroups = []
+                                textField.inputAssistantItem.trailingBarButtonGroups = []
+
                                 textField.returnKeyType = (option == options.last) ? .done : .next
                             })
                         }
@@ -231,7 +253,13 @@ extension NewProjectReportViewController {
                         let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
                             guard let values = alertController.textFields?.compactMap({CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0.text ?? "")) ? $0.text : "" }).joined(separator: " x ") else { return }
                             
+                            
                             self?.updateValue(indexPath: indexPath, value: values)
+                            
+                            if item.Interdependence == "Yes" {
+//                                self?.addQuestions(indexPath: indexPath, value: values)
+                            }
+                            
                             self?.reloadData()
                         }
                         
@@ -279,13 +307,14 @@ extension NewProjectReportViewController {
             .tap
             .subscribe(onNext: { [weak self] (_) in
                 guard let initialValue = self?.initialValue,
-                    let data = self?.prjData,
+                    var data = self?.prjData,
                     let totalMissing = self?.totalMissing
                     else { return }
                 
-                self?.prjData.prjQuestionnaire = initialValue.compactMap { return SectionStructure(name: $0.model, questions: $0.items)}
-
+                data.prjQuestionnaire = initialValue.compactMap { return SectionStructure(name: $0.model, questions: $0.items)}
+                
                 DataStorageService.sharedDataStorageService.storeCurrentProjectData(data: data)
+                DataStorageService.sharedDataStorageService.storeData(withData: data, onCompleted: nil)
                 
                 if totalMissing == 0 {
                     let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: data)
@@ -358,7 +387,7 @@ extension NewProjectReportViewController {
         CollectionViewSectionedDataSource<EachSection>.ConfigureSupplementaryView
         ) {
             return (
-                { (_, collectionView, indexPath, item) in
+                { (dataSource, collectionView, indexPath, item) in
                     
                     switch item.QType {
                     case .image:
@@ -366,8 +395,12 @@ extension NewProjectReportViewController {
                         
                         cell.collectionView.register(UINib(nibName: "ImageGalleryCell", bundle: nil), forCellWithReuseIdentifier: "ImageGalleryCell")
 
-                        let imgAttrs = self.prjData.prjImageArray.first(where: {$0.key == item.Name})?.images
-                        cell.setupCell(question: item, imageAttrs: imgAttrs)
+                        cell.setupCell(question: item)
+                        
+                        if let index = self.prjData.prjImageArray.firstIndex(where: {$0.key == item.Name}),
+                            let imageAttrs = cell.imageAttrs {
+                            self.prjData.prjImageArray[index].images = imageAttrs
+                        }
                         
                         if cell.collectionView.images.count > 1 {
                             self.updateValue(indexPath: indexPath, value: "Yes")
@@ -473,6 +506,7 @@ extension NewProjectReportViewController {
 
                         cell.setupCell(question: item, imageAttrs: imgAttrs)
 
+                        cell.textField.isUserInteractionEnabled = false
                         cell.imageView
                             .rx
                             .tapGesture()
@@ -586,7 +620,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
     func photoPickerViewController(_ picker: YMSPhotoPickerViewController!, didFinishPicking image: UIImage!) {
         picker.dismiss(animated: true) {
             
-            guard let compressedImage = image.compressed(),
+            guard let compressedImage = image.compressed(quality: 1.0),
                 let indexPath = self.collectionView.indexPathsForSelectedItems?.first,
                 let item = self.getQuestionByIndexPath(indexPath: indexPath),
                 let prjID = self.prjData.prjInformation.projectID
@@ -635,7 +669,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                 let targetSize = CGSize(width: 84.0, height: 84.0)
                 imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: { (image, info) in
                     
-                    if let compressedImage = image?.compressed() {
+                    if let compressedImage = image?.compressed(quality: 1.0) {
                         imageArray.append(compressedImage)
                     }
                 })
@@ -691,6 +725,42 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         
         switch question.QType {
         case .multipleSelection:
+            button.isChecked = !button.isChecked
+            if value == "Other" {
+                let alertViewController = UIAlertController(title: "Other", message: nil, preferredStyle: .alert)
+                alertViewController.addTextField { (textField) in
+                    textField.placeholder = "Other"
+                    textField.returnKeyType = .done
+                }
+                
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (action) in
+                    if let textField = alertViewController.textFields?.first, let text = textField.text {
+                        button.setTitle(text, for: .normal)
+                        
+                        if var values = question.Value?.split(separator: ",").compactMap({String($0)}) {
+                            if let index = values.firstIndex(of: text) {
+                                values.remove(at: index)
+                            } else {
+                                values.append(text)
+                            }
+                            value = values.joined(separator: ",")
+                            self.updateValue(indexPath: indexPath, value: value)
+                        }
+                    }
+                }
+                
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                    button.isChecked = false
+                    self.updateValue(indexPath: indexPath, value: nil)
+                    return
+                }
+                
+                alertViewController.addAction(confirmAction)
+                alertViewController.addAction(cancelAction)
+                
+                self.present(alertViewController, animated: true, completion: nil)
+            }
+            
             if var values = question.Value?.split(separator: ",").compactMap({String($0)}) {
                 if let index = values.firstIndex(of: value) {
                     values.remove(at: index)
@@ -707,6 +777,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                 let alertViewController = UIAlertController(title: "Other", message: nil, preferredStyle: .alert)
                 alertViewController.addTextField { (textField) in
                     textField.placeholder = "Other"
+                    textField.returnKeyType = .done
                 }
                 
                 let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (action) in
@@ -739,28 +810,23 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         if question.Interdependence == "Yes" {
             
             let secNum = indexPath.section
-            var questionnaire = self.prjData.prjQuestionnaire
-            var secQuestions = questionnaire[secNum].Questions
             
-            secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value == value}).forEach({ secQuestions[$0.offset].Mandatory = "Yes" })
+            self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value == value}).forEach({ self.prjData.prjQuestionnaire[secNum].Questions[$0.offset].Mandatory = "Yes" })
         
-            secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value}).forEach({ secQuestions[$0.offset].Mandatory = "No" })
+            self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value}).forEach({ self.prjData.prjQuestionnaire[secNum].Questions[$0.offset].Mandatory = "No" })
 
-            let relatedQuestions = secQuestions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value})
+            let relatedQuestions = self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value})
             
             let array = self.initialValue.map({$0.items}).joined().filter({ question in
                 question.Value != nil && question.Value != "" && !relatedQuestions.contains(where: {$0.element.Name == question.Name})})
             
             array.forEach { (question) in
-                questionnaire.enumerated().forEach({ (offset, element) in
+                self.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
                     if let row = element.Questions.firstIndex(where: {$0.Name == question.Name}) {
-                        secQuestions[row].Value = question.Value
+                        self.prjData.prjQuestionnaire[offset].Questions[row].Value = question.Value
                     }
                 })
             }
-            
-            questionnaire[secNum].Questions = secQuestions
-            self.prjData.prjQuestionnaire = questionnaire
             
             self.initialValue = self.loadData()
 
@@ -780,7 +846,7 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
                 let text = String("\(offset):\(index)")
                 
                 let label = StringItem(text: text)
-                label.tintColor = ( question.Value != "" ) ? UIColor(named: "PSC_Green") : UIColor.lightGray
+                label.tintColor = ( question.Value != "" ) ? UIColor(named: "PSC_Blue") : UIColor.lightGray
                 return label
             })
             
@@ -804,7 +870,7 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
         }) else { return }
         
         UIView.animate(withDuration: 0.25, animations: {
-            indexItem.tintColor = checked ? UIColor(named: "PSC_Green") : UIColor.lightGray
+            indexItem.tintColor = checked ? UIColor(named: "PSC_Blue") : UIColor.lightGray
         })
     }
 

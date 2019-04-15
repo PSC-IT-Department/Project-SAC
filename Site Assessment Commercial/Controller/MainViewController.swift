@@ -47,6 +47,7 @@ class MainViewController: UIViewController {
         loadData()
         setupView()
         setupDataSource()
+        setupViewModel()
         setupGoogleSignIn()
         setupCurrentUser()
         setupCellTapHandling()
@@ -83,8 +84,10 @@ extension MainViewController {
     
     private func loadData() {
         
-        if let typeValue = titleProjectType.title(for: .normal), let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: typeValue) {
+        let type = DataStorageService.sharedDataStorageService.retrieveTypeOption()
+        if let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: type) {
             self.prjList = prjList
+            
         }
     }
     
@@ -94,8 +97,8 @@ extension MainViewController {
         
         self.prjList.append(contentsOf: newPrjList)
         
-        self.prjList.forEach{DataStorageService.sharedDataStorageService.storeData(withData: $0, onCompleted: nil)}
-        
+        DataStorageService.sharedDataStorageService.updateLocalProject(prjList: self.prjList)
+        newPrjList.forEach{DataStorageService.sharedDataStorageService.storeData(withData: $0, onCompleted: nil)}
     }
     
     func reloadPrjList() {
@@ -113,7 +116,7 @@ extension MainViewController {
         
         // Auto Layout
         self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42.0
+        self.tableView.estimatedRowHeight = 44.0
         
         self.tableView.backgroundColor = UIColor.clear
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
@@ -188,7 +191,6 @@ extension MainViewController {
                     DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
                     
                     self.setupViewModel()
-                    
                 }
                 
                 let cancelAction = CancelButton(title: "Cancel", action: nil)
@@ -217,8 +219,8 @@ extension MainViewController {
         refreshControl.addTarget(self, action: .refreshData, for: .valueChanged)
     }
     
-    private func refreshDataManually() {
-        perform(.refreshData, with: nil, afterDelay: 1)
+    private func refreshDataManually(withDelay delay: Double = 1.0) {
+        perform(.refreshData, with: nil, afterDelay: delay)
     }
     
     @objc func refreshData(_ sender: Any) {
@@ -292,7 +294,9 @@ extension MainViewController {
     
         switch option {
         case .status, .none:
-            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue})
+            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue}).sorted { (d1, d2) -> Bool in
+                d1.key < d2.key
+            }
             
             let sections = dictionary.map { (key, value) -> MainSection in
                 let model = key
@@ -303,12 +307,13 @@ extension MainViewController {
             self.sections.accept(sections)
             
         case .assignedTeam:
-            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.assignedTeam})
+            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.assignedTeam}).sorted { (d1, d2) -> Bool in
+                d1.key < d2.key
+            }
             
             let sections = dictionary.map { (key, value) -> MainSection in
-                let model = key ?? ""
+                let model = key
                 let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
-                
                 
                 return MainSection(model: model, items: items)
             }
@@ -334,19 +339,21 @@ extension MainViewController {
         tableView
             .rx
             .itemSelected
-            .subscribe(onNext: { [weak self] _ in
-                if let indexPath = self?.tableView.indexPathForSelectedRow, let prjData = self?.prjList[indexPath.row] {
-                    self?.tableView.deselectRow(at: indexPath, animated: true)
+            .subscribe(onNext: { [weak self] indexPath in
+                let cell = self?.tableView.cellForRow(at: indexPath) as! MainCell
+                self?.tableView.deselectRow(at: indexPath, animated: true)
 
-                    let viewController = ProjectInformationViewController.instantiateFromStoryBoard(withProjectData: prjData)
-
+                if let text = cell.labelProjectAddress.text, let prjData = self?.prjList.first(where: {$0.prjInformation.projectAddress == text}) {
+                    
+                    DataStorageService.sharedDataStorageService.setCurrentProject(projectID: prjData.prjInformation.projectID)
+                    
+                    let viewController = ProjectInformationViewController.instantiateFromStoryBoard()
+                    
                     self?.navigationController?.pushViewController(viewController, animated: true)
                 }
-                
             })
             .disposed(by: disposeBag)
     }
-
 }
 
 fileprivate extension Selector {
@@ -387,6 +394,7 @@ extension MainViewController: NotificationBannerDelegate {
             prjList[index].prjInformation.uploadedDate = dateString
             
             DataStorageService.sharedDataStorageService.storeData(withData: prjList[index], onCompleted: nil)
+            DataStorageService.sharedDataStorageService.updateProject(prjData: prjList[index])
             setupViewModel()
         }
     }
@@ -428,7 +436,7 @@ extension MainViewController: NotificationBannerDelegate {
         var style: BannerStyle = .none
         if msg == "Online Mode", NetworkService.sharedNetworkService.reachabilityStatus == .connected {
             style = .info
-            self.refreshDataManually()
+            self.refreshDataManually(withDelay: 0.0)
         } else if msg == "Offline Mode", NetworkService.sharedNetworkService.reachabilityStatus == .disconnected {
             style = .warning
         }

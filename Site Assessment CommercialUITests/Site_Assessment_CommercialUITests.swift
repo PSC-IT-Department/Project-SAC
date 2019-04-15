@@ -18,6 +18,9 @@ class Site_Assessment_CommercialUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
+
+        app.launch()
+
     }
 
     override func tearDown() {
@@ -75,6 +78,5 @@ extension Site_Assessment_CommercialUITests {
     }
     
     func testVC() {
-        
     }
 }

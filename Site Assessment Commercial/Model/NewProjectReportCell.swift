@@ -84,6 +84,10 @@ class TrussTypeCell: UICollectionViewCell {
                 textField.placeholder = "Please select a shape."
             }
         }
+        
+        textField.autocorrectionType = .no
+        textField.inputAssistantItem.leadingBarButtonGroups = []
+        textField.inputAssistantItem.trailingBarButtonGroups = []
 
         /*
         if let imgAttrs = imageAttrs {
@@ -175,6 +179,11 @@ class ImageCell: UICollectionViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
     var disposeBag = DisposeBag()
+    
+    var imageAttrs: [ImageAttributes]? = nil
+    var images: [UIImage]? = nil
+    
+    private let imageDefault = UIImage(named: "Add_Pictures")!
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         
@@ -183,27 +192,35 @@ class ImageCell: UICollectionViewCell {
         return layoutAttributes
     }
     
-    func setupCell(question: QuestionStructure, imageAttrs: [ImageAttributes]?) {
-        
+    func loadImages(_ questionName: String) {
         guard let prjFolder = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory else {
             print("[retrieveData - FileManager.default.urls] failed.")
             return
         }
-        
-        let questionImages = try? FileManager.default.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent.contains(question.Name) && $0.pathExtension == "png" }.map { (fileURL) -> UIImage in
-            guard let image = UIImage(contentsOfFile: fileURL.path)
-                else {
-                    print("[retrieveProjectList - JSONDecoder().decode failed]")
-                    return UIImage()
+
+        let questionImageAttrs = try? FileManager.default.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent.contains(questionName) && $0.pathExtension == "png" }.compactMap { url -> (UIImage?, ImageAttributes?) in
+            
+            if let image = UIImage(contentsOfFile: url.path) {
+                let fileName = url.deletingPathExtension().lastPathComponent
+                let imgAttr = ImageAttributes(name: fileName)
+                
+                return (image, imgAttr)
             }
             
-            return image
+            return (nil, nil)
         }
+        
+        self.imageAttrs = questionImageAttrs?.compactMap({$0.1})
+        self.images = questionImageAttrs?.compactMap({$0.0})
+    }
+        
+    func setupCell(question: QuestionStructure) {
         
         labelKey.text = question.Name
 
+        loadImages(question.Name)
         collectionView.isUserInteractionEnabled = false
-        collectionView.images = questionImages ?? []
+        collectionView.images = self.images ?? []
         collectionView.reloadData()
     }
     
@@ -212,7 +229,7 @@ class ImageCell: UICollectionViewCell {
         disposeBag = DisposeBag()
 
         labelKey.text = nil
-        collectionView.images = [UIImage(named: "Add_Pictures")!]
+        collectionView.images = [imageDefault]
     }
     
 }
@@ -286,7 +303,11 @@ class InputsCell: UICollectionViewCell {
     func setupTextField(options: [String]?, value: String?) {
         textField.isUserInteractionEnabled = false
         textField.keyboardType = .numberPad
-        
+
+//        textField.autocorrectionType = .no
+//        textField.inputAssistantItem.leadingBarButtonGroups = []
+//        textField.inputAssistantItem.trailingBarButtonGroups = []
+
         if let value = value, value != "" {
             textField.text = value
         } else {

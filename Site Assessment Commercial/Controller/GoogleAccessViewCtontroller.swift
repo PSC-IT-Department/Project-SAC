@@ -67,7 +67,7 @@ class GoogleAccessViewController: UIViewController {
     private func setupForSignIn() {
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive]
+        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive, kGTLRAuthScopeCalendar]
         GIDSignIn.sharedInstance().shouldFetchBasicProfile = true
         GIDSignIn.sharedInstance().signInSilently()
 

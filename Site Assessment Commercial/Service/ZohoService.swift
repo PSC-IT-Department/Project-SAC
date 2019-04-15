@@ -8,6 +8,12 @@
 
 import Foundation
 
+enum ZohoKeywordMap: String {
+    case Status = "sa_status"
+    case ProjectID = "sa_projectID"
+    case AssignedTeam = "sa_assignedTeam"
+}
+
 class ZohoService {
     
     // Public Information
@@ -43,6 +49,23 @@ class ZohoService {
 
     public static func instantiateSharedInstance() {
         sharedZohoService = ZohoService()
+    }
+    
+    init () {
+        guard let path = Bundle.main.url(forResource: "ThirdpartyInfo", withExtension: "plist") else { return }
+        
+        if let data = try? Data(contentsOf: path),
+            let plist = try? PropertyListSerialization.propertyList(from: data, options: .mutableContainers, format: nil),
+            let dictArray = plist as? [[String:Any]] {
+            
+            if let sectionZoho = dictArray.last,
+                let value = sectionZoho["Name"] as? String,
+                value == "Zoho",
+                let zohoConfig = sectionZoho["Settings"] as? [String: String]
+                {
+                    print("zohoConfig = \(zohoConfig)")
+            }
+        }
     }
     
     public func lookupZohoUser(onCompleted: ((String?) -> ())?) {
@@ -96,7 +119,6 @@ class ZohoService {
             }
             
             onCompleted?(zohoAccount)
-            return
         }
         
         task.resume()
@@ -162,17 +184,20 @@ class ZohoService {
                 
                 let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
                 
-                guard let responseData = data,
+                if let responseData = data,
                     let jsonResponse = ((try? JSONSerialization.jsonObject(with:
-                        responseData, options: []) as? [String: [[String: String]]]) as [String : [[String : String]]]??),
-                    let zohoData = jsonResponse?[formName]
-                    else {
-                            onCompleted?(nil)
-                            return
+                        responseData, options: []) as? [String: [[String: String]]])),
+                    let zohoData = jsonResponse[formName]
+                     {
+                        DataStorageService.sharedDataStorageService.writeToLog("dataTask decoded successfully.")
+                        DataStorageService.sharedDataStorageService.writeToLog("zohoData = \(zohoData)")
+                        onCompleted?(zohoData)
+                        return
+                } else {
+                    
+                    DataStorageService.sharedDataStorageService.writeToLog("dataTask decoded failed.")
+                    onCompleted?(nil)
                 }
-                
-                onCompleted?(zohoData)
-                return
             }
             
             task.resume()
@@ -180,11 +205,16 @@ class ZohoService {
 
     }
     
-    public func uploadData(projectID: String, saData:[String: String], onCompleted: @escaping (Bool) -> ()) {
-        let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/form/\(sacFormName)/record/update"
+    public func uploadData(projectID: String, saData:[String: String], onCompleted: ((Bool) -> ())?) {
+
+        let data = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+        let type = data.prjInformation.type
+        let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
+        let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/form/" + formName + "/record/update"
 
         guard var urlComponents = URLComponents(string: uploadBaseURL) else {
-            onCompleted(false)
+            DataStorageService.sharedDataStorageService.writeToLog("uploadData URLComponents failed.")
+            onCompleted?(false)
             return
         }
         
@@ -198,7 +228,8 @@ class ZohoService {
         urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
-            onCompleted(false)
+            DataStorageService.sharedDataStorageService.writeToLog("uploadData url = urlComponents.url")
+            onCompleted?(false)
             return
         }
         
@@ -206,7 +237,8 @@ class ZohoService {
         request.httpMethod = "POST"
         
         guard let uploadData = saData.compactMap ({ (key, value) in [key, value].joined(separator: "=")}).joined(separator: "&").data(using: .utf8) else {
-            onCompleted(false)
+            DataStorageService.sharedDataStorageService.writeToLog("uploadData uploadData = saData.compactMap")
+            onCompleted?(false)
             return
         }
         
@@ -216,50 +248,61 @@ class ZohoService {
             }
             
             guard let respData = data,
-                  let response = response as? HTTPURLResponse,
-                  (200...299).contains(response.statusCode)
+                let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode)
                 else {
-                onCompleted(false)
-                return
-            }
-            guard let dataString = String(data: respData, encoding: .utf8), dataString.contains("Success") else {
-                onCompleted(false)
-                return
+                    DataStorageService.sharedDataStorageService.writeToLog("uploadData respData = data")
+                    onCompleted?(false)
+                    return
             }
             
-            onCompleted(true)
-            
+            if let dataString = String(data: respData, encoding: .utf8) {
+                print("dataString: \(dataString)")
+                DataStorageService.sharedDataStorageService.writeToLog("dataString: \(dataString)")
+
+                if dataString.contains("Success") {
+                    print("Success.")
+                    onCompleted?(true)
+                    return
+                }
+            } else {
+                print("uploadData dataString conversion failed.")
+                DataStorageService.sharedDataStorageService.writeToLog("uploadData dataString conversion failed.")
+                onCompleted?(false)
+            }
         }
         
         task.resume()
     }
     
-    public func uploadProject(withData saData:SiteAssessmentDataStructure, onCompleted: @escaping (Bool) -> ()) {
+    public func uploadProject(withData saData:SiteAssessmentDataStructure, onCompleted: ((Bool) -> ())?) {
         var sendData: [String: String] = [:]
         
-        if let prjID = saData.prjInformation.projectID {
+        guard let prjID = saData.prjInformation.projectID else {
+            print("uploadProject cannot get prjID.")
+            onCompleted?(false)
+            return
+        }
         
-            sendData.updateValue(prjID, forKey: saProjectID)
-            sendData.updateValue(UploadStatus.completed.rawValue, forKey: saStatus)
-            
-            saData.prjQuestionnaire.forEach { (section) in
-                section.Questions.forEach{ (question) in
-                    if let value = question.Value {
-                        sendData.updateValue(value, forKey: question.Key)
-                    }
-                }
-            }
-                        
-            uploadData(projectID: prjID, saData: sendData) { (success) in
-                onCompleted(success)
-            }
+        sendData.updateValue(prjID, forKey: saProjectID)
+        sendData.updateValue(UploadStatus.completed.rawValue, forKey: saStatus)
+        
+        saData.prjQuestionnaire.compactMap({$0.Questions}).joined().compactMap({($0.Key, $0.Value)}).forEach({sendData.updateValue($0.1 ?? "", forKey: $0.0)})
+        
+        uploadData(projectID: prjID, saData: sendData) { (success) in
+            onCompleted?(success)
         }
     }
     
-    public func setRemoteToUploading(projectID: String, onCompleted: @escaping (Bool) -> ()) {
+    public func setRemoteToUploading(projectID: String, onCompleted:((Bool) -> ())?) {
         uploadData(projectID: projectID, saData: [saStatus: UploadStatus.uploading.rawValue]) { (success) in
-            onCompleted(success)
+            if success {
+                print("setRemoteToUploading uploadData success.")
+                onCompleted?(true)
+            } else {
+                print("setRemoteToUploading uploadData failed.")
+                onCompleted?(false)
+            }
         }
     }
-        
 }

@@ -19,7 +19,7 @@ enum MapTypeOptions: UInt {
     case satellite  = 1
     case hybrid     = 2
     
-    var type: (index: UInt, description: String) {
+    var type: (index: Int, description: String) {
         switch self {
         case .standard:
             return (0, "Standard")
@@ -63,16 +63,24 @@ struct ProjectInformationStructure: Codable {
     var assignedDate    : String!
     var uploadedDate    : String?
     
+    var customerName    : String?
+    var email           : String?
+    var phoneNumber     : String?
+    
     private enum CodingKeys: String, CodingKey {
         case projectAddress = "sa_projectAddress"
         case projectID      = "sa_projectID"
         case type           = "sa_type"
         case status         = "sa_status"
         
-        case scheduleDate   = "sa_sheduleDate"
+        case scheduleDate   = "sa_scheduleDate"
         case assignedTeam   = "sa_assignedTeam"
         case assignedDate   = "sa_assignedDate"
         case uploadedDate   = "sa_uploadedDate"
+        
+        case customerName   = "sa_customerName"
+        case email          = "sa_email"
+        case phoneNumber    = "sa_phoneNumber"
     }
 
     init() {
@@ -81,10 +89,14 @@ struct ProjectInformationStructure: Codable {
         self.type           = .SiteAssessmentNone
         self.status         = .pending
 
-        self.scheduleDate   = nil
+        self.scheduleDate   = ""
         self.assignedTeam   = ""
         self.assignedDate   = ""
-        self.uploadedDate   = nil
+        self.uploadedDate   = ""
+        
+        self.customerName   = ""
+        self.email          = ""
+        self.phoneNumber    = ""
     }
     
     init(from decoder: Decoder) throws {
@@ -93,10 +105,15 @@ struct ProjectInformationStructure: Codable {
         projectID       = try values.decode(String.self, forKey: .projectID)
         type            = try values.decode(SiteAssessmentType.self, forKey: .type)
         status          = try values.decode(UploadStatus.self, forKey: .status)
+
         scheduleDate    = try values.decode(String.self, forKey: .scheduleDate)
         assignedTeam    = try values.decode(String.self, forKey: .assignedTeam)
         assignedDate    = try values.decode(String.self, forKey: .assignedDate)
         uploadedDate    = try values.decode(String.self, forKey: .uploadedDate)
+
+        customerName    = try values.decode(String.self, forKey: .customerName)
+        email           = try values.decode(String.self, forKey: .email)
+        phoneNumber     = try values.decode(String.self, forKey: .phoneNumber)
     }
     
     init(withZohoData data: [String: String]) {
@@ -108,6 +125,7 @@ struct ProjectInformationStructure: Codable {
             let assignedTeam = data[CodingKeys.assignedTeam.rawValue],
             let assignedDate = data[CodingKeys.assignedDate.rawValue]
             else {
+                DataStorageService.sharedDataStorageService.writeToLog("withZohoData failed.")
                 print("withZohoData failed.")
                 return
         }
@@ -123,7 +141,11 @@ struct ProjectInformationStructure: Codable {
         self.assignedDate   = assignedDate
 
         self.assignedTeam   = assignedTeam
-        self.uploadedDate   = nil
+        self.uploadedDate   = ""
+        
+        self.customerName   = data[CodingKeys.customerName.rawValue]
+        self.email          = data[CodingKeys.email.rawValue]
+        self.phoneNumber    = data[CodingKeys.phoneNumber.rawValue]
     }
     
     func toDictionary() -> [String: String?] {
@@ -136,7 +158,11 @@ struct ProjectInformationStructure: Codable {
             "Schedule Date": self.scheduleDate,
             "Assigned Team": self.assignedTeam,
             "Assigned Date": self.assignedDate,
-            "Upload Date": self.uploadedDate
+            "Uploaded Date": self.uploadedDate,
+            
+            "Customer Name": self.customerName,
+            "Email":self.email,
+            "Phone Number" : self.phoneNumber
         ]
     }
 }
@@ -169,7 +195,7 @@ struct ImageAttributes: Codable {
 
 struct ImageArrayStructure: Codable {
     var key: String
-    var images: [ImageAttributes]
+    var images: [ImageAttributes]?
     
     private enum CodingKeys: CodingKey {
         case key
@@ -181,7 +207,7 @@ struct ImageArrayStructure: Codable {
         self.images = []
     }
     
-    init(key: String, images: [ImageAttributes]) {
+    init(key: String, images: [ImageAttributes]?) {
         self.key = key
         self.images = images
     }
@@ -249,6 +275,8 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
                     }
                 })
             }
+            
+            self.prjImageArray = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image}).compactMap({ImageArrayStructure(key: $0.Name, images: [])})
         case .failure(let error):
             print("Decoder failed. Error = \(error.localizedDescription)")
             self.prjQuestionnaire = []

@@ -452,7 +452,7 @@
 				<key>Default</key>
 				<string></string>
 				<key>Image</key>
-				<string></string>
+				<string>End Three Web Member Type</string>
 				<key>Mandatory</key>
 				<string>Yes</string>
 				<key>Value</key>
@@ -472,7 +472,7 @@
 				<key>Options</key>
 				<array/>
 				<key>Default</key>
-				<string>Notes:</string>
+				<string>Notes: </string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
@@ -703,7 +703,7 @@
 				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Number of Service</string>
+					<string>1 - 5</string>
 				</array>
 				<key>Default</key>
 				<string></string>

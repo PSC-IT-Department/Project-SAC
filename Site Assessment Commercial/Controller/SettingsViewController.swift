@@ -54,9 +54,9 @@ extension SettingsViewController {
     
     private func setupViewModel() {
         let settingsSections: [SettingsSection] = [
-            SettingsSection(model: "Preferences", items: ["Grouping by", "Map Type"]),
+            SettingsSection(model: "Preferences", items: ["Group By", "Map Type"]),
             SettingsSection(model: "Integration", items: ["Google", "Zoho CRM"]),
-            SettingsSection(model: "", items: ["Report a bug?", "About this App"])
+            SettingsSection(model: "", items: ["User Manual", "Report a Bug?", "About this App", "Clear Cache"])
         ]
 
         self.sections.accept(settingsSections)
@@ -132,16 +132,34 @@ extension SettingsViewController {
                         let vc = GoogleAccessViewController.instantiateFromStoryBoard()
                         self?.navigationController?.pushViewController(vc, animated: true)
                     
-                    // Report a bug?
+                    // User Manual
                     case (2, 0):
-                        print("Report a bug")
+                        let vc = UserManualViewController.instantiateFromStoryBoard()
+                        self?.navigationController?.pushViewController(vc, animated: true)
+
+                    // Report a Bug?
+                    case (2, 1):
                         self?.sendLog()
                         
                     // About this App
-                    case (2, 1):
+                    case (2, 2):
                         let vc = AboutViewController.instantiateFromStoryBoard()
                         self?.navigationController?.pushViewController(vc, animated: true)
                         
+                    // Clear cache
+                    case (2, 3):
+                        let alertVC = UIAlertController(title: "Clear Cache", message: nil, preferredStyle: .alert)
+                        let confirmAction = UIAlertAction(title: "Confirm", style: .default, handler: { (action) in
+                            self?.clearCache()
+                        })
+                        
+                        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                        
+                        alertVC.addAction(confirmAction)
+                        alertVC.addAction(cancelAction)
+                        
+                        self?.present(alertVC, animated: true, completion: nil)
+
                     default:
                         return
                     }
@@ -193,14 +211,21 @@ extension SettingsViewController {
                     }
                     cell.imageIcon.image = UIImage(named: "icons8-google-48")
                     
-                // Report a Bug?
                 case (2, 0):
+                    cell.accessoryType = .disclosureIndicator
+                    
+                // Report a Bug?
+                case (2, 1):
                     cell.accessoryType = .detailButton
                     
                 // About this App
-                case (2, 1):
+                case (2, 2):
                     cell.accessoryType = .disclosureIndicator
 
+                // Clear cache
+                case (2, 3):
+                    cell.labelKey.textColor = UIColor.red
+                    cell.accessoryType = .none
                 default:
                     cell.accessoryType = .none
                 }
@@ -209,6 +234,18 @@ extension SettingsViewController {
                 return ds[section].model
             }
             )
+    }
+    
+    func clearCache() {
+        guard let homeDir = DataStorageService.sharedDataStorageService.homeDirectory else { return }
+        
+        let result = Result {try FileManager.default.removeItem(at: homeDir)}
+        switch result {
+        case .success(_):
+            print("Success")
+        case .failure(let error):
+            print("Error = \(error)")
+        }
     }
 }
 
@@ -233,15 +270,26 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
     func sendLog() {
         if !MFMailComposeViewController.canSendMail() {
             print("Mail services are not available")
+            
+            let alertVC = UIAlertController(title: "Report a bug?", message: "Mail services are not available, the user’s device is not set up for the delivery of email.", preferredStyle: .alert)
+            
+            let confirmAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            
+            alertVC.addAction(confirmAction)
+            
+            self.present(alertVC, animated: true, completion: nil)
             return
         }
         
         let composeVC = MFMailComposeViewController()
         composeVC.mailComposeDelegate = self
         
+        let date = DateFormatter().string(from: Date())
+        let email = GoogleService.sharedGoogleService.retrieveGoogleUserEmail()
+        
         composeVC.setToRecipients(["it@polaronsolar.com"])
-        composeVC.setSubject("[Log]")
-        composeVC.setMessageBody("Hello from California!", isHTML: false)
+        composeVC.setSubject("[Site Assessment] Report a Bug? - \(date) - \(email ?? "")")
+        composeVC.setMessageBody("    ", isHTML: false)
         
         if let data = DataStorageService.sharedDataStorageService.getLog() {
             composeVC.addAttachmentData(data, mimeType: "text/plain", fileName: "log")

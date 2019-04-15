@@ -991,10 +991,10 @@
 				<string>Inputs</string>
 				<key>Options</key>
 				<array>
-					<string>Top</string>
-					<string>Right</string>
-					<string>Bottom</string>
-					<string>Left</string>
+					<string>U</string>
+					<string>R</string>
+					<string>D</string>
+					<string>L</string>
 				</array>
 				<key>Default</key>
 				<string></string>
@@ -1654,7 +1654,7 @@
 				<key>Options</key>
 				<array/>
 				<key>Default</key>
-				<string>Notes:</string>
+				<string>Notes: </string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>

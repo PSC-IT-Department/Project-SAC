@@ -18,7 +18,6 @@ class ProjectInformationViewController: UIViewController {
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     
-    private var titleString: String!
     private var prjData = SiteAssessmentDataStructure()
 
     private let locationManager = CLLocationManager()
@@ -43,11 +42,9 @@ class ProjectInformationViewController: UIViewController {
         
     }
 
-    static func instantiateFromStoryBoard(withProjectData data: SiteAssessmentDataStructure) -> ProjectInformationViewController {
+    static func instantiateFromStoryBoard() -> ProjectInformationViewController {
         let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ProjectInformationViewController") as! ProjectInformationViewController
-        viewController.prjData = data
-        viewController.titleString = data.prjInformation.projectAddress
-        DataStorageService.sharedDataStorageService.storeCurrentProjectData(data: data)
+        viewController.prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
         return viewController
     }
     
@@ -60,13 +57,14 @@ class ProjectInformationViewController: UIViewController {
 extension ProjectInformationViewController {
 
     private func setupView() {
-        self.title = titleString
+        self.title = self.prjData.prjInformation.projectAddress
+        
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
         self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
 
         // Auto Layout
         self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42
+        self.tableView.estimatedRowHeight = 42.0
         
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground()
@@ -77,6 +75,11 @@ extension ProjectInformationViewController {
             ProjectInformationViewModel(key: "Project Address", value: prjData.prjInformation.projectAddress),
             ProjectInformationViewModel(key: "Status",          value: prjData.prjInformation.status.rawValue),
             ProjectInformationViewModel(key: "Type",            value: prjData.prjInformation.type.rawValue),
+
+            ProjectInformationViewModel(key: "Customer Name",   value: prjData.prjInformation.customerName),
+            ProjectInformationViewModel(key: "Email",           value: prjData.prjInformation.email),
+            ProjectInformationViewModel(key: "Phone Number",    value: prjData.prjInformation.phoneNumber),
+
             ProjectInformationViewModel(key: "Schedule Date",   value: prjData.prjInformation.scheduleDate),
             ProjectInformationViewModel(key: "Assigned Date",   value: prjData.prjInformation.assignedDate)
         ]
@@ -93,14 +96,14 @@ extension ProjectInformationViewController {
                 return cell
             }
             .disposed(by: disposeBag)
+        
     }
     
     private func setupCellTapHandling() {
         tableView
             .rx
             .itemSelected
-            .subscribe(onNext: { [weak self] _ in
-                guard let indexPath = self?.tableView.indexPathForSelectedRow else { return }
+            .subscribe(onNext: { [weak self] indexPath in
                 self?.tableView.deselectRow(at: indexPath, animated: true)
             })
             .disposed(by: disposeBag)
@@ -122,14 +125,13 @@ extension ProjectInformationViewController {
             .tap
             .subscribe(onNext: { [unowned self] (_) in
                 let status = self.prjData.prjInformation.status
-                
                 switch status {
                 case .completed?:
                     let viewController = ReviewViewController.instantiateFromStoryBoard(withProjectData: self.prjData)
                     self.navigationController?.pushViewController(viewController, animated: true)
                 
                 default:
-                    let viewController = NewProjectReportViewController.instantiateFromStoryBoard(withProjectData: self.prjData)
+                    let viewController = NewProjectReportViewController.instantiateFromStoryBoard()
                     self.navigationController?.pushViewController(viewController, animated: true)
                 }
             })

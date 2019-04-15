@@ -8,7 +8,12 @@
 
 import Foundation
 
-struct ProjectInformationViewModel {
+import RxSwift
+import RxCocoa
+import RxDataSources
+
+struct ProjectInformationViewModel: IdentifiableType, Equatable {
+    var identity: Int?
     var key: String
     var value: String?
     

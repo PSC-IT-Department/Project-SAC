@@ -47,72 +47,52 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
             return
         }
         
+        var msg: Notification.Name = .didReceiveErrorMsg
+        var msgObject: Any = prjID
+
         LoadingIndicatorView.show("Processing...")
         
-        DataStorageService.sharedDataStorageService.storeData(withData: prjData) { [weak self] (success, error) in
-            var msg: Notification.Name = .didReceiveErrorMsg
-            var msgObject: Any = prjID
-
-            if success {
-                print("DataStorageService.sharedDataStorageService.storeData successfully")
-                
-                if NetworkService.sharedNetworkService.reachabilityStatus == .connected {
-                    
-                    LoadingIndicatorView.hide()
-                    
-                    self?.navigationController?.popToRootViewController(animated: true)
-
-                    DispatchQueue.main.async {
-                        ZohoService.sharedZohoService.setRemoteToUploading(projectID: prjID) { (success) in
-                            if success, let prjData = self?.prjData {
-                                print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
-                                NotificationCenter.default.post(name: .didReceiveProcessingMsg, object: msgObject)
-                                
-                                GoogleService.sharedGoogleService.uploadProject(withData: prjData) { (success, error) in
-                                    if let err = error {
-                                        print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
-                                    }
-                                    
+        if NetworkService.sharedNetworkService.reachabilityStatus == .connected {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+                ZohoService.sharedZohoService.setRemoteToUploading(projectID: prjID) {success in
+                    guard let strongSelf = self else { return }
+                    print("success = \(success)")
+                    if success {
+                        print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
+                        
+                        NotificationCenter.default.post(name: .didReceiveProcessingMsg, object: msgObject)
+                        
+                        GoogleService.sharedGoogleService.uploadProject(withData: strongSelf.prjData) { (success, error) in
+                            if let err = error {
+                                print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
+                            }
+                            
+                            if success {
+                                print("GoogleService.sharedGoogleService.uploadProject successfully.")
+                                ZohoService.sharedZohoService.uploadProject(withData: strongSelf.prjData, onCompleted: { (success) in
                                     if success {
-                                        print("GoogleService.sharedGoogleService.uploadProject successfully.")
-                                        ZohoService.sharedZohoService.uploadProject(withData: prjData, onCompleted: { (success) in
-                                            if success {
-                                                print("ZohoService.sharedZohoService.uploadProject successfully.")
-                                                NotificationCenter.default.post(name: .didReceiveCompleteMsg, object: msgObject)
-                                            } else {
-                                                print("ZohoService.sharedZohoService.uploadProject failed.")
-                                            }
-                                        })
+                                        print("ZohoService.sharedZohoService.uploadProject successfully.")
+                                        NotificationCenter.default.post(name: .didReceiveCompleteMsg, object: msgObject)
+                                    } else {
+                                        print("ZohoService.sharedZohoService.uploadProject failed.")
                                     }
-                                }
-                            } else {
-                                print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
+                                })
                             }
                         }
+                    } else {
+                        print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
                     }
-                } else {
-                    msg = .didReceiveWarningMsg
-                    msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
-                    LoadingIndicatorView.hide()
-                    NotificationCenter.default.post(name: msg, object: msgObject)
-                    self?.navigationController?.popToRootViewController(animated: true)
                 }
-                
-                /*DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    LoadingIndicatorView.hide()
-                    
-                    self.navigationController?.popToRootViewController(animated: true)
-                    return
-                } */
-            } else {
-                print("Store data failed. Error=\(error!)")
-                DispatchQueue.main.async() {
-                    LoadingIndicatorView.hide()
-                    self?.navigationController?.popToRootViewController(animated: true)
-                    NotificationCenter.default.post(name: msg, object: msgObject)
-                    return
-                }
+                LoadingIndicatorView.hide()
+                self?.navigationController?.popToRootViewController(animated: true)
             }
+            
+        } else {
+            msg = .didReceiveWarningMsg
+            msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
+            LoadingIndicatorView.hide()
+            NotificationCenter.default.post(name: msg, object: msgObject)
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
 }
@@ -131,25 +111,18 @@ extension ReviewViewController {
     }
 
     private func setupViewModel() {
-        var viewModel = prjData.prjInformation.toDictionary().map { (key, value) -> ReviewViewModel in
-            return ReviewViewModel(key: key, value: value)
-        }
-
-        prjData.prjQuestionnaire.forEach { (section) in
-            let questions = section.Questions.map { (question) -> ReviewViewModel in
-                return ReviewViewModel(key: question.Name, value: question.Value)
-            }
-            
-            viewModel.append(contentsOf: questions)
-        }
+        var viewModel = [
+            ReviewViewModel(key: "Project Address", value: prjData.prjInformation.projectAddress),
+            ReviewViewModel(key: "Status",          value: prjData.prjInformation.status.rawValue),
+            ReviewViewModel(key: "Type",            value: prjData.prjInformation.type.rawValue),
+            ReviewViewModel(key: "Schedule Date",   value: prjData.prjInformation.scheduleDate),
+            ReviewViewModel(key: "Assigned Date",   value: prjData.prjInformation.assignedDate),
+            ReviewViewModel(key: "Uploaded Date",   value: prjData.prjInformation.uploadedDate)
+        ]
         
-        prjData.prjImageArray.forEach { (imageArray) in
-            let images = imageArray.images.map { (imageAttr) -> ReviewViewModel in
-                return ReviewViewModel(key: imageAttr.name, value: imageAttr.status.rawValue)
-            }
-            
-            viewModel.append(contentsOf: images)
-        }
+        let questions = prjData.prjQuestionnaire.compactMap({$0.Questions}).joined().compactMap({ReviewViewModel(key: $0.Name, value: $0.Value)})
+                
+        viewModel.append(contentsOf: questions)
         
         observableViewModel = Observable.of(viewModel)
     }

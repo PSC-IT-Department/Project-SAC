@@ -26,6 +26,8 @@ class DataStorageService {
     public var homeDirectory: URL!
     public var currentProjectHomeDirectory: URL!
     public var currentProjectID: String!
+    
+    public var projectList: [SiteAssessmentDataStructure]? = nil
         
     private var prjData: SiteAssessmentDataStructure! {
         didSet {
@@ -36,6 +38,8 @@ class DataStorageService {
 
     private init() {
         getHomeDirectory()
+        
+        loadLocalProject()
     }
     
     deinit {
@@ -48,6 +52,51 @@ class DataStorageService {
         }
         
         homeDirectory = documentsURL
+    }
+    
+    public func updateProject(prjData: SiteAssessmentDataStructure) {
+        if let index = self.projectList?.firstIndex(where: {$0.prjInformation.projectID == prjData.prjInformation.projectID}) {
+            self.projectList?[index] = prjData
+        }
+    }
+    
+    public func updateLocalProject(prjList: [SiteAssessmentDataStructure]) {
+        
+        if let localPrj = self.projectList {
+                       
+            let newProjects = prjList.filter({newPrj in
+                !localPrj.contains(where: {$0.prjInformation.projectID == newPrj.prjInformation.projectID})
+            })
+            
+            self.projectList?.append(contentsOf: newProjects)
+        }
+    }
+    
+    private func loadLocalProject() {
+        if let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" } {
+            let prjList = contents.compactMap { (fileURL) -> SiteAssessmentDataStructure? in
+                guard let data = try? Data(contentsOf: fileURL),
+                    let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Data
+                    else {
+                        print("[loadLocalProject - JSONDecoder().decode failed]")
+                        writeToLog("[loadLocalProject - JSONDecoder().decode failed]")
+                        return nil
+                        
+                }
+                
+                do {
+                    let decodedData = try JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
+                    return decodedData
+                } catch {
+                    print("loadLocalProject - Error = \(error)")
+                    writeToLog("loadLocalProject - Error = \(error)")
+                }
+                
+                return nil
+            }
+            
+            self.projectList = prjList
+        }
     }
     
     public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {
@@ -102,6 +151,7 @@ class DataStorageService {
             let prjID = saData.prjInformation.projectID,
             let t = saData.prjInformation.type.rawValue.first // C or R
             else {
+                print("storeData failed.")
                 onCompleted?(false, SiteAssessmentError.jsonEncodeFailed)
                 return
         }
@@ -112,39 +162,41 @@ class DataStorageService {
         let result = Result {try data.write(to: file)}
         switch result {
         case .success:
+            print("storeData successfully.")
             onCompleted?(true, nil)
         case .failure(let error):
+            print("storeData failed.")
             onCompleted?(false, error)
         }
 
     }
     
+    public func setCurrentProject(projectID: String) {
+        currentProjectID = projectID
+        currentProjectHomeDirectory = homeDirectory.appendingPathComponent(projectID)
+    }
+    
     public func retrieveCurrentProjectData() -> SiteAssessmentDataStructure {
-        return self.prjData
+        guard let currentProjectID = currentProjectID, let prjData = self.projectList?.first(where: {$0.prjInformation.projectID == currentProjectID}) else {
+            return SiteAssessmentDataStructure()
+        }
+        
+        return prjData
     }
     
     public func storeCurrentProjectData(data: SiteAssessmentDataStructure) {
-        self.prjData = data
+        if let index = self.projectList?.firstIndex(where: {$0.prjInformation.projectID == data.prjInformation.projectID}) {
+            self.projectList?[index] = data
+        }
     }
     
-    public func retrieveProjectList(type: String) -> [SiteAssessmentDataStructure]? {        
-        if let t = type.first, let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" && ($0.lastPathComponent.contains(t))} {
-            let prjList = contents.compactMap { (fileURL) -> SiteAssessmentDataStructure? in
-                guard let data = try? Data(contentsOf: fileURL),
-                    let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Data,
-                    let decodedData = try? JSONDecoder().decode(SiteAssessmentDataStructure.self, from: unarchivedData)
-                    else {
-                        writeToLog("[retrieveProjectList - JSONDecoder().decode failed]")
-                        return nil
-                }
-                
-                return decodedData
-            }
-            
+    public func retrieveProjectList(type: SiteAssessmentType) -> [SiteAssessmentDataStructure]? {
+    
+        if let prjList = self.projectList?.filter({$0.prjInformation.type == type}) {
             return prjList
+        } else {
+            return nil
         }
-        
-        return nil
     }
 
     public func storeGroupingOption(option: GroupingOptions) {
@@ -208,12 +260,29 @@ class DataStorageService {
     public func writeToLog(_ msg: String!) {
         let file = homeDirectory.appendingPathComponent("log.txt")
         
+        if !FileManager.default.fileExists(atPath: file.path) {
+            let result = Result { FileManager.default.createFile(atPath: file.path, contents: nil, attributes: nil) }
+            switch result {
+            case .success(_):
+                writeToLog("[storeImages - FileManager.default.createDirectory] success.")
+            case .failure(let error):
+                writeToLog("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")
+                return
+            }
+        }
+        
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "[yyyy-MM-dd HH:mm:ss]"
+        
+        let formattedMsg = formatter.string(from: Date()) + " " + msg
+        
         DispatchQueue.main.async {
             let result = Result {try FileHandle(forWritingTo: file)}
             switch result {
             case .success(let handle):
                 handle.seekToEndOfFile()
-                handle.write(msg.data(using: .utf8)!)
+                handle.write(formattedMsg.data(using: .utf8)!)
                 handle.closeFile()
             case .failure(let error):
                 print("Error = \(error.localizedDescription)")

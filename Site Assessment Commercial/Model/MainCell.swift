@@ -28,6 +28,8 @@ class MainCell: UITableViewCell {
             accessoryView = nil
             accessoryType = .checkmark
         }
+        
+        labelProjectAddress.sizeToFit()
     }
     
     func configureCell(text: String) {

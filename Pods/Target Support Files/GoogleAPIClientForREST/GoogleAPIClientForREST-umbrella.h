@@ -10,6 +10,10 @@
 #endif
 #endif
 
+#import "GTLRCalendar.h"
+#import "GTLRCalendarObjects.h"
+#import "GTLRCalendarQuery.h"
+#import "GTLRCalendarService.h"
 #import "GTLRDefines.h"
 #import "GTLRBatchQuery.h"
 #import "GTLRBatchResult.h"

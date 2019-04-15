@@ -21,22 +21,27 @@ class Site_Assessment_CommercialTests: XCTestCase {
 
     func testExample() {
         
-        var q1 = QuestionStructure()
-        var q2 = QuestionStructure()
-        var q3 = QuestionStructure()
-        var q4 = QuestionStructure()
+        let string = "1 - 5"
         
-        q1.Name = "q1"
-        q1.Mandatory = "No"
-        q1.Interdependence = "Yes"
+        let str = string.split(separator: "-").compactMap({Int($0.trimmingCharacters(in: .whitespaces))})
         
-        q2.Name = "q2"
-        q2.Mandatory = "Yes"
-        q2.Dependent = ["q1":"Yes"]
+//        print("str = \(str)")
+//        print("first = \(str.first)")
+//        print("last = \(str.last)")
         
-        q3.Name = "q3"
         
-        q4.Name = "q4"
+        let array = [
+            "1", "2", "3"
+        ]
+        
+        let arr = Array(repeating: array, count: 2).enumerated().compactMap { (offset, element) -> String in
+            print("offset  = \(offset)")
+            print("element = \(element)")
+            
+            return "Hello"
+        }.joined()
+        
+        print(arr)
     }
 
 }
