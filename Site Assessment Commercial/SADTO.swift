@@ -53,19 +53,19 @@ enum SiteAssessmentType: String, Codable {
 }
 
 struct ProjectInformationStructure: Codable {
-    var projectAddress  : String!
-    var projectID       : String!
-    var type            : SiteAssessmentType!
-    var status          : UploadStatus!
+    var projectAddress: String!
+    var projectID: String!
+    var type: SiteAssessmentType!
+    var status: UploadStatus!
     
-    var scheduleDate    : String?
-    var assignedTeam    : String!
-    var assignedDate    : String!
-    var uploadedDate    : String?
+    var scheduleDate: String?
+    var assignedTeam: String!
+    var assignedDate: String!
+    var uploadedDate: String?
     
-    var customerName    : String?
-    var email           : String?
-    var phoneNumber     : String?
+    var customerName: String?
+    var email: String?
+    var phoneNumber: String?
     
     private enum CodingKeys: String, CodingKey {
         case projectAddress = "sa_projectAddress"
@@ -125,7 +125,7 @@ struct ProjectInformationStructure: Codable {
             let assignedTeam = data[CodingKeys.assignedTeam.rawValue],
             let assignedDate = data[CodingKeys.assignedDate.rawValue]
             else {
-                DataStorageService.sharedDataStorageService.writeToLog("withZohoData failed.")
+                DataStorageService.shared.writeToLog("withZohoData failed.")
                 print("withZohoData failed.")
                 return
         }
@@ -161,8 +161,8 @@ struct ProjectInformationStructure: Codable {
             "Uploaded Date": self.uploadedDate,
             
             "Customer Name": self.customerName,
-            "Email":self.email,
-            "Phone Number" : self.phoneNumber
+            "Email": self.email,
+            "Phone Number": self.phoneNumber
         ]
     }
 }
@@ -238,9 +238,9 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         self.prjImageArray = []
     }
     
-    init(withProjectInformation info: ProjectInformationStructure, withProjectQuestionnaire questionnaire: [SectionStructure], withProjectImageArray array: [ImageArrayStructure]) {
+    init(with info: ProjectInformationStructure, questions: [SectionStructure], array: [ImageArrayStructure]) {
         self.prjInformation = info
-        self.prjQuestionnaire = questionnaire
+        self.prjQuestionnaire = questions
         self.prjImageArray = array
     }
     
@@ -255,7 +255,10 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         self.prjInformation = ProjectInformationStructure(withZohoData: data)
         self.prjImageArray = []
         
-        guard let path = Bundle.main.url(forResource: self.prjInformation.type.rawValue, withExtension: "plist") else { self.prjQuestionnaire = []
+        let bundle = Bundle.main
+        let typeValue = self.prjInformation.type.rawValue
+        
+        guard let path = bundle.url(forResource: typeValue, withExtension: "plist") else { self.prjQuestionnaire = []
             return
         }
         
@@ -269,14 +272,17 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
             
             allData.enumerated().forEach { (sectionNum, section) in
                 section.Questions.enumerated().forEach({ (questionIndex, question) in
-                    if let theData = data.first(where: { (key, value) -> Bool in
+                    if let theData = data.first(where: { (key, _) -> Bool in
                         key == question.Key }) {
                         self.prjQuestionnaire[sectionNum].Questions[questionIndex].Value = theData.value
                     }
                 })
             }
             
-            self.prjImageArray = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image}).compactMap({ImageArrayStructure(key: $0.Name, images: [])})
+            let allImageQuestions = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image})
+            let imageArray = allImageQuestions.compactMap({ImageArrayStructure(key: $0.Name, images: [])})
+            self.prjImageArray = imageArray
+
         case .failure(let error):
             print("Decoder failed. Error = \(error.localizedDescription)")
             self.prjQuestionnaire = []
@@ -284,7 +290,7 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
     }
     
     static func == (lhs: SiteAssessmentDataStructure, rhs: SiteAssessmentDataStructure) -> Bool {
-        return lhs.prjInformation.projectAddress == rhs.prjInformation.projectAddress && lhs.prjInformation.projectID == rhs.prjInformation.projectID
+        return lhs.prjInformation.projectID == rhs.prjInformation.projectID
     }
 }
 
@@ -322,12 +328,6 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
     func hash(into: Int) {
         
     }
-    
-    /* deprecated
-    var hashValue: Int {
-        return self.Name.hashValue
-    }
-    */
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -371,6 +371,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         self.Value       = nil
         self.identity    = nil
     }
+    
 }
 
 struct SectionStructure: Codable {

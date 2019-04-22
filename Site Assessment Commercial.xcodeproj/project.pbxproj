@@ -37,7 +37,6 @@
 		DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76DBD7221DC76E00DFC9D5 /* GoogleService.swift */; };
 		DD79259C2256891200855B68 /* Site_Assessment_CommercialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79259B2256891200855B68 /* Site_Assessment_CommercialUITests.swift */; };
 		DD7925AA2256891900855B68 /* Site_Assessment_CommercialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */; };
-		DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */; };
 		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
 		DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */; };
 		DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */; };
@@ -50,7 +49,7 @@
 		DDB3A6B72232171600B57A69 /* Encodable+Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDB3A6B62232171600B57A69 /* Encodable+Dictionary.swift */; };
 		DDB7CC4422453A830081D62C /* ARCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDB7CC4322453A830081D62C /* ARCell.xib */; };
 		DDB7CC4622453BDC0081D62C /* InputsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDB7CC4522453BDC0081D62C /* InputsCell.xib */; };
-		DDCC6325224A7EDF0060A1D9 /* SelectionWithImageOtherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDCC6324224A7EDF0060A1D9 /* SelectionWithImageOtherCell.xib */; };
+		DDCC6325224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDCC6324224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib */; };
 		DDCC6327224A90A20060A1D9 /* NotesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDCC6326224A90A20060A1D9 /* NotesCell.xib */; };
 		DDCDEA3B22176B3C0000B210 /* UIViewController+HideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */; };
 		DDCE69ED2224968000468CDE /* ZohoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE69EC2224968000468CDE /* ZohoService.swift */; };
@@ -60,9 +59,7 @@
 		DDDD2352221F07430067D6EF /* GoogleSIgnOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD2351221F07430067D6EF /* GoogleSIgnOutView.swift */; };
 		DDE7F2D722526F5C0053B976 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE7F2D622526F5C0053B976 /* AboutViewController.swift */; };
 		DDE7F2D92252730D0053B976 /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = DDE7F2D82252730D0053B976 /* about.html */; };
-		DDE7F2DE225305BF0053B976 /* NewProjectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE7F2DD225305BF0053B976 /* NewProjectViewController.swift */; };
 		DDE7F2E12253F4480053B976 /* ImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDE7F2E02253F4480053B976 /* ImageCell.xib */; };
-		DDEADCC4225FE18F00A7171D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEADCC3225FE18F00A7171D /* ViewController.swift */; };
 		DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154621B1D78700BF4083 /* DataStorageService.swift */; };
 		DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */; };
 		DDEDF4D9221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEDF4D8221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift */; };
@@ -126,7 +123,6 @@
 		DD7925A72256891800855B68 /* Site Assessment CommercialTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Site Assessment CommercialTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site_Assessment_CommercialTests.swift; sourceTree = "<group>"; };
 		DD7925AB2256891900855B68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
 		DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportViewModel.swift; sourceTree = "<group>"; };
 		DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableView.swift; sourceTree = "<group>"; };
@@ -139,7 +135,7 @@
 		DDB3A6B62232171600B57A69 /* Encodable+Dictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+Dictionary.swift"; sourceTree = "<group>"; };
 		DDB7CC4322453A830081D62C /* ARCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ARCell.xib; sourceTree = "<group>"; };
 		DDB7CC4522453BDC0081D62C /* InputsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InputsCell.xib; sourceTree = "<group>"; };
-		DDCC6324224A7EDF0060A1D9 /* SelectionWithImageOtherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectionWithImageOtherCell.xib; sourceTree = "<group>"; };
+		DDCC6324224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectionsWithImageOtherCell.xib; sourceTree = "<group>"; };
 		DDCC6326224A90A20060A1D9 /* NotesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotesCell.xib; sourceTree = "<group>"; };
 		DDCDEA3A22176B3C0000B210 /* UIViewController+HideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+HideKeyboard.swift"; sourceTree = "<group>"; };
 		DDCE69EC2224968000468CDE /* ZohoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZohoService.swift; sourceTree = "<group>"; };
@@ -149,9 +145,7 @@
 		DDDD2351221F07430067D6EF /* GoogleSIgnOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSIgnOutView.swift; sourceTree = "<group>"; };
 		DDE7F2D622526F5C0053B976 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DDE7F2D82252730D0053B976 /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = about.html; sourceTree = "<group>"; };
-		DDE7F2DD225305BF0053B976 /* NewProjectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectViewController.swift; sourceTree = "<group>"; };
 		DDE7F2E02253F4480053B976 /* ImageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageCell.xib; sourceTree = "<group>"; };
-		DDEADCC3225FE18F00A7171D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DDEC154621B1D78700BF4083 /* DataStorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorageService.swift; sourceTree = "<group>"; };
 		DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewModel.swift; sourceTree = "<group>"; };
 		DDEDF4D8221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAccessViewCtontroller.swift; sourceTree = "<group>"; };
@@ -240,7 +234,6 @@
 				DD9483E2223FF4C00084CE4D /* Template */,
 				DD909D6721AF26AD00BC9736 /* Service */,
 				DD909D6A21B04F1E00BC9736 /* SADTO.swift */,
-				DD81CFE721C2F92C00FBE53E /* Layouts */,
 				DD85EC0A21ED02D5009C8F4A /* Extensions */,
 				DDDD2350221F01040067D6EF /* View */,
 				DDF369AC225CF65F005334C1 /* ThirdpartyInfo.plist */,
@@ -272,8 +265,6 @@
 				DD767337222E1427001F87F7 /* BaseViewController.swift */,
 				DD0D742E224BD6B700D9C06F /* ImageViewController.swift */,
 				DDE7F2D622526F5C0053B976 /* AboutViewController.swift */,
-				DDE7F2DD225305BF0053B976 /* NewProjectViewController.swift */,
-				DDEADCC3225FE18F00A7171D /* ViewController.swift */,
 				DDF8E66C2260E8E20065043F /* UserManualViewController.swift */,
 			);
 			path = Controller;
@@ -306,14 +297,6 @@
 				DD7925AB2256891900855B68 /* Info.plist */,
 			);
 			path = "Site Assessment CommercialTests";
-			sourceTree = "<group>";
-		};
-		DD81CFE721C2F92C00FBE53E /* Layouts */ = {
-			isa = PBXGroup;
-			children = (
-				DD81CFE821C44D5D00FBE53E /* CollectionViewFlowLayout.swift */,
-			);
-			path = Layouts;
 			sourceTree = "<group>";
 		};
 		DD85EC0A21ED02D5009C8F4A /* Extensions */ = {
@@ -370,7 +353,7 @@
 				DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */,
 				DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */,
 				DDD8B49E2242C41C000F94A5 /* MultipleSelectionCell.xib */,
-				DDCC6324224A7EDF0060A1D9 /* SelectionWithImageOtherCell.xib */,
+				DDCC6324224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib */,
 				DDD03C952242D3FC00C00FB2 /* TrussTypeCell.xib */,
 				DDB7CC4322453A830081D62C /* ARCell.xib */,
 				DDB7CC4522453BDC0081D62C /* InputsCell.xib */,
@@ -497,7 +480,7 @@
 				DDF369AD225CF65F005334C1 /* ThirdpartyInfo.plist in Resources */,
 				DDE7F2D92252730D0053B976 /* about.html in Resources */,
 				DD754C6E21AC699400253D58 /* Commercial.plist in Resources */,
-				DDCC6325224A7EDF0060A1D9 /* SelectionWithImageOtherCell.xib in Resources */,
+				DDCC6325224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib in Resources */,
 				DD76BF0821A85D7800A65352 /* LaunchScreen.storyboard in Resources */,
 				DD9483E8223FFEB40084CE4D /* Residential.plist in Resources */,
 				DDB7CC4422453A830081D62C /* ARCell.xib in Resources */,
@@ -589,10 +572,8 @@
 				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
 				"${BUILT_PRODUCTS_DIR}/RxReachability/RxReachability.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSkeleton/RxSkeleton.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
-				"${BUILT_PRODUCTS_DIR}/SkeletonView/SkeletonView.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwifterSwift/SwifterSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/YangMingShan/YangMingShan.framework",
@@ -616,10 +597,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxReachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSkeleton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkeletonView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwifterSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YangMingShan.framework",
@@ -644,7 +623,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n";
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n\nif which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -661,10 +640,8 @@
 				DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */,
 				DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */,
 				DDCE69ED2224968000468CDE /* ZohoService.swift in Sources */,
-				DDEADCC4225FE18F00A7171D /* ViewController.swift in Sources */,
 				DDF8E66D2260E8E20065043F /* UserManualViewController.swift in Sources */,
 				DD0D742F224BD6B800D9C06F /* ImageViewController.swift in Sources */,
-				DDE7F2DE225305BF0053B976 /* NewProjectViewController.swift in Sources */,
 				DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */,
 				DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */,
 				DD76BF1621A86A8200A65352 /* MainCell.swift in Sources */,
@@ -690,7 +667,6 @@
 				DD76BF1421A8629C00A65352 /* ReviewViewController.swift in Sources */,
 				DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */,
 				DD76BF1221A8622E00A65352 /* NewProjectReportViewController.swift in Sources */,
-				DD81CFE921C44D5D00FBE53E /* CollectionViewFlowLayout.swift in Sources */,
 				DD909D6621AF26A300BC9736 /* NetworkService.swift in Sources */,
 				DDDD2352221F07430067D6EF /* GoogleSIgnOutView.swift in Sources */,
 				DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */,

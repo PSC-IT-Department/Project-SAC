@@ -52,8 +52,7 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize
-    {
+                        sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
         return CGSize(width: 84, height: 84)
     }
 

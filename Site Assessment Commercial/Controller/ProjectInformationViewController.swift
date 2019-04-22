@@ -42,10 +42,14 @@ class ProjectInformationViewController: UIViewController {
         
     }
 
-    static func instantiateFromStoryBoard() -> ProjectInformationViewController {
-        let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ProjectInformationViewController") as! ProjectInformationViewController
-        viewController.prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
-        return viewController
+    static func instantiateFromStoryBoard() -> ProjectInformationViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let controller = storyboard.instantiateViewController(withClass: ProjectInformationViewController.self) {
+            controller.prjData = DataStorageService.shared.retrieveCurrentProjectData()
+            return controller
+        } else {
+            return nil
+        }
     }
     
     deinit {
@@ -73,15 +77,15 @@ extension ProjectInformationViewController {
     private func setupViewModel() {
         let viewModel = [
             ProjectInformationViewModel(key: "Project Address", value: prjData.prjInformation.projectAddress),
-            ProjectInformationViewModel(key: "Status",          value: prjData.prjInformation.status.rawValue),
-            ProjectInformationViewModel(key: "Type",            value: prjData.prjInformation.type.rawValue),
+            ProjectInformationViewModel(key: "Status", value: prjData.prjInformation.status.rawValue),
+            ProjectInformationViewModel(key: "Type", value: prjData.prjInformation.type.rawValue),
 
-            ProjectInformationViewModel(key: "Customer Name",   value: prjData.prjInformation.customerName),
-            ProjectInformationViewModel(key: "Email",           value: prjData.prjInformation.email),
-            ProjectInformationViewModel(key: "Phone Number",    value: prjData.prjInformation.phoneNumber),
+            ProjectInformationViewModel(key: "Customer Name", value: prjData.prjInformation.customerName),
+            ProjectInformationViewModel(key: "Email", value: prjData.prjInformation.email),
+            ProjectInformationViewModel(key: "Phone Number", value: prjData.prjInformation.phoneNumber),
 
-            ProjectInformationViewModel(key: "Schedule Date",   value: prjData.prjInformation.scheduleDate),
-            ProjectInformationViewModel(key: "Assigned Date",   value: prjData.prjInformation.assignedDate)
+            ProjectInformationViewModel(key: "Schedule Date", value: prjData.prjInformation.scheduleDate),
+            ProjectInformationViewModel(key: "Assigned Date", value: prjData.prjInformation.assignedDate)
         ]
         
         observableViewModel = Observable.of(viewModel)
@@ -90,7 +94,9 @@ extension ProjectInformationViewController {
     private func setupCell() {
         observableViewModel
             .bind(to: tableView.rx.items) { (tableView, row, data) in
-                let cell = tableView.dequeueReusableCell(withIdentifier: "InformationCell", for: IndexPath(row: row, section: 0)) as! InformationCell
+                
+                let indexPath = IndexPath(row: row, section: 0)
+                let cell = tableView.dequeueReusableCell(withClass: InformationCell.self, for: indexPath)
 
                 cell.setupCell(viewModel: data)
                 return cell
@@ -127,12 +133,13 @@ extension ProjectInformationViewController {
                 let status = self.prjData.prjInformation.status
                 switch status {
                 case .completed?:
-                    let viewController = ReviewViewController.instantiateFromStoryBoard(withProjectData: self.prjData)
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                
+                    if let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: self.prjData) {
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
                 default:
-                    let viewController = NewProjectReportViewController.instantiateFromStoryBoard()
-                    self.navigationController?.pushViewController(viewController, animated: true)
+                    if let viewController = NewProjectReportViewController.instantiateFromStoryBoard() {
+                        self.navigationController?.pushViewController(viewController, animated: true)
+                    }
                 }
             })
             .disposed(by: disposeBag)
@@ -144,7 +151,7 @@ extension ProjectInformationViewController: CLLocationManagerDelegate {
         locationManager.delegate = self
         mapView.delegate = self
         
-        let option = DataStorageService.sharedDataStorageService.retrieveMapTypeOption()
+        let option = DataStorageService.shared.retrieveMapTypeOption()
         mapView.mapType = MKMapType(rawValue: option.rawValue)!
 
         let status = CLLocationManager.authorizationStatus()
@@ -162,7 +169,7 @@ extension ProjectInformationViewController: CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
         
         let geoCoder = CLGeocoder()
-        geoCoder.geocodeAddressString(prjData.prjInformation.projectAddress) { (placemarks, error) in
+        geoCoder.geocodeAddressString(prjData.prjInformation.projectAddress) { (placemarks, _) in
             guard let placemarks = placemarks,
                 let location = placemarks.first?.location
                 else { return }

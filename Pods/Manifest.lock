@@ -30,8 +30,8 @@ PODS:
     - GTMSessionFetcher/Core (= 1.2.1)
   - MarqueeLabel/Swift (3.2.1)
   - MYTableViewIndex (0.7.0)
-  - NotificationBannerSwift (2.0.1):
-    - MarqueeLabel/Swift (~> 3.2.0)
+  - NotificationBannerSwift (2.1.0):
+    - MarqueeLabel/Swift (~> 3.2.1)
     - SnapKit (~> 4.2.0)
   - PopupDialog (0.9.2):
     - DynamicBlurView (~> 3.0.1)
@@ -54,11 +54,6 @@ PODS:
     - ReachabilitySwift (~> 4.3.0)
     - RxCocoa (~> 4)
     - RxSwift (~> 4)
-  - RxSkeleton (0.0.9):
-    - RxCocoa
-    - RxDataSources
-    - RxSwift
-    - SkeletonView
   - RxSwift (4.5.0)
   - RxSwiftExt (3.4.0):
     - RxSwiftExt/Core (= 3.4.0)
@@ -68,7 +63,6 @@ PODS:
   - RxSwiftExt/RxCocoa (3.4.0):
     - RxCocoa (~> 4.0)
     - RxSwiftExt/Core
-  - SkeletonView (1.4.2)
   - SnapKit (4.2.0)
   - SwifterSwift/UIKit (5.0.0)
   - YangMingShan (2.0.1):
@@ -88,10 +82,8 @@ DEPENDENCIES:
   - RxDataSources (~> 3.0)
   - RxGesture
   - RxReachability
-  - RxSkeleton
   - RxSwift (~> 4.0)
   - RxSwiftExt
-  - SkeletonView
   - SwifterSwift/UIKit
   - YangMingShan
 
@@ -115,10 +107,8 @@ SPEC REPOS:
     - RxDataSources
     - RxGesture
     - RxReachability
-    - RxSkeleton
     - RxSwift
     - RxSwiftExt
-    - SkeletonView
     - SnapKit
     - SwifterSwift
     - YangMingShan
@@ -134,7 +124,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   MarqueeLabel: 2daf039bf916937c8a4c9adfc13577cc5e51b4ce
   MYTableViewIndex: d2594738f66dd14b76c771850a70cdd051badcdd
-  NotificationBannerSwift: 007774aa590cc9680647b92b2f217bef5c00c32c
+  NotificationBannerSwift: 4483919639202bec56d6bfe8f106ebc352d38bc7
   PopupDialog: f4bb461bf70ff422be0b56656566424ee9273080
   ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
   RxAlamofire: ed65f451f5a9a59419b0b9e705043dc01410edd9
@@ -142,14 +132,12 @@ SPEC CHECKSUMS:
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
   RxGesture: c1b7bf17166b0ef9d642a9510f8bac5785f18990
   RxReachability: 053f2d913db44998242ade488ccaef558f3ce7cb
-  RxSkeleton: b5a29725d68b68cbfdba63214a7f81ef5a2dcb56
   RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
   RxSwiftExt: 01f8ecbeeb355698e9c75365ebe908b00dacf45d
-  SkeletonView: c2523c3c8c6510e273e49a3bf364a434744c3914
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SwifterSwift: 96f90594b370802f01647c2b1229c74a84ffafee
   YangMingShan: 561cfbb769e8cf679d3f23d8ae7030402ddb6495
 
-PODFILE CHECKSUM: 028c3046048f6c4fc079d40cbb2bfe55feb25b94
+PODFILE CHECKSUM: 12138ac4752a43badeb0b87be5ca59cd9e3f8d1d
 
 COCOAPODS: 1.6.1

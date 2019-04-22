@@ -13,14 +13,14 @@ import RxSwift
 import RxDataSources
 
 enum NewProjectReportCellType: String, Codable {
-    case ar                 = "AR"
     case image              = "Image"
     case notes              = "Notes"
     case multipleSelection  = "Multiple Selection"
     case inputs             = "Inputs"
-    case TrussType          = "Truss Type"
+    case trussType          = "Truss Type"
     case selectionsWithImageOther = "Selections With Image Other"
 }
+
 typealias ImageGallerySection = AnimatableSectionModel<String, String>
 
 class TrussTypeCell: UICollectionViewCell {
@@ -29,6 +29,8 @@ class TrussTypeCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    private let cellID = "ImageGalleryCell"
     
     let data = [
         ImageGallerySection(model: "", items: ["Add_Picture"])
@@ -43,8 +45,8 @@ class TrussTypeCell: UICollectionViewCell {
     func setupDataSource() {
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
-            configureCell: { (_, cv, indexPath, element) in
-                let cell = cv.dequeueReusableCell(withReuseIdentifier: "ImageGalleryCell", for: indexPath) as! ImageGalleryCell
+            configureCell: { (_, collectionView, indexPath, element) in
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellID, for: indexPath) as? ImageGalleryCell else { return UICollectionViewCell() }
                 
                 if let image = UIImage(named: element) {
                     cell.imageView.image = image
@@ -53,9 +55,9 @@ class TrussTypeCell: UICollectionViewCell {
                 }
                 return cell
         },
-            configureSupplementaryView: { (ds, cv, kind, ip) in
-                let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! CollectionReusableView
-                section.labelSectionName.text = "\(ds[ip.section].model)"
+            configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) in
+                let section = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: indexPath) as! CollectionReusableView
+                section.labelSectionName.text = "\(dataSource[indexPath.section].model)"
                 return section
             }
         )
@@ -117,7 +119,7 @@ class MultipleSelectionCell: UICollectionViewCell {
     
     var disposeBag = DisposeBag()
     var indexPath: IndexPath!
-    var delegate: SelectionCellDelegate?
+    weak var delegate: SelectionCellDelegate?
     
     @IBAction func buttonTapped(_ sender: MyCheckBox) {
         delegate?.buttonDidClicked(button: sender, indexPath: indexPath)
@@ -171,7 +173,7 @@ class ARCell: UICollectionViewCell {
     }
 }
 
-protocol SelectionCellDelegate {
+protocol SelectionCellDelegate: class {
     func buttonDidClicked(button: MyCheckBox, indexPath: IndexPath)
 }
 
@@ -180,8 +182,8 @@ class ImageCell: UICollectionViewCell {
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
     var disposeBag = DisposeBag()
     
-    var imageAttrs: [ImageAttributes]? = nil
-    var images: [UIImage]? = nil
+    var imageAttrs: [ImageAttributes]?
+    var images: [UIImage]?
     
     private let imageDefault = UIImage(named: "Add_Pictures")!
 
@@ -193,25 +195,36 @@ class ImageCell: UICollectionViewCell {
     }
     
     func loadImages(_ questionName: String) {
-        guard let prjFolder = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory else {
+        guard let prjFolder = DataStorageService.shared.currentProjectHomeDirectory else {
             print("[retrieveData - FileManager.default.urls] failed.")
             return
         }
-
-        let questionImageAttrs = try? FileManager.default.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil).filter{ $0.lastPathComponent.contains(questionName) && $0.pathExtension == "png" }.compactMap { url -> (UIImage?, ImageAttributes?) in
-            
-            if let image = UIImage(contentsOfFile: url.path) {
-                let fileName = url.deletingPathExtension().lastPathComponent
-                let imgAttr = ImageAttributes(name: fileName)
-                
-                return (image, imgAttr)
-            }
-            
-            return (nil, nil)
-        }
         
-        self.imageAttrs = questionImageAttrs?.compactMap({$0.1})
-        self.images = questionImageAttrs?.compactMap({$0.0})
+        let fileManager = FileManager.default
+        
+        let result = Result {try fileManager.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil)}
+        switch result {
+        case .success(let urls):
+            let imageUrls = urls.filter({$0.lastPathComponent.contains(questionName) && $0.pathExtension == "png"})
+            
+            let imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
+                
+                if let image = UIImage(contentsOfFile: url.path) {
+                    let fileName = url.deletingPathExtension().lastPathComponent
+                    let imgAttr = ImageAttributes(name: fileName)
+                    
+                    return (image, imgAttr)
+                }
+                
+                return (nil, nil)
+            })
+            
+            self.imageAttrs = imageAttrs.compactMap({$0.1})
+            self.images = imageAttrs.compactMap({$0.0})
+
+        default:
+            break
+        }
     }
         
     func setupCell(question: QuestionStructure) {
@@ -234,7 +247,7 @@ class ImageCell: UICollectionViewCell {
     
 }
 
-class NotesCell: UICollectionViewCell  {
+class NotesCell: UICollectionViewCell {
 
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var textView: UITextView!
@@ -335,8 +348,9 @@ class SelectionsWithImageOtherCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet var optionGroup: [MyCheckBox]!
 
+    weak var delegate: SelectionCellDelegate?
+
     var disposeBag = DisposeBag()
-    var delegate: SelectionCellDelegate?
     var indexPath: IndexPath!
 
     @IBAction func buttonTapped(_ sender: MyCheckBox) {

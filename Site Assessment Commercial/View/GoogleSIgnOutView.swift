@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GoogleSIgnOutView: UIView {
+class GoogleSignOutView: UIView {
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var label: UILabel!

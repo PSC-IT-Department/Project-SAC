@@ -18,6 +18,8 @@ class AboutViewController: UIViewController {
     @IBOutlet weak var labelVersion: UILabel!
 
     @IBOutlet weak var webView: WKWebView!
+    
+    static let id = "AboutViewController"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,8 +46,9 @@ class AboutViewController: UIViewController {
         }
     }
     
-    static func instantiateFromStoryBoard() -> AboutViewController {
-        let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AboutViewController") as! AboutViewController
+    static func instantiateFromStoryBoard() -> AboutViewController? {
+        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyBoard.instantiateViewController(withIdentifier: id) as? AboutViewController
         return viewController
     }
 }
@@ -57,7 +60,7 @@ extension AboutViewController {
     }
     
     private func setupWebViewFrame() {
-        let borderColor : UIColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
+        let borderColor: UIColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
 
         webView.layer.borderWidth = 0.5
         webView.layer.borderColor = borderColor.cgColor
@@ -79,7 +82,7 @@ extension AboutViewController: WKNavigationDelegate, WKUIDelegate {
         }
         
         if url!.description.lowercased().starts(with: "http://") ||
-            url!.description.lowercased().starts(with: "https://")  {
+            url!.description.lowercased().starts(with: "https://") {
             decisionHandler(.cancel)
             UIApplication.shared.open(url!, options: [:], completionHandler: nil)
         } else {

@@ -12,32 +12,36 @@ import GoogleAPIClientForREST
 
 class GoogleAccessViewController: UIViewController {
     
-    private var titleString: String!
+    static let id = "GoogleAccessViewController"
     
     let service = GTLRDriveService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Google"
-        
-        if let email = GoogleService.sharedGoogleService.retrieveGoogleUserEmail() {
+        if let email = GoogleService.shared.getEmail() {
             setupForSignOut()
         } else {
             setupForSignIn()
         }
     }
     
-    static func instantiateFromStoryBoard() -> GoogleAccessViewController {
-        let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ThirdPartyAccessViewController") as! GoogleAccessViewController
-        return viewController
+    static func instantiateFromStoryBoard() -> GoogleAccessViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: id) as? GoogleAccessViewController
+        return controller
+    }
+    
+    private func setupView() {
+        self.title = "Google"
     }
     
     private func setupForSignOut() {
+        let bundle = Bundle.main
         
-        let signOutView = Bundle.main.loadNibNamed("GoogleSignOut", owner: self, options: nil)?.first as! GoogleSIgnOutView
+        guard let signOutView = bundle.loadNibNamed("GoogleSignOut", owner: self, options: nil)?.first as? GoogleSignOutView else { return }
 
-        signOutView.label.text = GoogleService.sharedGoogleService.retrieveGoogleUserEmail()
+        signOutView.label.text = GoogleService.shared.getEmail()
         signOutView.signOutButton.addTarget(self, action: #selector(buttonSignOutDidClicked), for: .touchUpInside)
         signOutView.center = view.center
         
@@ -49,7 +53,7 @@ class GoogleAccessViewController: UIViewController {
         
         let actionConfrim = UIAlertAction(title: "Yes", style: .default, handler: { _ in
             GIDSignIn.sharedInstance()?.signOut()
-            GoogleService.sharedGoogleService.resetGoogleUserInformation()
+            GoogleService.shared.resetGoogleUserInformation()
             self.navigationController?.popToRootViewController(animated: true)
 
         })
@@ -83,7 +87,7 @@ extension GoogleAccessViewController: GIDSignInDelegate {
         if let error = error {
             print(error)
         } else {
-            GoogleService.sharedGoogleService.storeGoogleAccountInformation(signIn: signIn)
+            GoogleService.shared.storeGoogleAccountInformation(signIn: signIn)
             self.navigationController?.popToRootViewController(animated: true)
         }
     }

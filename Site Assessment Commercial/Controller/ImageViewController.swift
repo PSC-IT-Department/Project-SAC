@@ -16,6 +16,8 @@ class ImageViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
     
+    static let id = "ImageViewController"
+    
     private var disposeBag = DisposeBag()
     
     var photoName: String?
@@ -33,16 +35,17 @@ class ImageViewController: UIViewController {
         setupTapHandling()
     }
     
-    static func instantiateFromStoryBoard(withImageName imageName: String) -> ImageViewController {
-        let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "ImageViewController") as! ImageViewController
-        viewController.photoName = imageName
+    static func instantiateFromStoryBoard(imageName: String) -> ImageViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: id) as? ImageViewController
+        viewController?.photoName = imageName
         
         return viewController
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { context in self.centerScrollViewContents() }, completion: nil)
+        coordinator.animate(alongsideTransition: { _ in self.centerScrollViewContents() }, completion: nil)
     }
     
     @IBAction func scrollViewDoubleTapped(recognizer: UITapGestureRecognizer) {
@@ -56,7 +59,7 @@ class ImageViewController: UIViewController {
     
     func configureSizeAndZoomScale(image: UIImage?) {
         if let image = image {
-            imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size:image.size)
+            imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: image.size)
             scrollView.addSubview(imageView)
             scrollView.contentSize = image.size
             
@@ -118,7 +121,7 @@ extension ImageViewController {
     }
 }
 
-//MARK: - UIScrollViewDelegate
+// MARK: - UIScrollViewDelegate
 extension ImageViewController: UIScrollViewDelegate {
     func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
         return imageView

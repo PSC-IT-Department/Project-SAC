@@ -32,6 +32,17 @@ class NewProjectReportViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    static let id = "NewProjectReportViewController"
+    private let sectionID = "Section"
+    
+    private let MSCellID     = "MultipleSelectionCell"
+    private let InputsCellID = "InputsCell"
+    private let NotesCellID  = "NotesCell"
+    private let SWIOCellID   = "SelectionsWithImageOtherCell"
+    private let TTCellID     = "TrussTypeCell"
+    private let ImageCellID  = "ImageCell"
+    private let IGCellID     = "ImageGalleryCell"
+    
     fileprivate var tableViewIndexController: TableViewIndexController!
     fileprivate(set) var tableViewIndex: TableViewIndex!
 
@@ -52,16 +63,18 @@ class NewProjectReportViewController: UIViewController {
     private var initialValue: [EachSection]! {
         didSet {
             let count = initialValue.reduce(0) { (result, question) -> Int in
-                return result + question.items.filter({$0.Mandatory == "Yes" && ($0.Value == nil || $0.Value == "")}).count
+                let questionCount = question.items.filter({$0.Mandatory == "Yes" && ($0.Value == nil || $0.Value == "")}).count
+                return result + questionCount
             }
             
             self.totalMissing = count
         }
     }
     
-    static func instantiateFromStoryBoard() -> NewProjectReportViewController {
-        let viewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "NewProjectReportViewController") as! NewProjectReportViewController
-        viewController.prjData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+    static func instantiateFromStoryBoard() -> NewProjectReportViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: id) as? NewProjectReportViewController
+        viewController?.prjData = DataStorageService.shared.retrieveCurrentProjectData()
         
         return viewController
     }
@@ -78,25 +91,6 @@ class NewProjectReportViewController: UIViewController {
         setupDelegate()
         setupReviewButton(status: .save)
         setupReviewButtonTapHandling()
-
-        /*
-        collectionView
-            .rx
-            .willDisplayCell
-            .subscribe(onNext: { [weak self] (cell, indexPath) in
-                if let question = self?.getQuestionByIndexPath(indexPath: indexPath), question.QType == .TrussType {
-                    let cell = self?.collectionView.dequeueReusableCell(withReuseIdentifier: "TrussTypeCell", for: indexPath) as! TrussTypeCell
-
-                    cell.collectionView.register(UINib(nibName: "ImageGalleryCell", bundle: nil), forCellWithReuseIdentifier: "ImageGalleryCell")
-
-                    cell.sections.accept(cell.data)
-                    
-                    cell.setupDataSource()
-                                        
-                }
-            })
-            .disposed(by: disposeBag)
-        */
     }
 }
 
@@ -109,14 +103,24 @@ extension NewProjectReportViewController {
     }
     
     func setupCollectionViewCell() {
-        collectionView.register(UINib(nibName: "MultipleSelectionCell"      , bundle: nil), forCellWithReuseIdentifier: "MultipleSelectionCell")
-        collectionView.register(UINib(nibName: "SelectionWithOtherCell"     , bundle: nil), forCellWithReuseIdentifier: "SelectionWithOtherCell")
-        collectionView.register(UINib(nibName: "ARCell"                     , bundle: nil), forCellWithReuseIdentifier: "ARCell")
-        collectionView.register(UINib(nibName: "InputsCell"                 , bundle: nil), forCellWithReuseIdentifier: "InputsCell")
-        collectionView.register(UINib(nibName: "NotesCell"                  , bundle: nil), forCellWithReuseIdentifier: "NotesCell")
-        collectionView.register(UINib(nibName: "SelectionWithImageOtherCell", bundle: nil), forCellWithReuseIdentifier: "SelectionsWithImageOtherCell")
-        collectionView.register(UINib(nibName: "TrussTypeCell"              , bundle: nil), forCellWithReuseIdentifier: "TrussTypeCell")
-        collectionView.register(UINib(nibName: "ImageCell"              , bundle: nil), forCellWithReuseIdentifier: "ImageCell")
+        
+        let nibMSCell = UINib(nibName: MSCellID, bundle: nil)
+        collectionView.register(nibMSCell, forCellWithReuseIdentifier: MSCellID)
+        
+        let nibInputsCell = UINib(nibName: InputsCellID, bundle: nil)
+        collectionView.register(nibInputsCell, forCellWithReuseIdentifier: InputsCellID)
+        
+        let nibNotesCell = UINib(nibName: NotesCellID, bundle: nil)
+        collectionView.register(nibNotesCell, forCellWithReuseIdentifier: NotesCellID)
+
+        let nibSWIOCell = UINib(nibName: SWIOCellID, bundle: nil)
+        collectionView.register(nibSWIOCell, forCellWithReuseIdentifier: SWIOCellID)
+
+        let nibTTCell = UINib(nibName: TTCellID, bundle: nil)
+        collectionView.register(nibTTCell, forCellWithReuseIdentifier: TTCellID)
+
+        let nibImageCell = UINib(nibName: ImageCellID, bundle: nil)
+        collectionView.register(nibImageCell, forCellWithReuseIdentifier: ImageCellID)
     }
     
     func setupDataSource() {
@@ -146,11 +150,15 @@ extension NewProjectReportViewController {
         
         tableViewIndexController.layouter = { tableView, tableIndex in
             var frame = tableIndex.frame
-            if (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft) {
+            let application = UIApplication.shared
+            
+            switch application.userInterfaceLayoutDirection {
+            case .rightToLeft:
                 frame.origin = CGPoint(x: frame.origin.x + 3, y: frame.origin.y)
-            } else {
+            default:
                 frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
             }
+            
             tableIndex.frame = frame
         }
         
@@ -163,22 +171,23 @@ extension NewProjectReportViewController {
     func addQuestions(indexPath: IndexPath, value: String) {
         
         guard let question = self.getQuestionByIndexPath(indexPath: indexPath) else { return }
+        guard let data = self.prjData else { return }
+        let secNum = indexPath.section
+        let questions = data.prjQuestionnaire[secNum].Questions
+        let relatedQuestions = questions.filter({$0.Dependent?.first?.key == question.Key})
         
-        let relatedQuestions = self.initialValue[indexPath.section].items.enumerated().filter({$0.element.Dependent?.first?.key == question.Key})
+        let relatedIndices = relatedQuestions.compactMap({questions.firstIndex(of: $0)})
         
         guard let count = Int(value),
             let range = question.Options?.first?.split(separator: "-").compactMap({Int($0.trimmingCharacters(in: .whitespaces))}),
             let first = range.first,
             let last = range.last,
             (first ... last).contains(count),
-            let firstIndex = relatedQuestions.first?.offset,
-            let lastIndex = relatedQuestions.last?.offset
+            let firstIndex = relatedIndices.first,
+            let lastIndex = relatedIndices.last
             else { return }
-        
-        
-        let _relatedQuestions = relatedQuestions.compactMap({$0.element})
-        
-        let array = Array(repeating: _relatedQuestions, count: count).enumerated().compactMap { (offset, element) -> [QuestionStructure] in
+
+        let array = Array(repeating: relatedQuestions, count: count).enumerated().compactMap { (offset, element) -> [QuestionStructure] in
 
             var e = element
             if offset > 0 {
@@ -206,96 +215,104 @@ extension NewProjectReportViewController {
             .rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                if let item = self?.initialValue?[indexPath.section].items[indexPath.item] {
+                guard let item = self?.getQuestionByIndexPath(indexPath: indexPath) else { return }
+                
+                switch item.QType {
                     
-                    switch item.QType {
+                case .image:
+                    if self?.checkPermission() == true {
+                        let pickerViewController = YMSPhotoPickerViewController()
+                        pickerViewController.numberOfPhotoToSelect = 9
                         
-                    case .image:
-                        if self?.checkPermission() == true {
-                            let pickerViewController = YMSPhotoPickerViewController.init()
-                            pickerViewController.numberOfPhotoToSelect = 9
-                            
-                            self?.yms_presentCustomAlbumPhotoView(pickerViewController, delegate: self)
-                            
-                        } else {
-                            let alertController = UIAlertController(title: item.Name, message: "No permission to access, please allow in settings.", preferredStyle: .alert)
-                            
-                            let confirmAction = UIAlertAction(title: "Confrim", style: .default, handler: nil)
-                            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                            
-                            alertController.addAction(confirmAction)
-                            alertController.addAction(cancelAction)
-                            
-                            self?.present(alertController, animated: true, completion: nil)
-                        }
-
-                    case .inputs:
-                        let alertController = UIAlertController(title: item.Name, message: nil, preferredStyle: .alert)
+                        self?.yms_presentCustomAlbumPhotoView(pickerViewController, delegate: self)
                         
-                        guard let options = item.Options else { return }
+                    } else {
+                        let title = item.Name
+                        let message = "No permission to access, please allow in settings."
+                        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
                         
-                        for option in options {
-                            alertController.addTextField(configurationHandler: { textField in
-                                textField.placeholder  = option
-                                textField.keyboardType = .numberPad
-                                
-                                // Fix for UIButtonBarStackView constraints problem
-                                // https://openradar.appspot.com/32355534
-                                
-                                textField.autocorrectionType = .no
-                                textField.inputAssistantItem.leadingBarButtonGroups = []
-                                textField.inputAssistantItem.trailingBarButtonGroups = []
-
-                                textField.returnKeyType = (option == options.last) ? .done : .next
-                            })
-                        }
-
-                        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
-                            guard let values = alertController.textFields?.compactMap({CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0.text ?? "")) ? $0.text : "" }).joined(separator: " x ") else { return }
-                            
-                            
-                            self?.updateValue(indexPath: indexPath, value: values)
-                            
-                            if item.Interdependence == "Yes" {
-//                                self?.addQuestions(indexPath: indexPath, value: values)
-                            }
-                            
-                            self?.reloadData()
-                        }
-                        
+                        let confirmAction = UIAlertAction(title: "Confrim", style: .default, handler: nil)
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
                         
                         alertController.addAction(confirmAction)
                         alertController.addAction(cancelAction)
+                        
                         self?.present(alertController, animated: true, completion: nil)
-
-                    case .TrussType:
-                        let alertController = UIAlertController(title: item.Name, message: nil, preferredStyle: .alert)
-                        
-                        guard let option = item.Options?.first else { return }
-                        
-                        alertController.addTextField(configurationHandler: { (textField) in
-                            textField.placeholder = option
-                            textField.keyboardType = .default
-                            textField.returnKeyType = .done
-                        })
-                        
-                        let confirmAction = UIAlertAction(title: "Confirm", style: .default, handler: { _ in
-                            guard let value = alertController.textFields?.first?.text else { return }
-                            
-                            self?.updateValue(indexPath: indexPath, value: value)
-                            self?.reloadData()
-                        })
-                        
-                        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                        
-                        alertController.addAction(confirmAction)
-                        alertController.addAction(cancelAction)
-                        self?.present(alertController, animated: true, completion: nil)
-                        
-                    default:
-                        return
                     }
+                    
+                case .inputs:
+                    let alertController = UIAlertController(title: item.Name, message: nil, preferredStyle: .alert)
+                    
+                    guard let options = item.Options else { return }
+                    
+                    for option in options {
+                        alertController.addTextField(configurationHandler: { textField in
+                            textField.placeholder  = option
+                            textField.keyboardType = .numberPad
+                            
+                            // Fix for UIButtonBarStackView constraints problem
+                            // https://openradar.appspot.com/32355534
+                            
+                            textField.autocorrectionType = .no
+                            textField.inputAssistantItem.leadingBarButtonGroups = []
+                            textField.inputAssistantItem.trailingBarButtonGroups = []
+                            
+                            textField.returnKeyType = (option == options.last) ? .done : .next
+                        })
+                    }
+                    
+                    let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
+                        let texts = alertController.textFields?.compactMap({ (textField) -> String? in
+                            if let text = textField.text {
+                                let charSet = CharacterSet(charactersIn: text)
+                                return CharacterSet.decimalDigits.isSuperset(of: charSet) ? text: nil
+                            } else {
+                                return nil
+                            }
+                        })
+                        
+                        let values = texts?.joined(separator: " x ")
+                        
+                        self?.updateValue(indexPath: indexPath, value: values)
+                        
+                        if item.Interdependence == "Yes" {
+                            //                                self?.addQuestions(indexPath: indexPath, value: values)
+                        }
+                        
+                        self?.reloadData()
+                    }
+                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                    
+                    alertController.addAction(confirmAction)
+                    alertController.addAction(cancelAction)
+                    self?.present(alertController, animated: true, completion: nil)
+                    
+                case .trussType:
+                    guard let option = item.Options?.first else { return }
+                    let alertController = UIAlertController(title: item.Name, message: nil, preferredStyle: .alert)
+                    
+                    alertController.addTextField(configurationHandler: { (textField) in
+                        textField.placeholder = option
+                        textField.keyboardType = .default
+                        textField.returnKeyType = .done
+                    })
+                    
+                    let confirmAction = UIAlertAction(title: "Confirm", style: .default, handler: { _ in
+                        guard let value = alertController.textFields?.first?.text else { return }
+                        
+                        self?.updateValue(indexPath: indexPath, value: value)
+                        self?.reloadData()
+                    })
+                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                    
+                    alertController.addAction(confirmAction)
+                    alertController.addAction(cancelAction)
+                    self?.present(alertController, animated: true, completion: nil)
+                    
+                default:
+                    return
                 }
             })
             .disposed(by: disposeBag)
@@ -311,16 +328,19 @@ extension NewProjectReportViewController {
                     let totalMissing = self?.totalMissing
                     else { return }
                 
-                data.prjQuestionnaire = initialValue.compactMap { return SectionStructure(name: $0.model, questions: $0.items)}
+                data.prjQuestionnaire = initialValue.compactMap { SectionStructure(name: $0.model, questions: $0.items)}
                 
-                DataStorageService.sharedDataStorageService.storeCurrentProjectData(data: data)
-                DataStorageService.sharedDataStorageService.storeData(withData: data, onCompleted: nil)
+                DataStorageService.shared.storeCurrentProjectData(data: data)
+                DataStorageService.shared.storeData(withData: data, onCompleted: nil)
                 
                 if totalMissing == 0 {
-                    let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: data)
-                    self?.navigationController?.pushViewController(vc, animated: true)
+                    if let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: data) {
+                        self?.navigationController?.pushViewController(vc, animated: true)
+                    }
                 } else {
-                    let popup = PopupDialog(title: "Project data saved successfully.", message: "Complete the questionnaire to proceed to next step, still Missing: \(totalMissing).")
+                    let title = "Project data saved successfully."
+                    let msg = "Complete the questionnaire to proceed to next step, still Missing: \(totalMissing)."
+                    let popup = PopupDialog(title: title, message: msg)
                     
                     let confirmButton = PopupDialogButton(title: "OK", action: nil)
                     
@@ -371,7 +391,7 @@ extension NewProjectReportViewController {
         sections.accept(self.initialValue)
     }
     
-    func loadData()->[EachSection] {
+    func loadData() -> [EachSection] {
         
         let eachSections = self.prjData.prjQuestionnaire.compactMap { section -> EachSection in
             
@@ -382,18 +402,19 @@ extension NewProjectReportViewController {
         return eachSections
     }
     
+    // swiftlint:disable:next cyclomatic_complexity
     func collectionViewDataSourceUI() -> (
         CollectionViewSectionedDataSource<EachSection>.ConfigureCell,
         CollectionViewSectionedDataSource<EachSection>.ConfigureSupplementaryView
         ) {
-            return (
-                { (dataSource, collectionView, indexPath, item) in
+            return ({ (_, cv, ip, item) in
                     
                     switch item.QType {
                     case .image:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.ImageCellID, for: ip) as? ImageCell else { return UICollectionViewCell() }
                         
-                        cell.collectionView.register(UINib(nibName: "ImageGalleryCell", bundle: nil), forCellWithReuseIdentifier: "ImageGalleryCell")
+                        let nib = UINib(nibName: self.IGCellID, bundle: nil)
+                        cell.collectionView.register(nib, forCellWithReuseIdentifier: self.IGCellID)
 
                         cell.setupCell(question: item)
                         
@@ -403,17 +424,12 @@ extension NewProjectReportViewController {
                         }
                         
                         if cell.collectionView.images.count > 1 {
-                            self.updateValue(indexPath: indexPath, value: "Yes")
+                            self.updateValue(indexPath: ip, value: "Yes")
                         }
                         return cell
                         
-                    case .ar:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ARCell", for: indexPath) as! ARCell
-                        cell.setupCell(with: item)
-                        return cell
-                        
                     case .notes:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NotesCell", for: indexPath) as! NotesCell
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.NotesCellID, for: ip) as? NotesCell else { return UICollectionViewCell() }
                         
                         cell.setupCell(question: item)
                         
@@ -443,7 +459,7 @@ extension NewProjectReportViewController {
                             .rx
                             .didEndEditing
                             .subscribe(onNext: { [weak self] (_) in
-                                self?.updateValue(indexPath: indexPath, value: cell.textView.text)
+                                self?.updateValue(indexPath: ip, value: cell.textView.text)
                                 cell.textView.resignFirstResponder()
                             })
                             .disposed(by: cell.disposeBag)
@@ -451,15 +467,15 @@ extension NewProjectReportViewController {
                         return cell
                         
                     case .multipleSelection:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MultipleSelectionCell", for: indexPath) as! MultipleSelectionCell
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.MSCellID, for: ip) as? MultipleSelectionCell else { return UICollectionViewCell() }
 
                         cell.delegate = self
-                        cell.indexPath = indexPath
+                        cell.indexPath = ip
                         cell.setupCell(with: item)
                         return cell
                         
                     case .inputs:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InputsCell", for: indexPath) as! InputsCell
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.InputsCellID, for: ip) as? InputsCell else { return UICollectionViewCell() }
                         cell.setupCell(question: item)
                         
                         cell.imageView
@@ -468,9 +484,10 @@ extension NewProjectReportViewController {
                             .when(.recognized)
                             .subscribe(onNext: { [unowned self] (_) in
                                 if let photoName = item.Image, photoName != "" {
-                                    let vc = ImageViewController.instantiateFromStoryBoard(withImageName: photoName)
-                                    vc.photoName = photoName
-                                    self.present(vc, animated: true, completion: nil)
+                                    if let vc = ImageViewController.instantiateFromStoryBoard(imageName: photoName) {
+                                        vc.photoName = photoName
+                                        self.present(vc, animated: true, completion: nil)
+                                    }
                                 }
                             })
                             .disposed(by: cell.disposeBag)
@@ -478,9 +495,10 @@ extension NewProjectReportViewController {
                         return cell
                         
                     case .selectionsWithImageOther:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectionsWithImageOtherCell", for: indexPath) as! SelectionsWithImageOtherCell
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.SWIOCellID, for: ip) as? SelectionsWithImageOtherCell else { return UICollectionViewCell() }
+                        
                         cell.delegate = self
-                        cell.indexPath = indexPath
+                        cell.indexPath = ip
                         
                         cell.setupCell(question: item)
 
@@ -490,17 +508,18 @@ extension NewProjectReportViewController {
                             .when(.recognized)
                             .subscribe(onNext: { [unowned self] _ in
                                 if let photoName = item.Image, photoName != "" {
-                                    let vc = ImageViewController.instantiateFromStoryBoard(withImageName: photoName)
-                                    vc.photoName = photoName
-                                    self.present(vc, animated: true, completion: nil)
+                                    if let vc = ImageViewController.instantiateFromStoryBoard(imageName: photoName) {
+                                        vc.photoName = photoName
+                                        self.present(vc, animated: true, completion: nil)
+                                    }
                                 }
                             })
                             .disposed(by: cell.disposeBag)
                         
                         return cell
                         
-                    case .TrussType:
-                        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrussTypeCell", for: indexPath) as! TrussTypeCell
+                    case .trussType:
+                        guard let cell = cv.dequeueReusableCell(withReuseIdentifier: self.TTCellID, for: ip) as? TrussTypeCell else { return UICollectionViewCell() }
                         
                         let imgAttrs = self.prjData.prjImageArray.first(where: {$0.key == item.Name})?.images
 
@@ -513,9 +532,10 @@ extension NewProjectReportViewController {
                             .when(.recognized)
                             .subscribe(onNext: { [unowned self] (_) in
                                 if let photoName = item.Image, photoName != "" {
-                                    let vc = ImageViewController.instantiateFromStoryBoard(withImageName: photoName)
-                                    vc.photoName = photoName
-                                    self.present(vc, animated: true, completion: nil)
+                                    if let vc = ImageViewController.instantiateFromStoryBoard(imageName: photoName) {
+                                        vc.photoName = photoName
+                                        self.present(vc, animated: true, completion: nil)
+                                    }
                                 }
                             })
                             .disposed(by: cell.disposeBag)
@@ -523,12 +543,13 @@ extension NewProjectReportViewController {
                         return cell
                     }
                     
-            },
-                { (ds, cv, kind, ip) in
-                    let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! CollectionReusableView
-                    section.labelSectionName.text = "\(ds[ip.section].model)"
-                    return section
-            }
+            }, { [unowned self] (ds, cv, kind, ip) in
+                // swiftlint:disable:next force_cast
+                let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.sectionID, for: ip) as! CollectionReusableView
+                
+                section.labelSectionName.text = "\(ds[ip.section].model)"
+                return section
+                }
         )
     }
     
@@ -543,13 +564,13 @@ extension NewProjectReportViewController: UICollectionViewDelegateFlowLayout {
         
         if let item = getQuestionByIndexPath(indexPath: indexPath) {
             switch item.QType {
-            case .ar, .image, .notes:
+            case .image, .notes:
                 height = CGFloat(400)
             case .multipleSelection:
                 height = CGFloat(140)
             case .inputs, .selectionsWithImageOther:
                 height = CGFloat(190)
-            case .TrussType:
+            case .trussType:
                 height = CGFloat(400)
             }
         }
@@ -569,8 +590,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
             ret = true
             
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({
-                (newStatus) in
+            PHPhotoLibrary.requestAuthorization({ (newStatus) in
                 if newStatus ==  PHAuthorizationStatus.authorized {
                     /* do stuff here */
                     ret = true
@@ -594,10 +614,18 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
     }
 
     func photoPickerViewControllerDidReceivePhotoAlbumAccessDenied(_ picker: YMSPhotoPickerViewController!) {
-        let alertController = UIAlertController.init(title: "Allow photo album access?", message: "Need your permission to access photo albumbs", preferredStyle: .alert)
+        let title = "Allow photo album access?"
+        let msg = "Need your permission to access photo albumbs"
+        
+        let alertController = UIAlertController(title: title, message: msg, preferredStyle: .alert)
         let dismissAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let settingsAction = UIAlertAction(title: "Settings", style: .default) { (action) in
-            UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) in
+            let application = UIApplication.shared
+            let settingsURL = UIApplication.openSettingsURLString
+            
+            if let url = URL(string: settingsURL) {
+                application.open(url, options: [:], completionHandler: nil)
+            }
         }
         alertController.addAction(dismissAction)
         alertController.addAction(settingsAction)
@@ -606,11 +634,21 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
     }
     
     func photoPickerViewControllerDidReceiveCameraAccessDenied(_ picker: YMSPhotoPickerViewController!) {
-        let alertController = UIAlertController.init(title: "Allow camera album access?", message: "Need your permission to take a photo", preferredStyle: .alert)
-        let dismissAction = UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil)
-        let settingsAction = UIAlertAction.init(title: "Settings", style: .default) { (action) in
-            UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        let title = "Allow camera album access?"
+        let msg = "Need your permission to take a photo"
+        
+        let alertController = UIAlertController(title: title, message: msg, preferredStyle: .alert)
+        let dismissAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) in
+            let application = UIApplication.shared
+            let settingsURL = UIApplication.openSettingsURLString
+            
+            if let url = URL(string: settingsURL) {
+                application.open(url, options: [:], completionHandler: nil)
+            }
         }
+        
         alertController.addAction(dismissAction)
         alertController.addAction(settingsAction)
         
@@ -618,21 +656,21 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
     }
     
     func photoPickerViewController(_ picker: YMSPhotoPickerViewController!, didFinishPicking image: UIImage!) {
-        picker.dismiss(animated: true) {
+        picker.dismiss(animated: true) { [weak self] in
             
             guard let compressedImage = image.compressed(quality: 1.0),
-                let indexPath = self.collectionView.indexPathsForSelectedItems?.first,
-                let item = self.getQuestionByIndexPath(indexPath: indexPath),
-                let prjID = self.prjData.prjInformation.projectID
+                let indexPath = self?.collectionView.indexPathsForSelectedItems?.first,
+                let item = self?.getQuestionByIndexPath(indexPath: indexPath),
+                let prjID = self?.prjData.prjInformation.projectID
                 else { return }
             
-            let cell = self.collectionView.cellForItem(at: indexPath) as! ImageCell
-            cell.collectionView.images.append(compressedImage)
+//            let cell = self?.collectionView.cellForItem(at: indexPath) as! ImageCell
+//            cell.collectionView.images.append(compressedImage)
             
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
+                self?.collectionView.reloadData()
                 
-                DataStorageService.sharedDataStorageService.storeImages(prjID: prjID, name: item.Name, images: [compressedImage]) { (imageAttrs, error) in
+                DataStorageService.shared.storeImages(prjID: prjID, name: item.Name, images: [compressedImage]) { (imageAttrs, error) in
                     if let err = error {
                         print("Error = \(err)")
                     }
@@ -640,13 +678,13 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                     guard let imgAttrs = imageAttrs else { return }
                     let imgAttr = ImageArrayStructure(key: item.Name, images: imgAttrs)
                     
-                    if let index = self.prjData.prjImageArray.firstIndex(where: {$0.key == item.Name}) {
-                        self.prjData.prjImageArray[index] = imgAttr
+                    if let index = self?.prjData.prjImageArray.firstIndex(where: {$0.key == item.Name}) {
+                        self?.prjData.prjImageArray[index] = imgAttr
                     } else {
-                        self.prjData.prjImageArray.append(imgAttr)
+                        self?.prjData.prjImageArray.append(imgAttr)
                     }
                     
-                    self.updateValue(indexPath: indexPath, value: "Yes")
+                    self?.updateValue(indexPath: indexPath, value: "Yes")
                 }
             }
         }
@@ -662,12 +700,9 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
             
             var imageArray: [UIImage] = []
             
-            for asset: PHAsset in photoAssets
-            {
-                // let scale = UIScreen.main.scale
-                // let targetSize = CGSize(width: (self.collectionView.bounds.width - 20*2) * scale, height: (self.collectionView.bounds.height - 20*2) * scale)
+            for asset: PHAsset in photoAssets {
                 let targetSize = CGSize(width: 84.0, height: 84.0)
-                imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: { (image, info) in
+                imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: { (image, _) in
                     
                     if let compressedImage = image?.compressed(quality: 1.0) {
                         imageArray.append(compressedImage)
@@ -681,20 +716,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
                 else { return }
             
             DispatchQueue.main.async {
-/*
-                let imageAttr = imageArray.enumerated().compactMap({ (offset, element) -> ImageAttributes in
-                    return ImageAttributes(name: item.Name + "_\(offset)")
-                })
-                
-                let imgArr = ImageArrayStructure(key: item.Name, images: imageAttr)
-                
-                if let index = self?.prjData.prjImageArray.firstIndex(where: {$0.key == item.Name}) {
-                    self?.prjData.prjImageArray[index] = imgArr
-                } else {
-                    self?.prjData.prjImageArray.append(imgArr)
-                }
- */
-                DataStorageService.sharedDataStorageService.storeImages(prjID: prjID, name: item.Name, images: imageArray) {(imageAttrs, error) in
+                DataStorageService.shared.storeImages(prjID: prjID, name: item.Name, images: imageArray) {(imageAttrs, error) in
                     if let err = error {
                         print("Error = \(err)")
                     }
@@ -733,7 +755,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (action) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
                     if let textField = alertViewController.textFields?.first, let text = textField.text {
                         button.setTitle(text, for: .normal)
                         
@@ -780,7 +802,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (action) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
                     if let textField = alertViewController.textFields?.first, let text = textField.text {
                         value = text
                         button.setTitle(value, for: .normal)
@@ -806,33 +828,71 @@ extension NewProjectReportViewController: SelectionCellDelegate {
 
         button.isChecked = true
         self.updateValue(indexPath: indexPath, value: value)
+        self.reloadData()
 
         if question.Interdependence == "Yes" {
-            
-            let secNum = indexPath.section
-            
-            self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value == value}).forEach({ self.prjData.prjQuestionnaire[secNum].Questions[$0.offset].Mandatory = "Yes" })
-        
-            self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value}).forEach({ self.prjData.prjQuestionnaire[secNum].Questions[$0.offset].Mandatory = "No" })
-
-            let relatedQuestions = self.prjData.prjQuestionnaire[secNum].Questions.enumerated().filter({$0.element.Dependent?.first?.key == question.Key && $0.element.Dependent?.first?.value != value})
-            
-            let array = self.initialValue.map({$0.items}).joined().filter({ question in
-                question.Value != nil && question.Value != "" && !relatedQuestions.contains(where: {$0.element.Name == question.Name})})
-            
-            array.forEach { (question) in
-                self.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
-                    if let row = element.Questions.firstIndex(where: {$0.Name == question.Name}) {
-                        self.prjData.prjQuestionnaire[offset].Questions[row].Value = question.Value
-                    }
-                })
-            }
-            
-            self.initialValue = self.loadData()
-
-            self.reloadData()
-            self.reloadIndexItems()
+            self.showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
         }
+    }
+    
+    private func showQuestionsBasedOnDependency(key: String, indexPath: IndexPath, newValue: String) {
+        
+        guard let data = self.prjData else { return }
+        let secNum = indexPath.section
+        let questions = data.prjQuestionnaire[secNum].Questions
+        
+        let relatedQuestions = questions.filter({$0.Dependent?.first?.key == key})
+        
+        let (matchedQuestions, notMatchedQuestions) = relatedQuestions.stablePartition { question in
+            question.Dependent?.first?.value == newValue
+        }
+        
+        let newIndices = matchedQuestions.compactMap({questions.firstIndex(of: $0)})
+        
+        newIndices.forEach { (index) in
+            let indexPath = IndexPath(row: index, section: secNum)
+            var q = questions[index]
+            
+            q.Mandatory = "Yes"
+            self.updateQuestion(indexPath: indexPath, question: q)
+        }
+        
+        let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
+        
+        oldIndices.forEach { (index) in
+            let indexPath = IndexPath(row: index, section: secNum)
+            var q = questions[index]
+            
+            q.Mandatory = "No"
+            self.updateQuestion(indexPath: indexPath, question: q)
+        }
+        
+        let answeredQuestions = self.initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
+        
+//        print("answeredQuestions")
+//        answeredQuestions.forEach({print("key: \($0.Name)value: \($0.Value)")})
+        
+        answeredQuestions.forEach { (question) in
+            self.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
+                if let row = element.Questions.firstIndex(where: {$0.Name == question.Name && $0.Mandatory == "Yes"}) {
+                    let indexPath = IndexPath(row: row, section: offset)
+                    
+//                    print("indexPath = \(indexPath.section) \(indexPath.row)")
+//                    self.updateValue(indexPath: indexPath, value: question.Value)
+                    self.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value = question.Value
+                }
+            })
+        }
+        
+        self.initialValue = self.loadData()
+        
+        self.reloadData()
+        self.reloadIndexItems()
+        
+    }
+    
+    private func updateQuestion(indexPath: IndexPath, question: QuestionStructure) {
+        self.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row] = question
     }
 }
 
@@ -865,7 +925,7 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
         let text = String("\(indexPath.section):\(indexPath.row)")
         
         guard let indexItem = self.tableViewIndex.items.first(where: { view in
-            let label = view as! UILabel
+            guard let label = view as? UILabel else {return false}
             return label.text == text
         }) else { return }
         
@@ -885,37 +945,15 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
                 return nil
         }
         
-        var secIndex = 0
-        var rowIndex = 0
-        var locked = false
-        
-        _ = initialValue.compactMap({$0.items.count}).enumerated().reduce(0) { (sum, arg1) -> Int in
-            
-            let (offset, next) = arg1
-            if sum + next > index, locked == false {
-                secIndex = offset
-                rowIndex = index - sum
-                
-                locked = true
-            }
-            
-            return sum + next
-        }
-        
-        /*
-        print("index = \(index)")
-        print("secIndex = \(secIndex), rowIndex = \(rowIndex)")
-        print("intSectionIndex = \(intSectionIndex), intRowIndex = \(intRowIndex)")
-         */
-        
         return IndexPath(row: intRowIndex, section: intSectionIndex)
     }
     
     func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
         
+        let kind = UICollectionView.elementKindSectionHeader
         guard let indexPath    = mapIndexItemToSection(item, index: index),
             let collectionView = self.collectionView,
-            let attrs          = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+            let attrs          = collectionView.layoutAttributesForSupplementaryElement(ofKind: kind, at: indexPath)
             else {
                 return false
         }
@@ -928,15 +966,12 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
             contentInset = collectionView.contentInset
         }
         
-        let yOffset = min(attrs.frame.origin.y, collectionView.contentSize.height - collectionView.frame.height + contentInset.top)
+        let x = attrs.frame.origin.y
+        let y = collectionView.contentSize.height - collectionView.frame.height + contentInset.top
+        
+        let yOffset = min(x, y)
         collectionView.contentOffset = CGPoint(x: 0, y: yOffset - contentInset.top)
         
         return true
-    }
-    
-    fileprivate func updateIndexVisibility() {
-    }
-    
-    fileprivate func updateHighlightedItems() {
     }
 }

@@ -28,7 +28,7 @@ fileprivate extension Selector {
 
 class MainViewController: UIViewController {
     
-    @IBOutlet weak var titleProjectType: UIButton!
+    @IBOutlet weak var titleButton: UIButton!
     @IBOutlet weak var labelCurrentUser: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButtonFilter: UIBarButtonItem!
@@ -46,14 +46,15 @@ class MainViewController: UIViewController {
         
         loadData()
         setupView()
+
         setupDataSource()
         setupViewModel()
         setupGoogleSignIn()
         setupCurrentUser()
         setupCellTapHandling()
         setupRefreshControl()
-        setupNotificationCenter()
         setupDelegate()
+        setupNotificationCenter()
         
         setupButtonTitleTapHandling()
         setupBarButtonFilterTapHandling()
@@ -84,8 +85,8 @@ extension MainViewController {
     
     private func loadData() {
         
-        let type = DataStorageService.sharedDataStorageService.retrieveTypeOption()
-        if let prjList = DataStorageService.sharedDataStorageService.retrieveProjectList(type: type) {
+        let type = DataStorageService.shared.retrieveTypeOption()
+        if let prjList = DataStorageService.shared.retrieveProjectList(type: type) {
             self.prjList = prjList
             
         }
@@ -93,12 +94,22 @@ extension MainViewController {
     
     func combineProjectList(zohoPrjList: [[String: String]]) {
         
-        let newPrjList = zohoPrjList.filter{prj in prj["sa_status"] == UploadStatus.pending.rawValue && !self.prjList.contains(where: {$0.prjInformation.projectID == prj["sa_projectID"]})}.compactMap { SiteAssessmentDataStructure(withZohoData: $0) }
+        let prjIDs = prjList.compactMap({$0.prjInformation.projectID})
+        
+        let pendingProjects = zohoPrjList.filter { prj in
+            let keyStatus    = ZohoKeywords.status.rawValue
+            let valueStatus  = UploadStatus.pending.rawValue
+            let keyProjectID = ZohoKeywords.projectID.rawValue
+            
+            return prj[keyStatus] == valueStatus && !prjIDs.contains(where: {$0 == prj[keyProjectID]})
+        }
+        
+        let newPrjList = pendingProjects.compactMap { SiteAssessmentDataStructure(withZohoData: $0) }
         
         self.prjList.append(contentsOf: newPrjList)
         
-        DataStorageService.sharedDataStorageService.updateLocalProject(prjList: self.prjList)
-        newPrjList.forEach{DataStorageService.sharedDataStorageService.storeData(withData: $0, onCompleted: nil)}
+        DataStorageService.shared.updateLocalProject(prjList: self.prjList)
+        newPrjList.forEach {DataStorageService.shared.storeData(withData: $0, onCompleted: nil)}
     }
     
     func reloadPrjList() {
@@ -110,13 +121,16 @@ extension MainViewController {
     
     private func setupView() {
         
-        let title = DataStorageService.sharedDataStorageService.retrieveTypeOption()
-        self.navigationItem.titleView = titleProjectType
-        titleProjectType.setTitle(title.rawValue, for: .normal)
+        let title = DataStorageService.shared.retrieveTypeOption()
+        self.navigationItem.titleView = titleButton
+        titleButton.setTitle(title.rawValue, for: .normal)
         
         // Auto Layout
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
+        
+        self.tableView.sectionHeaderHeight = UITableView.automaticDimension
+        self.tableView.estimatedSectionHeaderHeight = 44.0
         
         self.tableView.backgroundColor = UIColor.clear
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
@@ -146,23 +160,23 @@ extension MainViewController {
     }
 
     private func setupButtonTitleTapHandling() {
-        titleProjectType
+        titleButton
             .rx
             .tap
             .subscribe(onNext: { [unowned self] (_) in
                 let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
                 
                 let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
-                    DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
-                    self.titleProjectType.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
+                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
+                    self.titleButton.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
                     
                     self.reloadPrjList()
                 }
                 
                 let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
-                    DataStorageService.sharedDataStorageService.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
+                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
                     
-                    self.titleProjectType.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
+                    self.titleButton.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
                     
                     self.reloadPrjList()
                 }
@@ -182,13 +196,13 @@ extension MainViewController {
                 let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
                 
                 let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
-                    DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+                    DataStorageService.shared.storeGroupingOption(option: .status)
                     
                     self.setupViewModel()
                 }
                 
                 let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
-                    DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
+                    DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
                     
                     self.setupViewModel()
                 }
@@ -210,7 +224,7 @@ extension MainViewController {
             tableView.addSubview(refreshControl)
         }
         
-        refreshControl.tintColor = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
+        refreshControl.tintColor = UIColor(red: 0.25, green: 0.72, blue: 0.85, alpha: 1.0)
         
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         refreshControl.attributedTitle = NSAttributedString(string: "Refreshing please wait", attributes: attributes)
@@ -237,15 +251,15 @@ extension MainViewController {
         }
     }
     
-    private func fetchZohoData(onCompleted: ((Bool) -> ())?) {
-        guard let title = self.titleProjectType.title(for: .normal),
+    private func fetchZohoData(onCompleted: ((Bool) -> Void)?) {
+        guard let title = self.titleButton.title(for: .normal),
             let type = SiteAssessmentType(rawValue: title)
             else {
                 onCompleted?(false)
                 return
         }
         
-        ZohoService.sharedZohoService.getProjectList(type: type) { [weak self] (projectListFromZoho) in
+        ZohoService.shared.getProjectList(type: type) { [weak self] (projectListFromZoho) in
             guard let zohoPrjList = projectListFromZoho else {
                 print("Fetch Zoho data failed.")
                 onCompleted?(false)
@@ -258,10 +272,12 @@ extension MainViewController {
     }
     
     private func setupCurrentUser() {
-        if let userEmail = GoogleService.sharedGoogleService.retrieveGoogleUserEmail() {
+        if let userEmail = GoogleService.shared.getEmail() {
             labelCurrentUser.text = "Signed in as \(userEmail)."
         } else {
-            let attributedText = NSAttributedString(string: "Please sign in.", attributes: [.underlineStyle: NSUnderlineStyle.single.rawValue])
+            let text = "Please sign in."
+            let underlineStyle = NSUnderlineStyle.single.rawValue
+            let attributedText = NSAttributedString(string: text, attributes: [.underlineStyle: underlineStyle])
             labelCurrentUser.attributedText = attributedText
         }
         
@@ -270,69 +286,76 @@ extension MainViewController {
     }
     
     @objc func shortcutToGoogleSignIn(_ sender: UITapGestureRecognizer) {
-        let viewController = GoogleAccessViewController.instantiateFromStoryBoard()
-        
-        self.navigationController?.pushViewController(viewController, animated: true)
+        if let viewController = GoogleAccessViewController.instantiateFromStoryBoard() {
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     private func setGrouping(option: GroupingOptions) {
         switch option {
         case .status, .none:
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+            DataStorageService.shared.storeGroupingOption(option: .status)
  
         case .assignedTeam:
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .assignedTeam)
+            DataStorageService.shared.storeGroupingOption(option: .assignedTeam)
 
         case .scheduleDate:
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
+            DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
         }
     }
     
     private func setupViewModel() {
 
-        let option = DataStorageService.sharedDataStorageService.retrieveGroupingOption()
+        let option = DataStorageService.shared.retrieveGroupingOption()
     
+        var dictionary : [(key: String, value: [SiteAssessmentDataStructure])]!
+                
         switch option {
         case .status, .none:
-            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue}).sorted { (d1, d2) -> Bool in
-                d1.key < d2.key
-            }
+            let dict = Dictionary(grouping: prjList, by: {$0.prjInformation.status.rawValue}).sorted {$0.key < $1.key}
             
-            let sections = dictionary.map { (key, value) -> MainSection in
-                let model = key
-                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
-
-                return MainSection(model: model, items: items)
-            }
-            self.sections.accept(sections)
-            
+            dictionary = dict
+        
         case .assignedTeam:
-            let dictionary = Dictionary(grouping: prjList, by: {$0.prjInformation.assignedTeam}).sorted { (d1, d2) -> Bool in
-                d1.key < d2.key
-            }
+            let dict = Dictionary(grouping: prjList, by: {$0.prjInformation.assignedTeam}).sorted {$0.key < $1.key}
             
-            let sections = dictionary.map { (key, value) -> MainSection in
-                let model = key
-                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
-                
-                return MainSection(model: model, items: items)
-            }
-            
-            self.sections.accept(sections)
+            dictionary = dict
 
         case .scheduleDate:
-            let dictionary = Dictionary(grouping: prjList, by: { $0.prjInformation.scheduleDate})
-            
-            let sections = dictionary.map { (key, value) -> MainSection in
+            let dict = Dictionary(grouping: prjList, by: {$0.prjInformation.scheduleDate}).sorted { (p1, p2) -> Bool in
                 
-                let model = key ?? ""
-                let items = value.compactMap({MainViewModel(status: $0.prjInformation.status, projectAddress: $0.prjInformation.projectAddress)})
-
-                return MainSection(model: model, items: items)
+                if let k1 = p1.key, let k2 = p2.key {
+                    return k1 < k2
+                } else {
+                    return true
+                }
             }
             
-            self.sections.accept(sections)
+            let newDict = dict.compactMap { (key, value) -> (String, [SiteAssessmentDataStructure]) in
+                if let k = key {
+                    return (k, value)
+                } else {
+                    return ("", value)
+                }
+            }
+            
+            dictionary = newDict
         }
+        
+        let sections = dictionary.map { (key, value) -> MainSection in
+            let model = key
+            let items = value.compactMap({ prjData -> MainViewModel? in
+                if let key = prjData.prjInformation.status, let value = prjData.prjInformation.projectAddress {
+                    let viewModel = MainViewModel(status: key, projectAddress: value)
+                    return viewModel
+                } else {
+                    return nil
+                }
+            })
+            
+            return MainSection(model: model, items: items)
+        }
+        self.sections.accept(sections)
     }
     
     private func setupCellTapHandling() {
@@ -340,16 +363,16 @@ extension MainViewController {
             .rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                let cell = self?.tableView.cellForRow(at: indexPath) as! MainCell
                 self?.tableView.deselectRow(at: indexPath, animated: true)
+                guard let cell = self?.tableView.cellForRow(at: indexPath) as? MainCell else { return }
 
-                if let text = cell.labelProjectAddress.text, let prjData = self?.prjList.first(where: {$0.prjInformation.projectAddress == text}) {
+                if let text = cell.labelProjectAddress.text,
+                    let prjData = self?.prjList.first(where: {$0.prjInformation.projectAddress == text}) {
+                    DataStorageService.shared.setCurrentProject(projectID: prjData.prjInformation.projectID)
                     
-                    DataStorageService.sharedDataStorageService.setCurrentProject(projectID: prjData.prjInformation.projectID)
-                    
-                    let viewController = ProjectInformationViewController.instantiateFromStoryBoard()
-                    
-                    self?.navigationController?.pushViewController(viewController, animated: true)
+                    if let viewController = ProjectInformationViewController.instantiateFromStoryBoard() {
+                        self?.navigationController?.pushViewController(viewController, animated: true)
+                    }
                 }
             })
             .disposed(by: disposeBag)
@@ -357,28 +380,29 @@ extension MainViewController {
 }
 
 fileprivate extension Selector {
-    static let onDidReceiveCompleteMsg     = #selector(MainViewController.onDidReceiveCompleteMsg)
-    static let onDidReceiveProcessingMsg   = #selector(MainViewController.onDidReceiveProcessingMsg)
-    static let onDidReceiveErrorMsg        = #selector(MainViewController.onDidReceiveErrorMsg)
-    static let onDidReceiveWarningMsg      = #selector(MainViewController.onDidReceiveWarningMsg)
-    static let onDidReceiveReachabilityMsg = #selector(MainViewController.onDidReceiveReachabilityMsg)
+    static let onDidGetCompleteMsg     = #selector(MainViewController.onDidGetCompleteMsg)
+    static let onDidGetProcessingMsg   = #selector(MainViewController.onDidGetProcessingMsg)
+    static let onDidGetErrorMsg        = #selector(MainViewController.onDidGetErrorMsg)
+    static let onDidGetWarningMsg      = #selector(MainViewController.onDidGetWarningMsg)
+    static let onDidGetReachabilityMsg = #selector(MainViewController.onDidGetReachabilityMsg)
 }
 
 extension MainViewController: NotificationBannerDelegate {
     
     private func setupNotificationCenter() {
-        NotificationCenter.default.addObserver(self, selector: .onDidReceiveCompleteMsg, name: .didReceiveCompleteMsg, object: nil)
+        let noticationCenter = NotificationCenter.default
+        noticationCenter.addObserver(self, selector: .onDidGetCompleteMsg, name: .CompleteMsg, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: .onDidReceiveProcessingMsg, name: .didReceiveProcessingMsg, object: nil)
+        noticationCenter.addObserver(self, selector: .onDidGetProcessingMsg, name: .ProcessingMsg, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: .onDidReceiveErrorMsg, name: .didReceiveErrorMsg, object: nil)
+        noticationCenter.addObserver(self, selector: .onDidGetErrorMsg, name: .ErrorMsg, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: .onDidReceiveWarningMsg, name: .didReceiveWarningMsg, object: nil)
+        noticationCenter.addObserver(self, selector: .onDidGetWarningMsg, name: .WarningMsg, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: .onDidReceiveReachabilityMsg, name: .didReceiveReachabilityMsg, object: nil)
+        noticationCenter.addObserver(self, selector: .onDidGetReachabilityMsg, name: .ReachabilityMsg, object: nil)
     }
     
-    @objc func onDidReceiveCompleteMsg(_ msg: Notification) {
+    @objc func onDidGetCompleteMsg(_ msg: Notification) {
         guard let prjID = msg.object as? String else {
             print("onDidReceiveComplete - Invalid message.")
             return
@@ -393,13 +417,13 @@ extension MainViewController: NotificationBannerDelegate {
             let dateString = formatter.string(from: Date())
             prjList[index].prjInformation.uploadedDate = dateString
             
-            DataStorageService.sharedDataStorageService.storeData(withData: prjList[index], onCompleted: nil)
-            DataStorageService.sharedDataStorageService.updateProject(prjData: prjList[index])
+            DataStorageService.shared.storeData(withData: prjList[index], onCompleted: nil)
+            DataStorageService.shared.updateProject(prjData: prjList[index])
             setupViewModel()
         }
     }
     
-    @objc func onDidReceiveProcessingMsg(_ msg: Notification) {
+    @objc func onDidGetProcessingMsg(_ msg: Notification) {
         guard let prjID = msg.object as? String else {
             print("onDidReceiveProcessing - Invalid message.")
             return
@@ -412,7 +436,7 @@ extension MainViewController: NotificationBannerDelegate {
         
     }
     
-    @objc func onDidReceiveErrorMsg(_ msg: Notification) {
+    @objc func onDidGetErrorMsg(_ msg: Notification) {
         guard let prjID = msg.object as? String else {
             print("onDidReceiveError - Invalid message.")
             return
@@ -424,10 +448,10 @@ extension MainViewController: NotificationBannerDelegate {
         }
     }
     
-    @objc func onDidReceiveWarningMsg(_ msg: Notification) {
+    @objc func onDidGetWarningMsg(_ msg: Notification) {
     }
     
-    @objc func onDidReceiveReachabilityMsg(_ msg: Notification) {
+    @objc func onDidGetReachabilityMsg(_ msg: Notification) {
         guard let msg = msg.object as? String else {
             print("onDidReceiveReachabilityMsg - Invalid message.")
             return
@@ -471,7 +495,8 @@ extension MainViewController: GIDSignInDelegate, GIDSignInUIDelegate {
             return
         } else {
             guard let email = user.profile.email else { return }
-            GoogleService.sharedGoogleService.storeGoogleAccountInformation(signIn: signIn)
+            DataStorageService.shared.writeToLog("User Email is \(email)")
+            GoogleService.shared.storeGoogleAccountInformation(signIn: signIn)
         }
     }
 }
@@ -481,21 +506,21 @@ extension MainViewController {
         TableViewSectionedDataSource<MainSection>.ConfigureCell,
         TableViewSectionedDataSource<MainSection>.TitleForHeaderInSection
         ) {
-            return (
-                { (_, tv, ip, i) in
-                    let cell = tv.dequeueReusableCell(withIdentifier: "MainCell", for: ip) as! MainCell
-                    cell.configureWithData(data: i)
-                    //cell.labelProjectAddress.text = i
-                    return cell
-            },
-                { (ds, section) -> String? in
-                    return ds[section].model
-            })
+            return ({ (_, tv, ip, i) in
+                let cell = tv.dequeueReusableCell(withClass: MainCell.self, for: ip)
+                cell.configureWithData(data: i)
+                return cell
+                
+            }, { (ds, section) -> String? in
+                return ds[section].model
+            }
+        )
     }
 }
 
 extension MainViewController: UITableViewDelegate {
-    private func setupDelegate() {
+    
+    func setupDelegate() {
         tableView
             .rx
             .setDelegate(self)
@@ -505,14 +530,11 @@ extension MainViewController: UITableViewDelegate {
     // https://github.com/RxSwiftCommunity/RxDataSources/issues/91
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         view.tintColor = UIColor.clear
-        let header:UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 16.0)
-        header.textLabel?.textColor = UIColor.black
-        header.accessibilityIdentifier = "MainTableViewHeader"
+        
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 16.0)
+            header.textLabel?.textColor = UIColor.black
+            header.accessibilityIdentifier = "MainTableViewHeader"
+        }
     }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
-    }
-
 }

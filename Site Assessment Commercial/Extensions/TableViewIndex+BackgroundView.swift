@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 // MARK: TableViewIndexBackground
-class BackgroundView : UIView {
+class BackgroundView: UIView {
     
-    enum Alpha : CGFloat {
+    enum Alpha: CGFloat {
         case normal = 0.3
         case highlighted = 0.6
     }

@@ -10,7 +10,7 @@ import XCTest
 
 @testable import Site_Assessment_Commercial
 
-class Site_Assessment_CommercialTests: XCTestCase {
+class SiteAssessmentCommercialTests: XCTestCase {
 
     override func setUp() {
         DataStorageService.instantiateSharedInstance()
@@ -20,7 +20,7 @@ class Site_Assessment_CommercialTests: XCTestCase {
     }
 
     func testExample() {
-        
+/*
         let string = "1 - 5"
         
         let str = string.split(separator: "-").compactMap({Int($0.trimmingCharacters(in: .whitespaces))})
@@ -28,7 +28,6 @@ class Site_Assessment_CommercialTests: XCTestCase {
 //        print("str = \(str)")
 //        print("first = \(str.first)")
 //        print("last = \(str.last)")
-        
         
         let array = [
             "1", "2", "3"
@@ -42,6 +41,25 @@ class Site_Assessment_CommercialTests: XCTestCase {
         }.joined()
         
         print(arr)
+
+        let arr1 = [
+            "1", "2"
+        ]
+        
+        let arr2 = [
+            "1", "2", "3"
+        ]
+        
+        let ele = arr2.firstIndex(where: {arr1.contains($0)})
+        
+        print("ele = \(ele)")
+        
+*/
+        var arr = [1, 2, 3, 4]
+        
+        let related = arr.filter({$0 % 3 == 0})
+        
+        print("related = \(related)")
     }
 
 }

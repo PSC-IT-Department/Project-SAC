@@ -12,22 +12,22 @@ import RxSwift
 import NotificationBannerSwift
 
 enum SiteAssessmentError: String, LocalizedError {
-    case jsonEncodeFailed = "jsonEncodeFailed"
-    case createFolderFailed = "createFolderFailed"
+    case jsonEncodeFailed = "Json encode failed."
+    case createFolderFailed = "Create folder failed."
 }
 
 class DataStorageService {
-    public static var sharedDataStorageService: DataStorageService!
+    public static var shared: DataStorageService!
     
     public static func instantiateSharedInstance() {
-        sharedDataStorageService = DataStorageService()
+        shared = DataStorageService()
     }
     
     public var homeDirectory: URL!
     public var currentProjectHomeDirectory: URL!
     public var currentProjectID: String!
     
-    public var projectList: [SiteAssessmentDataStructure]? = nil
+    public var projectList: [SiteAssessmentDataStructure]?
         
     private var prjData: SiteAssessmentDataStructure! {
         didSet {
@@ -73,7 +73,7 @@ class DataStorageService {
     }
     
     private func loadLocalProject() {
-        if let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "json" } {
+        if let contents = try? FileManager.default.contentsOfDirectory(at: homeDirectory, includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" } {
             let prjList = contents.compactMap { (fileURL) -> SiteAssessmentDataStructure? in
                 guard let data = try? Data(contentsOf: fileURL),
                     let unarchivedData = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Data
@@ -99,12 +99,12 @@ class DataStorageService {
         }
     }
     
-    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> ())?) {
+    public func storeImages(prjID: String, name: String, images: [UIImage], onCompleted: (([ImageAttributes]?, Error?) -> Void)?) {
         
         if !FileManager.default.fileExists(atPath: currentProjectHomeDirectory.path) {
             let result = Result {try FileManager.default.createDirectory(at: currentProjectHomeDirectory, withIntermediateDirectories: true, attributes: nil)}
             switch result {
-            case .success(_):
+            case .success:
                 writeToLog("[storeImages - FileManager.default.createDirectory] success.")
             case .failure(let error):
                 writeToLog("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")
@@ -113,13 +113,15 @@ class DataStorageService {
             }
         }
         
-        let result = Result {try FileManager.default.contentsOfDirectory(at: currentProjectHomeDirectory, includingPropertiesForKeys: nil).filter{ $0.pathExtension == "png" && ($0.lastPathComponent.contains(name))}}
+        let result = Result {try FileManager.default.contentsOfDirectory(at: currentProjectHomeDirectory, includingPropertiesForKeys: nil)}
         switch result {
         case .success(let urls):
-            urls.forEach({ url in
+            let imageUrls = urls.filter { $0.pathExtension == "png" && ($0.lastPathComponent.contains(name))}
+            
+            imageUrls.forEach({ url in
                 _ = Result {try FileManager.default.removeItem(at: url)}
             })
-        case .failure(_):
+        case .failure:
             writeToLog("No such files.")
         }
         
@@ -144,7 +146,7 @@ class DataStorageService {
         onCompleted?(imgAttrs, nil)
     }
     
-    public func storeData(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> ())?) {
+    public func storeData(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> Void)?) {
         
         guard let jsonData = try? JSONEncoder().encode(saData),
             let data = try? NSKeyedArchiver.archivedData(withRootObject: jsonData, requiringSecureCoding: false),
@@ -263,7 +265,7 @@ class DataStorageService {
         if !FileManager.default.fileExists(atPath: file.path) {
             let result = Result { FileManager.default.createFile(atPath: file.path, contents: nil, attributes: nil) }
             switch result {
-            case .success(_):
+            case .success:
                 writeToLog("[storeImages - FileManager.default.createDirectory] success.")
             case .failure(let error):
                 writeToLog("[storeImages - FileManager.default.createDirectory] failed. Error=\(error)")

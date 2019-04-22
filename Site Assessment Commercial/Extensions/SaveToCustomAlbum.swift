@@ -25,11 +25,10 @@ class SaveToCustomAlbum: NSObject {
     
     private func checkAuthorizationWithHandler(completion: @escaping ((_ success: Bool) -> Void)) {
         if PHPhotoLibrary.authorizationStatus() == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({ (status) in
+            PHPhotoLibrary.requestAuthorization({ (_) in
                 self.checkAuthorizationWithHandler(completion: completion)
             })
-        }
-        else if PHPhotoLibrary.authorizationStatus() == .authorized {
+        } else if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.createAlbumIfNeeded { (success) in
                 if success {
                     completion(true)
@@ -39,8 +38,7 @@ class SaveToCustomAlbum: NSObject {
                 
             }
             
-        }
-        else {
+        } else {
             completion(false)
         }
     }
@@ -51,11 +49,11 @@ class SaveToCustomAlbum: NSObject {
             self.assetCollection = assetCollection
             completion(true)
         } else {
-            PHPhotoLibrary.shared().performChanges({
-                PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: SaveToCustomAlbum.albumName)   // create an asset collection with the album name
-            }) { success, error in
+            let library = PHPhotoLibrary.shared()
+            
+            library.performChanges({ PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: SaveToCustomAlbum.albumName)}) { [weak self] (success, _) in
                 if success {
-                    self.assetCollection = self.fetchAssetCollectionForAlbum()
+                    self?.assetCollection = self?.fetchAssetCollectionForAlbum()
                     completion(true)
                 } else {
                     // Unable to create album
@@ -108,24 +106,24 @@ class SaveToCustomAlbum: NSObject {
         self.checkAuthorizationWithHandler { (success) in
             if success, self.assetCollection != nil {
                 
-                PHPhotoLibrary.shared().performChanges({
+                let library = PHPhotoLibrary.shared()
+                library.performChanges({
                     
-                    if let assetChangeRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: movieURL) {
-                        let assetPlaceHolder = assetChangeRequest.placeholderForCreatedAsset
+                    if let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: movieURL) {
+                        let assetPlaceHolder = request.placeholderForCreatedAsset
                         if let albumChangeRequest = PHAssetCollectionChangeRequest(for: self.assetCollection) {
                             let enumeration: NSArray = [assetPlaceHolder!]
                             albumChangeRequest.addAssets(enumeration)
                         }
-                        
                     }
                     
-                }, completionHandler:  { (success, error) in
+                }) { (success, error) in
                     if success {
                         print("Successfully saved video to Camera Roll.")
                     } else {
                         print("Error writing to movie library: \(error!.localizedDescription)")
                     }
-                })
+                }
             }
         }
         

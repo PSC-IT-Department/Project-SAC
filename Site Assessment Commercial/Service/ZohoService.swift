@@ -8,10 +8,10 @@
 
 import Foundation
 
-enum ZohoKeywordMap: String {
-    case Status = "sa_status"
-    case ProjectID = "sa_projectID"
-    case AssignedTeam = "sa_assignedTeam"
+enum ZohoKeywords: String {
+    case status = "sa_status"
+    case projectID = "sa_projectID"
+    case assignedTeam = "sa_assignedTeam"
 }
 
 class ZohoService {
@@ -45,33 +45,42 @@ class ZohoService {
     private let mtmZohoAccount       = "mtm_zohoAccount"
     private let mtmZohoEmail         = "mtm_zohoEmail"
 
-    public static var sharedZohoService: ZohoService!
+    public static var shared: ZohoService!
 
     public static func instantiateSharedInstance() {
-        sharedZohoService = ZohoService()
+        shared = ZohoService()
     }
     
     init () {
-        guard let path = Bundle.main.url(forResource: "ThirdpartyInfo", withExtension: "plist") else { return }
+        guard let path = Bundle.main.url(forResource: "ThirdpartyInfo", withExtension: "plist") else {
+            print("ThirdpartyInfo.plist cannot find.")
+            return
+        }
         
-        if let data = try? Data(contentsOf: path),
-            let plist = try? PropertyListSerialization.propertyList(from: data, options: .mutableContainers, format: nil),
-            let dictArray = plist as? [[String:Any]] {
-            
-            if let sectionZoho = dictArray.last,
-                let value = sectionZoho["Name"] as? String,
-                value == "Zoho",
-                let zohoConfig = sectionZoho["Settings"] as? [String: String]
-                {
+        let result = Result {try Data(contentsOf: path)}.flatMap { (data) -> Result<Any, Error> in
+            return Result {try PropertyListSerialization.propertyList(from: data, options: .mutableContainers, format: nil)}
+        }
+        
+        switch result {
+        case .success(let plist):
+            if let dictArray = plist as? [[String: Any]] {
+                
+                if let sectionZoho = dictArray.last,
+                    let value = sectionZoho["Name"] as? String,
+                    value == "Zoho",
+                    let zohoConfig = sectionZoho["Settings"] as? [String: String] {
                     print("zohoConfig = \(zohoConfig)")
+                }
             }
+        case .failure(let error):
+            print("Error: ThirdpartyInfo.plist init failed. error = \(error)")
         }
     }
     
-    public func lookupZohoUser(onCompleted: ((String?) -> ())?) {
+    public func lookupZohoUser(onCompleted: ((String?) -> Void)?) {
         let mtmBaseURL = "\(baseURL)/api/\(format)/\(appName)/view/\(mtmReportName)"
 
-        guard let ggEmail = GoogleService.sharedGoogleService.retrieveGoogleUserEmail(), let ggAccount = ggEmail.split(separator: "@").first else {
+        guard let ggEmail = GoogleService.shared.getEmail(), let ggAccount = ggEmail.split(separator: "@").first else {
             onCompleted?(nil)
             return
         }
@@ -83,11 +92,11 @@ class ZohoService {
         
         let criteriaValue = "\(self.mtmGoogleAccount)==\(ggAccount)"
         let queryItems = [
-            URLQueryItem(name: "authtoken"   , value: authtokenValue),
+            URLQueryItem(name: "authtoken", value: authtokenValue),
             URLQueryItem(name: "zc_ownername", value: zc_ownernameValue),
-            URLQueryItem(name: "scope"       , value: scopeValue),
-            URLQueryItem(name: "raw"         , value: rawValue),
-            URLQueryItem(name: "criteria"    , value: criteriaValue),
+            URLQueryItem(name: "scope", value: scopeValue),
+            URLQueryItem(name: "raw", value: rawValue),
+            URLQueryItem(name: "criteria", value: criteriaValue)
             ]
 
         components.queryItems = queryItems
@@ -103,15 +112,14 @@ class ZohoService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) {
-            (data, response, error) in
+        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let err = error {
                 print("Error = \(err)")
             }
             
             guard let responseData = data,
                 let jsonResponse = ((try? JSONSerialization.jsonObject(with:
-                    responseData, options: []) as? [String: [[String: String]]]) as [String : [[String : String]]]??),
+                    responseData, options: []) as? [String: [[String: String]]]) as [String: [[String: String]]]??),
                 let zohoAccount = jsonResponse?[self.mtmFormName]?.first?[self.mtmZohoAccount]
                 else {
                     onCompleted?(nil)
@@ -125,7 +133,7 @@ class ZohoService {
         
     }
 
-    public func getProjectList(type: SiteAssessmentType, onCompleted: (([[String: String]]?) -> ())?) {
+    public func getProjectList(type: SiteAssessmentType, onCompleted: (([[String: String]]?) -> Void)?) {
         self.lookupZohoUser { zohoAccount in
             guard let assignedTeam = zohoAccount else {
                 onCompleted?(nil)
@@ -156,11 +164,11 @@ class ZohoService {
             }
 
             let queryItems = [
-                URLQueryItem(name: "authtoken"   , value: self.authtokenValue),
+                URLQueryItem(name: "authtoken", value: self.authtokenValue),
                 URLQueryItem(name: "zc_ownername", value: self.zc_ownernameValue),
-                URLQueryItem(name: "scope"       , value: self.scopeValue),
-                URLQueryItem(name: "raw"         , value: self.rawValue),
-                URLQueryItem(name: "criteria"    , value: criteria),
+                URLQueryItem(name: "scope", value: self.scopeValue),
+                URLQueryItem(name: "raw", value: self.rawValue),
+                URLQueryItem(name: "criteria", value: criteria)
                 ]
             
             components.queryItems = queryItems
@@ -176,8 +184,7 @@ class ZohoService {
                 return
             }
             
-            let task = URLSession.shared.dataTask(with: url) {
-                (data, response, error) in
+            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
                 if let err = error {
                     print("Error = \(err)")
                 }
@@ -187,15 +194,14 @@ class ZohoService {
                 if let responseData = data,
                     let jsonResponse = ((try? JSONSerialization.jsonObject(with:
                         responseData, options: []) as? [String: [[String: String]]])),
-                    let zohoData = jsonResponse[formName]
-                     {
-                        DataStorageService.sharedDataStorageService.writeToLog("dataTask decoded successfully.")
-                        DataStorageService.sharedDataStorageService.writeToLog("zohoData = \(zohoData)")
+                    let zohoData = jsonResponse[formName] {
+                        DataStorageService.shared.writeToLog("dataTask decoded successfully.")
+                        DataStorageService.shared.writeToLog("zohoData = \(zohoData)")
                         onCompleted?(zohoData)
                         return
                 } else {
                     
-                    DataStorageService.sharedDataStorageService.writeToLog("dataTask decoded failed.")
+                    DataStorageService.shared.writeToLog("dataTask decoded failed.")
                     onCompleted?(nil)
                 }
             }
@@ -205,30 +211,30 @@ class ZohoService {
 
     }
     
-    public func uploadData(projectID: String, saData:[String: String], onCompleted: ((Bool) -> ())?) {
+    public func uploadData(projectID: String, saData: [String: String], onCompleted: ((Bool) -> Void)?) {
 
-        let data = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+        let data = DataStorageService.shared.retrieveCurrentProjectData()
         let type = data.prjInformation.type
         let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
         let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/form/" + formName + "/record/update"
 
         guard var urlComponents = URLComponents(string: uploadBaseURL) else {
-            DataStorageService.sharedDataStorageService.writeToLog("uploadData URLComponents failed.")
+            DataStorageService.shared.writeToLog("uploadData URLComponents failed.")
             onCompleted?(false)
             return
         }
         
         let criteriaValue = "\(saProjectID)=\(projectID)"
         let queryItems = [
-            URLQueryItem(name: "authtoken"   ,value: authtokenValue),
-            URLQueryItem(name: "scope"       ,value: scopeValue),
-            URLQueryItem(name: "criteria"    ,value: criteriaValue),
+            URLQueryItem(name: "authtoken", value: authtokenValue),
+            URLQueryItem(name: "scope", value: scopeValue),
+            URLQueryItem(name: "criteria", value: criteriaValue)
         ]
         
         urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
-            DataStorageService.sharedDataStorageService.writeToLog("uploadData url = urlComponents.url")
+            DataStorageService.shared.writeToLog("uploadData url = urlComponents.url")
             onCompleted?(false)
             return
         }
@@ -237,7 +243,7 @@ class ZohoService {
         request.httpMethod = "POST"
         
         guard let uploadData = saData.compactMap ({ (key, value) in [key, value].joined(separator: "=")}).joined(separator: "&").data(using: .utf8) else {
-            DataStorageService.sharedDataStorageService.writeToLog("uploadData uploadData = saData.compactMap")
+            DataStorageService.shared.writeToLog("uploadData uploadData = saData.compactMap")
             onCompleted?(false)
             return
         }
@@ -251,14 +257,14 @@ class ZohoService {
                 let response = response as? HTTPURLResponse,
                 (200...299).contains(response.statusCode)
                 else {
-                    DataStorageService.sharedDataStorageService.writeToLog("uploadData respData = data")
+                    DataStorageService.shared.writeToLog("uploadData respData = data")
                     onCompleted?(false)
                     return
             }
             
             if let dataString = String(data: respData, encoding: .utf8) {
                 print("dataString: \(dataString)")
-                DataStorageService.sharedDataStorageService.writeToLog("dataString: \(dataString)")
+                DataStorageService.shared.writeToLog("dataString: \(dataString)")
 
                 if dataString.contains("Success") {
                     print("Success.")
@@ -267,7 +273,7 @@ class ZohoService {
                 }
             } else {
                 print("uploadData dataString conversion failed.")
-                DataStorageService.sharedDataStorageService.writeToLog("uploadData dataString conversion failed.")
+                DataStorageService.shared.writeToLog("uploadData dataString conversion failed.")
                 onCompleted?(false)
             }
         }
@@ -275,7 +281,7 @@ class ZohoService {
         task.resume()
     }
     
-    public func uploadProject(withData saData:SiteAssessmentDataStructure, onCompleted: ((Bool) -> ())?) {
+    public func uploadProject(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool) -> Void)?) {
         var sendData: [String: String] = [:]
         
         guard let prjID = saData.prjInformation.projectID else {
@@ -294,7 +300,7 @@ class ZohoService {
         }
     }
     
-    public func setRemoteToUploading(projectID: String, onCompleted:((Bool) -> ())?) {
+    public func setRemoteToUploading(projectID: String, onCompleted: ((Bool) -> Void)?) {
         uploadData(projectID: projectID, saData: [saStatus: UploadStatus.uploading.rawValue]) { (success) in
             if success {
                 print("setRemoteToUploading uploadData success.")

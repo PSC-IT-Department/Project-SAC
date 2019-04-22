@@ -11,7 +11,7 @@ import XCTest
 @testable import Site_Assessment_Commercial
 @testable import Pods_Site_Assessment_Commercial
 
-class Site_Assessment_CommercialUITests: XCTestCase {
+class SiteAssessmentCommercialUITests: XCTestCase {
 
     var app: XCUIApplication!
     
@@ -27,7 +27,7 @@ class Site_Assessment_CommercialUITests: XCTestCase {
     }
 }
 
-extension Site_Assessment_CommercialUITests {
+extension SiteAssessmentCommercialUITests {
     func goBack() {
         wait(interval: 1.0)
         let window = app.windows.element(boundBy: 0)
@@ -35,7 +35,7 @@ extension Site_Assessment_CommercialUITests {
         wait(interval: 1.5)
     }
     
-    func waitForElementToAppear(_ element: XCUIElement, timeout: TimeInterval = 2,  file: String = #file, line: Int = #line) {
+    func waitForElementToAppear(_ element: XCUIElement, timeout: TimeInterval = 2, file: String = #file, line: Int = #line) {
         let existsPredicate = NSPredicate(format: "exists == true")
         
         expectation(for: existsPredicate,
@@ -55,7 +55,7 @@ extension Site_Assessment_CommercialUITests {
     }
 }
 
-extension Site_Assessment_CommercialUITests {
+extension SiteAssessmentCommercialUITests {
     func testSettingsVC() {
         app.launch()
         

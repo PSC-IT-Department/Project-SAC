@@ -26,10 +26,10 @@ class GoogleService {
 
     public var signIn: GIDSignIn?
     
-    public static var sharedGoogleService: GoogleService!
+    public static var shared: GoogleService!
     
     public static func instantiateSharedInstance() {
-        sharedGoogleService = GoogleService()
+        shared = GoogleService()
     }
     
     init() {
@@ -59,11 +59,11 @@ class GoogleService {
         UserDefaults.standard.removeObject(forKey: "GoogleUser")
     }
     
-    func retrieveGoogleUserEmail() -> String? {
+    func getEmail() -> String? {
         return UserDefaults.standard.string(forKey: "GoogleUser")
     }
     
-    public func listFilesInFolder(_ folder: String, onCompleted: @escaping (GTLRDrive_FileList?, Error?) -> ()) {
+    public func listFilesInFolder(_ folder: String, onCompleted: @escaping (GTLRDrive_FileList?, Error?) -> Void) {
         search(folder) { (folderID, error) in
             guard let ID = folderID else {
                 onCompleted(nil, error)
@@ -74,20 +74,19 @@ class GoogleService {
         }
     }
     
-    private func listFiles(_ folderID: String, onCompleted: @escaping (GTLRDrive_FileList?, Error?) -> ()) {
+    private func listFiles(_ folderID: String, onCompleted: @escaping (GTLRDrive_FileList?, Error?) -> Void) {
         let query = GTLRDriveQuery_FilesList.query()
         query.pageSize = 100
         query.q = "'\(folderID)' in parents"
         
-        driveService.executeQuery(query) { (ticket, result, error) in
+        driveService.executeQuery(query) { (_, result, error) in
             onCompleted(result as? GTLRDrive_FileList, error)
         }
     }
     
-    
-    public func uploadProjectFlie(fileName: String, fileFormat: String, MIMEType: String, folderID: String, onCompleted: @escaping (Bool, Error?) -> ()) {
+    public func uploadProjectFlie(fileName: String, fileFormat: String, MIMEType: String, folderID: String, onCompleted: @escaping (Bool, Error?) -> Void) {
 
-        guard let homeDirectory = DataStorageService.sharedDataStorageService.homeDirectory else {
+        guard let homeDirectory = DataStorageService.shared.homeDirectory else {
             print("homeDirectory is nil")
             onCompleted(false, nil)
             return
@@ -107,14 +106,14 @@ class GoogleService {
         })
     }
 
-    public func uploadImages(fid: String, onCompleted: ((Bool, Error?) -> ())?) {
+    public func uploadImages(fid: String, onCompleted: ((Bool, Error?) -> Void)?) {
         createProjectSectionFolders(pfid: fid) { (sectionFolderIDs, error) in
             guard let sfids = sectionFolderIDs else {
                 onCompleted?(false, error)
                 return
             }
             
-            let saData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+            let saData = DataStorageService.shared.retrieveCurrentProjectData()
             
             var totalAmount = saData.prjImageArray.reduce(0, { (result, imageArray) -> Int in
                 if let images = imageArray.images {
@@ -125,11 +124,11 @@ class GoogleService {
             })
             
             saData.prjImageArray.forEach({ (imageArray) in
-                let sections = saData.prjQuestionnaire.filter{$0.Questions.contains(where: {$0.Name == imageArray.key})}
+                let sections = saData.prjQuestionnaire.filter {$0.Questions.contains(where: {$0.Name == imageArray.key})}
                 
                 if let section = sections.first {
                     imageArray.images?.forEach({ (imageAttr) in
-                        let imgPath = DataStorageService.sharedDataStorageService.currentProjectHomeDirectory.appendingPathComponent(imageAttr.name).appendingPathExtension("png").path
+                        let imgPath = DataStorageService.shared.currentProjectHomeDirectory.appendingPathComponent(imageAttr.name).appendingPathExtension("png").path
                         if let fid = sfids[section.Name] {
                             self.upload(fid, path: imgPath, MIMEType: "image/png", onCompleted: { (fileID, error) in
                                 if let err = error {
@@ -154,18 +153,20 @@ class GoogleService {
         }
     }
     
-    public func uploadData(fid: String, onCompleted: ((Bool, Error?) -> ())?) {
+    public func uploadData(fid: String, onCompleted: ((Bool, Error?) -> Void)?) {
         createProjectDataFolder(pfid: fid) { (folderID, error) in
             guard let fid = folderID else {
                 onCompleted?(false, error)
                 return
             }
             
-            let saData = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+            let saData = DataStorageService.shared.retrieveCurrentProjectData()
             
             if let prjID = saData.prjInformation.projectID {
             
-                self.uploadProjectFlie(fileName: prjID, fileFormat: "json", MIMEType: "application/json", folderID: fid, onCompleted: { (success, error) in
+                let format = "json"
+                let type = "application/json"
+                self.uploadProjectFlie(fileName: prjID, fileFormat: format, MIMEType: type, folderID: fid) { (success, error) in
                     if let err = error {
                         onCompleted?(false, err)
                         return
@@ -175,18 +176,18 @@ class GoogleService {
                         onCompleted?(true, nil)
                         return
                     }
-                })
+                }
             }
         }
     }
     
-    public func uploadProject(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> ())?) {
+    public func uploadProject(with saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> Void)?) {
  
-        let count = saData.prjImageArray.compactMap({$0.images}).joined().filter({ $0.name != "" }).count
+        let imgAttrs = saData.prjImageArray.compactMap({$0.images}).joined().filter({ $0.name != "" })
         
-        print("count = \(count)")
+        print("count = \(imgAttrs.count)")
         
-        if count == 0 {
+        if imgAttrs.isEmpty {
             print("No Need to upload to Google Drive, success.")
             onCompleted?(true, nil)
             return
@@ -238,12 +239,12 @@ class GoogleService {
         }
     }
     
-    private func createProjectSectionQuestionFolders(sfid: String, onCompleted: (([String: String]?, Error?) -> ())?) {
-        let prjdata = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+    private func createProjectSectionQuestionFolders(sfid: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
+        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
         
-        var qfids:[String: String] = [:]
+        var qfids: [String: String] = [:]
         prjdata.prjQuestionnaire.forEach { (section) in
-            let questions = section.Questions.filter{$0.QType == .image}
+            let questions = section.Questions.filter {$0.QType == .image}
             
             questions.forEach({ (question) in
                 self.createSubfolder(question.Name, sfid, onCompleted: { (questionFolderID, error) in
@@ -268,10 +269,10 @@ class GoogleService {
         }
     }
     
-    private func createProjectSectionFolders(pfid: String, onCompleted: (([String: String]?, Error?) -> ())?) {
-        let prjdata = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+    private func createProjectSectionFolders(pfid: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
+        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
         
-        var sfids:[String: String] = [:]
+        var sfids: [String: String] = [:]
         prjdata.prjQuestionnaire.forEach({ (section) in
             self.createSubfolder(section.Name, pfid, onCompleted: { (sectionFolderID, error) in
                 if let err = error {
@@ -294,7 +295,7 @@ class GoogleService {
         })
     }
     
-    private func createProjectDataFolder(pfid: String, onCompleted: ((String?, Error?) -> ())?) {
+    private func createProjectDataFolder(pfid: String, onCompleted: ((String?, Error?) -> Void)?) {
         
         let sectionData = "DATA"
         self.createSubfolder(sectionData, pfid, onCompleted: { (dataFolderID, error) in
@@ -314,8 +315,8 @@ class GoogleService {
         
     }
     
-    private func createProjectFolder(rfid: String, onCompleted: ((String?, Error?) -> ())?) {
-        let prjdata = DataStorageService.sharedDataStorageService.retrieveCurrentProjectData()
+    private func createProjectFolder(rfid: String, onCompleted: ((String?, Error?) -> Void)?) {
+        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
         
         if let prjAddr = prjdata.prjInformation.projectAddress {
             
@@ -336,7 +337,7 @@ class GoogleService {
         }
     }
     
-    private func createFolders(rootFolderID: String, onCompleted: (([String: String]?, Error?) -> ())?) {
+    private func createFolders(rootFolderID: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
         self.createProjectFolder(rfid: rootFolderID, onCompleted: { (prjFolderID, error) in
             if let err = error {
                 print("Error = \(err)")
@@ -348,7 +349,7 @@ class GoogleService {
                 return
             }
             
-            var fids:[String: String] = [:]
+            var fids: [String: String] = [:]
             
             self.createProjectSectionFolders(pfid: pfid, onCompleted: { (SectionFolderIDs, error) in
                 if let err = error {
@@ -383,11 +384,10 @@ class GoogleService {
             onCompleted?(fids, nil)
             return
         })
-        
 
     }
 
-    public func uploadFile(_ name: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> ())?) {
+    public func uploadFile(_ name: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> Void)?) {
         
         search(name) { (folderID, error) in
             
@@ -405,7 +405,7 @@ class GoogleService {
         }
     }
     
-    private func upload(_ parentID: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> ())?) {
+    private func upload(_ parentID: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> Void)?) {
         
         guard let data = FileManager.default.contents(atPath: path) else {
             onCompleted?(nil, GDriveError.NoDataAtPath)
@@ -422,29 +422,29 @@ class GoogleService {
         let query = GTLRDriveQuery_FilesCreate.query(withObject: file, uploadParameters: uploadParams)
         query.fields = "id"
         
-        self.driveService.executeQuery(query, completionHandler: { (ticket, file, error) in
+        self.driveService.executeQuery(query, completionHandler: { (_, file, error) in
             onCompleted?((file as? GTLRDrive_File)?.identifier, error)
         })
     }
     
-    public func download(_ fileID: String, onCompleted: @escaping (Data?, Error?) -> ()) {
+    public func download(_ fileID: String, onCompleted: @escaping (Data?, Error?) -> Void) {
         let query = GTLRDriveQuery_FilesGet.queryForMedia(withFileId: fileID)
-        driveService.executeQuery(query) { (ticket, file, error) in
+        driveService.executeQuery(query) { (_, file, error) in
             onCompleted((file as? GTLRDataObject)?.data, error)
         }
     }
     
-    public func search(_ fileName: String, onCompleted: @escaping (String?, Error?) -> ()) {
+    public func search(_ fileName: String, onCompleted: @escaping (String?, Error?) -> Void) {
         let query = GTLRDriveQuery_FilesList.query()
         //sharedWithMe and title contains 'Site Assessment'
         query.q = "name contains '\(fileName)'"
         
-        driveService.executeQuery(query) { (ticket, results, error) in
+        driveService.executeQuery(query) { (_, results, error) in
             onCompleted((results as? GTLRDrive_FileList)?.files?.first?.identifier, error)
         }
     }
 
-    public func createFolder(_ name: String, onCompleted: @escaping (String?, Error?) -> ()) {
+    public func createFolder(_ name: String, onCompleted: @escaping (String?, Error?) -> Void) {
         let file = GTLRDrive_File()
         file.name = name
         file.mimeType = "application/vnd.google-apps.folder"
@@ -452,12 +452,12 @@ class GoogleService {
         let query = GTLRDriveQuery_FilesCreate.query(withObject: file, uploadParameters: nil)
         query.fields = "id"
         
-        driveService.executeQuery(query) { (ticket, folder, error) in
+        driveService.executeQuery(query) { (_, folder, error) in
             onCompleted((folder as? GTLRDrive_File)?.identifier, error)
         }
     }
     
-    public func createSubfolder(_ name: String, _ parentID: String, onCompleted: @escaping (String?, Error?) -> ()) {
+    public func createSubfolder(_ name: String, _ parentID: String, onCompleted: @escaping (String?, Error?) -> Void) {
         let file = GTLRDrive_File()
         file.name = name
         file.mimeType = "application/vnd.google-apps.folder"
@@ -465,14 +465,14 @@ class GoogleService {
         let query = GTLRDriveQuery_FilesCreate.query(withObject: file, uploadParameters: nil)
         query.fields = "id"
         
-        driveService.executeQuery(query) { (ticket, folder, error) in
+        driveService.executeQuery(query) { (_, folder, error) in
             onCompleted((folder as? GTLRDrive_File)?.identifier, error)
         }
     }
     
-    public func delete(_ fileID: String, onCompleted: ((Error?) -> ())?) {
+    public func delete(_ fileID: String, onCompleted: ((Error?) -> Void)?) {
         let query = GTLRDriveQuery_FilesDelete.query(withFileId: fileID)
-        driveService.executeQuery(query) { (ticket, nilFile, error) in
+        driveService.executeQuery(query) { (_, _, error) in
             onCompleted?(error)
         }
     }

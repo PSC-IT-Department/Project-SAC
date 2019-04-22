@@ -9,8 +9,8 @@ import UIKit
 
 class LoadingIndicatorView {
     
-    static var currentOverlay : UIView?
-    static var currentOverlayTarget : UIView?
+    static var currentOverlay: UIView?
+    static var currentOverlayTarget: UIView?
     static var currentLoadingText: String?
     
     static func show() {
@@ -29,11 +29,11 @@ class LoadingIndicatorView {
         show(currentMainWindow, loadingText: loadingText)
     }
     
-    static func show(_ overlayTarget : UIView) {
+    static func show(_ overlayTarget: UIView) {
         show(overlayTarget, loadingText: nil)
     }
     
-    static func show(_ overlayTarget : UIView, loadingText: String?) {
+    static func show(_ overlayTarget: UIView, loadingText: String?) {
         // Clear it first in case it was already shown
         hide()
         

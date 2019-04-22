@@ -44,10 +44,11 @@ class MainCell: UITableViewCell {
     func stopAnimation(withStatus status: UploadStatus) {
         activityIndicator.stopAnimating()
 
-        if(status == .completed) {
+        switch status {
+        case .completed:
             accessoryView = nil
             accessoryType = .checkmark
-        } else {
+        default:
             accessoryView = nil
             accessoryType = .disclosureIndicator
         }

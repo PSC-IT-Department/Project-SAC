@@ -14,11 +14,11 @@ extension PopupDialog {
         let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .zoomIn)
         
         let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .status)
+            DataStorageService.shared.storeGroupingOption(option: .status)
         }
         
         let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
-            DataStorageService.sharedDataStorageService.storeGroupingOption(option: .scheduleDate)
+            DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
         }
         
         let cancelAction = CancelButton(title: "Cancel", action: nil)
@@ -31,15 +31,15 @@ extension PopupDialog {
         let popup = PopupDialog(title: "Map Type", message: nil, transitionStyle: .zoomIn)
         
         let standardButton = DefaultButton(title: "Standard") {
-            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .standard)
+            DataStorageService.shared.storeMapTypeOption(option: .standard)
         }
 
         let satelliteButton = DefaultButton(title: "Satellite") {
-            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .satellite)
+            DataStorageService.shared.storeMapTypeOption(option: .satellite)
         }
         
         let hybridButton = DefaultButton(title: "Hybrid") {
-            DataStorageService.sharedDataStorageService.storeMapTypeOption(option: .hybrid)
+            DataStorageService.shared.storeMapTypeOption(option: .hybrid)
         }
                 
         let cancelAction = CancelButton(title: "Cancel", action: nil)

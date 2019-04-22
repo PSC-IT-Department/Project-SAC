@@ -13,7 +13,7 @@ extension UIViewController {
     func setBackground(_ withBlurEffect: Bool = true) {
         let background = UIImage(named: "bg_img")
         
-        var imageView : UIImageView!
+        var imageView: UIImageView!
         
         imageView = UIImageView(frame: view.bounds)
         imageView.contentMode =  UIView.ContentMode.scaleAspectFill

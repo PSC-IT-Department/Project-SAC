@@ -9,9 +9,9 @@
 import Foundation
 
 extension Notification.Name {
-    static let didReceiveProcessingMsg      = Notification.Name("Processing")
-    static let didReceiveErrorMsg           = Notification.Name("Error")
-    static let didReceiveCompleteMsg        = Notification.Name("Completed")
-    static let didReceiveWarningMsg         = Notification.Name("Warning")
-    static let didReceiveReachabilityMsg    = Notification.Name("Reachability Changed")
+    static let ProcessingMsg      = Notification.Name("Processing")
+    static let ErrorMsg           = Notification.Name("Error")
+    static let CompleteMsg        = Notification.Name("Completed")
+    static let WarningMsg         = Notification.Name("Warning")
+    static let ReachabilityMsg    = Notification.Name("Reachability Changed")
 }
