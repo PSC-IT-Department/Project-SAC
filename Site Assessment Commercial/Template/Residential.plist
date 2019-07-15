@@ -169,7 +169,7 @@
 				<key>Key</key>
 				<string>sa_shinglePhotoCloseUp</string>
 				<key>Type</key>
-				<string>Image</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -194,7 +194,7 @@
 				<key>Key</key>
 				<string>sa_shinglePhotoTopView</string>
 				<key>Type</key>
-				<string>Image</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>
@@ -219,7 +219,7 @@
 				<key>Key</key>
 				<string>sa_shinglePhotoBackView</string>
 				<key>Type</key>
-				<string>Image</string>
+				<string>Selections With Image Other</string>
 				<key>Options</key>
 				<array>
 					<string>Yes</string>

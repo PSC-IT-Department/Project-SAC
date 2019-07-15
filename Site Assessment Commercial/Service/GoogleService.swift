@@ -24,6 +24,7 @@ class GoogleService {
     private let calendarService: GTLRCalendarService
     private var ggFolderIDs: [String: String] = [:]
 
+    public var calendarId: String!
     public var signIn: GIDSignIn?
     
     public static var shared: GoogleService!
@@ -43,6 +44,7 @@ class GoogleService {
         let user = signIn.currentUser
         self.signIn = signIn
         driveService.authorizer = user!.authentication.fetcherAuthorizer()
+        calendarService.authorizer = user!.authentication.fetcherAuthorizer()
         
         UserDefaults.standard.set(user!.profile.email, forKey: "GoogleUser")
     }
@@ -84,7 +86,11 @@ class GoogleService {
         }
     }
     
-    public func uploadProjectFlie(fileName: String, fileFormat: String, MIMEType: String, folderID: String, onCompleted: @escaping (Bool, Error?) -> Void) {
+    public func uploadProjectFlie(fileName: String,
+                                  fileFormat: String,
+                                  MIMEType: String,
+                                  folderID: String,
+                                  onCompleted: @escaping (Bool, Error?) -> Void) {
 
         guard let homeDirectory = DataStorageService.shared.homeDirectory else {
             print("homeDirectory is nil")
@@ -124,11 +130,19 @@ class GoogleService {
             })
             
             saData.prjImageArray.forEach({ (imageArray) in
-                let sections = saData.prjQuestionnaire.filter {$0.Questions.contains(where: {$0.Name == imageArray.key})}
+                let sections = saData.prjQuestionnaire.filter {$0.Questions.contains(where: {
+                    $0.Name == imageArray.key})}
                 
                 if let section = sections.first {
                     imageArray.images?.forEach({ (imageAttr) in
-                        let imgPath = DataStorageService.shared.currentProjectHomeDirectory.appendingPathComponent(imageAttr.name).appendingPathExtension("png").path
+                        guard let prjDir = DataStorageService.shared.projectDir else {
+                            onCompleted?(false, nil)
+                            return
+                        }
+                        
+                        let imgName = prjDir.appendingPathComponent(imageAttr.name).appendingPathExtension("png")
+                        let imgPath = imgName.path
+                        
                         if let fid = sfids[section.Name] {
                             self.upload(fid, path: imgPath, MIMEType: "image/png", onCompleted: { (fileID, error) in
                                 if let err = error {
@@ -147,7 +161,6 @@ class GoogleService {
                             })
                         }
                     })
-                    
                 }
             })
         }
@@ -162,11 +175,16 @@ class GoogleService {
             
             let saData = DataStorageService.shared.retrieveCurrentProjectData()
             
-            if let prjID = saData.prjInformation.projectID {
+            if let prjID = saData.prjInformation.projectID, let prjType = saData.prjInformation.type {
             
+                let t = prjType == .SiteAssessmentCommercial ? "S" : "R"
+                let fileName = t + prjID
                 let format = "json"
                 let type = "application/json"
-                self.uploadProjectFlie(fileName: prjID, fileFormat: format, MIMEType: type, folderID: fid) { (success, error) in
+                self.uploadProjectFlie(fileName: fileName,
+                                       fileFormat: format,
+                                       MIMEType: type,
+                                       folderID: fid) { (success, error) in
                     if let err = error {
                         onCompleted?(false, err)
                         return
@@ -185,8 +203,6 @@ class GoogleService {
  
         let imgAttrs = saData.prjImageArray.compactMap({$0.images}).joined().filter({ $0.name != "" })
         
-        print("count = \(imgAttrs.count)")
-        
         if imgAttrs.isEmpty {
             print("No Need to upload to Google Drive, success.")
             onCompleted?(true, nil)
@@ -197,7 +213,7 @@ class GoogleService {
             if let err = error {
                 print("folderID, Error = \(err)")
                 onCompleted?(false, err)
-           }
+            }
             
             if let fid = folderID {
                 print("fid = \(fid)")
@@ -239,7 +255,8 @@ class GoogleService {
         }
     }
     
-    private func createProjectSectionQuestionFolders(sfid: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
+    private func createProjectSectionQuestionFolders(sfid: String,
+                                                     onCompleted: (([String: String]?, Error?) -> Void)?) {
         let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
         
         var qfids: [String: String] = [:]
@@ -474,6 +491,104 @@ class GoogleService {
         let query = GTLRDriveQuery_FilesDelete.query(withFileId: fileID)
         driveService.executeQuery(query) { (_, _, error) in
             onCompleted?(error)
+        }
+    }
+    
+    public func checkDuplicateEventsByEventName(eventName: String) {
+        fetchCalendarEventsList { (list, error) in
+            if let eventList = list, error == nil {
+                eventList.filter({$0.1 == eventName}).forEach({ (event) in
+                    if let id = event.0 {
+                        self.deleteCalendarEventById(eventId: id)
+                    }
+                })
+            }
+        }
+    }
+    
+    public func deleteCalendarEventById(eventId: String) {
+        guard let calendarId = self.calendarId else {
+            return
+        }
+        
+        let eventId = eventId
+        
+        let query = GTLRCalendarQuery_EventsDelete.query(withCalendarId: calendarId, eventId: eventId)
+        
+        calendarService.executeQuery(query, completionHandler: nil)
+    }
+    
+    public func fetchCalendarEventsList(onCompleted: @escaping ([(String?, String?)]?, Error?) -> Void) {
+        guard let calendarId = self.calendarId else {
+            print("calendarId is nil")
+            onCompleted(nil, SiteAssessmentError.googleCalendarFailed)
+            return
+        }
+        
+        let query = GTLRCalendarQuery_EventsList.query(withCalendarId: calendarId)
+        
+        calendarService.executeQuery(query) { (_, list, error) in
+            if let list = list as? GTLRCalendar_Events {
+                let eventList = list.items?.compactMap({($0.identifier, $0.summary)})
+                
+                onCompleted(eventList, nil)
+            } else {
+                onCompleted(nil, error)
+            }
+        }
+    }
+    
+    public func fetchCalendarList(onCompleted: @escaping ([String]?, Error?) -> Void) {
+        let query = GTLRCalendarQuery_CalendarListList.query()
+        
+        calendarService.executeQuery(query) { (_, list, error) in
+            
+            if let list = list as? GTLRCalendar_CalendarList {
+                let calendarList = list.items?.compactMap({$0.identifier})
+                onCompleted(calendarList, nil)
+            } else {
+                onCompleted(nil, error)
+            }
+        }
+    }
+    
+    public func addEventToCalendar(calendarId: String, name: String?,
+                                   startTime: String?, endTime: String?,
+                                   onCompleted: @escaping (Error?) -> Void) {
+        
+        let calendarID = calendarId
+        
+        let newEvent = GTLRCalendar_Event()
+        newEvent.summary = name
+        newEvent.descriptionProperty = name
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let startDateTime = dateFormatter.date(from: startTime!)!
+        
+        let endDate = dateFormatter.date(from: endTime!)!
+        
+        let eStartDateTime = GTLRDateTime(date: startDateTime)
+        newEvent.start = GTLRCalendar_EventDateTime()
+        newEvent.start?.dateTime = eStartDateTime
+        
+        let eEndDateTime = GTLRDateTime(date: endDate)
+        newEvent.end = GTLRCalendar_EventDateTime()
+        newEvent.end?.dateTime = eEndDateTime
+        
+        let reminder = GTLRCalendar_EventReminder()
+        reminder.minutes = 60
+        reminder.method = "email"
+        
+        newEvent.reminders = GTLRCalendar_Event_Reminders()
+        newEvent.reminders?.overrides = nil
+        newEvent.reminders?.useDefault = false
+        
+        let query = GTLRCalendarQuery_EventsInsert.query(withObject: newEvent, calendarId: calendarID)
+
+        calendarService.executeQuery(query) { (_, _, error) in
+            onCompleted(error)
         }
     }
 }

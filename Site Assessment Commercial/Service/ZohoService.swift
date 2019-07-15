@@ -21,7 +21,7 @@ class ZohoService {
     private let appName              = "site-assessment"
     private let format               = "json"
     private let authtokenValue       = "d3b26c03684aa2db7158bb155e25a071"
-    private let zc_ownernameValue    = "zoho_it1346"
+    private let zc_ownernameValue    = "polaronsolartech"
     private let scopeValue           = "creatorapi"
     private let rawValue             = "true"
     
@@ -58,7 +58,9 @@ class ZohoService {
         }
         
         let result = Result {try Data(contentsOf: path)}.flatMap { (data) -> Result<Any, Error> in
-            return Result {try PropertyListSerialization.propertyList(from: data, options: .mutableContainers, format: nil)}
+            return Result {try PropertyListSerialization.propertyList(from: data,
+                                                                      options: .mutableContainers,
+                                                                      format: nil)}
         }
         
         switch result {
@@ -141,7 +143,6 @@ class ZohoService {
             }
             
             var downloadBaseURL = "\(self.baseURL)/api/\(self.format)/\(self.appName)/view/"
-            let criteriaValue2 = "sa_assignedToShorten==\(assignedTeam)&&sa_completed==false"
             
             let criteriaValue = "\(self.saAssignedTeam)==\(assignedTeam)&&\(self.saStatus)==Pending"
 
@@ -152,7 +153,7 @@ class ZohoService {
                 criteria = criteriaValue
             case .SiteAssessmentResidential:
                 downloadBaseURL.append(contentsOf: self.saReportName)
-                criteria = criteriaValue2
+                criteria = criteriaValue
             default:
                 print("default")
                 return
@@ -195,12 +196,11 @@ class ZohoService {
                     let jsonResponse = ((try? JSONSerialization.jsonObject(with:
                         responseData, options: []) as? [String: [[String: String]]])),
                     let zohoData = jsonResponse[formName] {
-                        DataStorageService.shared.writeToLog("dataTask decoded successfully.")
-                        DataStorageService.shared.writeToLog("zohoData = \(zohoData)")
-                        onCompleted?(zohoData)
-                        return
+                    DataStorageService.shared.writeToLog("dataTask decoded successfully.")
+                    DataStorageService.shared.writeToLog("zohoData = \(zohoData)")
+                    onCompleted?(zohoData)
+                    return
                 } else {
-                    
                     DataStorageService.shared.writeToLog("dataTask decoded failed.")
                     onCompleted?(nil)
                 }
@@ -215,8 +215,9 @@ class ZohoService {
 
         let data = DataStorageService.shared.retrieveCurrentProjectData()
         let type = data.prjInformation.type
-        let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
-        let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/form/" + formName + "/record/update"
+        let viewName = (type == .SiteAssessmentCommercial) ? self.sacReportName : self.saReportName
+        let action = "/record/update"
+        let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/view/" + viewName + action
 
         guard var urlComponents = URLComponents(string: uploadBaseURL) else {
             DataStorageService.shared.writeToLog("uploadData URLComponents failed.")
@@ -238,11 +239,13 @@ class ZohoService {
             onCompleted?(false)
             return
         }
-        
+                
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        guard let uploadData = saData.compactMap ({ (key, value) in [key, value].joined(separator: "=")}).joined(separator: "&").data(using: .utf8) else {
+        guard let uploadData = saData.compactMap ({ (key, value) in
+            [key, value].joined(separator: "=")}).joined(separator: "&").data(using: .utf8)
+            else {
             DataStorageService.shared.writeToLog("uploadData uploadData = saData.compactMap")
             onCompleted?(false)
             return
@@ -263,7 +266,7 @@ class ZohoService {
             }
             
             if let dataString = String(data: respData, encoding: .utf8) {
-                print("dataString: \(dataString)")
+//                print("dataString: \(dataString)")
                 DataStorageService.shared.writeToLog("dataString: \(dataString)")
 
                 if dataString.contains("Success") {
@@ -293,7 +296,8 @@ class ZohoService {
         sendData.updateValue(prjID, forKey: saProjectID)
         sendData.updateValue(UploadStatus.completed.rawValue, forKey: saStatus)
         
-        saData.prjQuestionnaire.compactMap({$0.Questions}).joined().compactMap({($0.Key, $0.Value)}).forEach({sendData.updateValue($0.1 ?? "", forKey: $0.0)})
+        let allQuestions = saData.prjQuestionnaire.compactMap({$0.Questions}).joined().compactMap({($0.Key, $0.Value)})
+        allQuestions.forEach({ sendData.updateValue($0.1 ?? "", forKey: $0.0) })
         
         uploadData(projectID: prjID, saData: sendData) { (success) in
             onCompleted?(success)
@@ -301,7 +305,8 @@ class ZohoService {
     }
     
     public func setRemoteToUploading(projectID: String, onCompleted: ((Bool) -> Void)?) {
-        uploadData(projectID: projectID, saData: [saStatus: UploadStatus.uploading.rawValue]) { (success) in
+        uploadData(projectID: projectID,
+                   saData: [saStatus: UploadStatus.uploading.rawValue]) { (success) in
             if success {
                 print("setRemoteToUploading uploadData success.")
                 onCompleted?(true)

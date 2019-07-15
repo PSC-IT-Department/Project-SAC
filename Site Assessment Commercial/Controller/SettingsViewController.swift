@@ -16,14 +16,45 @@ import RxDataSources
 import GoogleSignIn
 import PopupDialog
 
+private typealias SettingsSection = AnimatableSectionModel<String, SettingsCellViewModel>
+
+private struct SettingsCellViewModel: IdentifiableType, Equatable {
+    static func == (lhs: SettingsCellViewModel, rhs: SettingsCellViewModel) -> Bool {
+        return lhs.key == rhs.key
+    }
+    
+    var identity: Int?
+    
+    let key: String
+    let value: String?
+    let iconName: String?
+    let indicator: UITableViewCell.AccessoryType
+    let action: (() -> Void)?
+    
+    init(key: String,
+         value: String? = nil,
+         iconName: String? = nil,
+         indicator: UITableViewCell.AccessoryType = .none,
+         action: (() -> Void)? = nil) {
+        
+        self.key = key
+        self.value = value
+        self.iconName = iconName
+        self.indicator = indicator
+        self.action = action
+    }
+}
+
 class SettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
-    typealias SettingsSection = AnimatableSectionModel<String, String>
-    private var sections = BehaviorRelay(value: [SettingsSection]())
     private var disposeBag = DisposeBag()
+
+    private var sections = BehaviorRelay(value: [SettingsSection]())
     
+    fileprivate var cellViewModel: [[SettingsCellViewModel]] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -53,10 +84,80 @@ extension SettingsViewController {
     }
     
     private func setupViewModel() {
+        
+        let groupBy = DataStorageService.shared.retrieveGroupingOption()
+        let mapType = DataStorageService.shared.retrieveMapTypeOption()
+        
+        let preferencesCellData = [
+            SettingsCellViewModel(key: "Group By",
+                                  value: groupBy.rawValue,
+                                  action: {[unowned self] in
+                                    let popup = self.setupGroupByPopup()
+                                    self.present(popup, animated: true, completion: nil)}),
+            SettingsCellViewModel(key: "Map Type",
+                                  value: mapType.type.description,
+                                  action: {[unowned self] in
+                                    let popup = self.setupMapTypePopup()
+                                    self.present(popup, animated: true, completion: nil)})
+        ]
+        
+        var google = "Google"
+        if let userEmail = GoogleService.shared.getEmail() {
+            google.append(contentsOf: " - \(userEmail)")
+        }
+        
+        let iconName = "icons8-google-48"
+
+        let IntegrationCellData = [
+            SettingsCellViewModel(key: google,
+                                  iconName: iconName,
+                                  indicator: .checkmark,
+                                  action: {[unowned self] in
+                                    if let vc = GoogleAccessViewController.instantiateFromStoryBoard() {
+                                        self.navigationController?.pushViewController(vc, animated: true)
+                                    }}),
+            SettingsCellViewModel(key: "Zoho")
+        ]
+        
+        let defaultCellData = [
+            SettingsCellViewModel(key: "User Manual",
+                                  indicator: .disclosureIndicator,
+                                  action: {[unowned self] in
+                                    if let vc = UserManualViewController.instantiateFromStoryBoard() {
+                                        self.navigationController?.pushViewController(vc, animated: true)
+                                    }}),
+            SettingsCellViewModel(key: "Report a Bug?",
+                                  indicator: .detailButton,
+                                  action: {[unowned self] in
+                                    self.sendLog()}),
+            SettingsCellViewModel(key: "About this App",
+                                  indicator: .disclosureIndicator,
+                                  action: {[unowned self] in
+                                    if let vc = AboutViewController.instantiateFromStoryBoard() {
+                                        self.navigationController?.pushViewController(vc, animated: true)
+                                    }}),
+            SettingsCellViewModel(key: "Check Updates",
+                                  indicator: .detailButton,
+                                  action: {[unowned self] in
+                                    
+                                    if let myVer = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                                        let url = URL(string: "https://polaronsolar.com/wp-content/uploads/sapp/index.html?cur=\(myVer)") {
+                                        
+                                        print("url = \(url)")
+                                        UIApplication.shared.open(url)
+                                    }}),
+            SettingsCellViewModel(key: "Clear Cache",
+                                  action: {[unowned self] in
+                                    let popupDialog = self.setupClearCachePopup()
+                                    self.present(popupDialog, animated: true, completion: nil)})
+        ]
+        
+        cellViewModel = [preferencesCellData, IntegrationCellData, defaultCellData]
+        
         let settingsSections: [SettingsSection] = [
-            SettingsSection(model: "Preferences", items: ["Group By", "Map Type"]),
-            SettingsSection(model: "Integration", items: ["Google", "Zoho CRM"]),
-            SettingsSection(model: "", items: ["User Manual", "Report a Bug?", "About this App", "Clear Cache"])
+            SettingsSection(model: "Preferences", items: cellViewModel[0]),
+            SettingsSection(model: "Integration", items: cellViewModel[1]),
+            SettingsSection(model: "Default", items: cellViewModel[2])
         ]
 
         self.sections.accept(settingsSections)
@@ -71,8 +172,8 @@ extension SettingsViewController {
         )
     
         self.sections.asObservable()
-        .bind(to: tableView.rx.items(dataSource: dataSource))
-        .disposed(by: disposeBag)
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
     
     private func setupCellTapHandling() {
@@ -80,76 +181,14 @@ extension SettingsViewController {
             .rx
             .itemSelected
             .subscribe(onNext: { [weak self] indexPath in
-                self?.tableView.deselectRow(at: indexPath, animated: true)
-                
-                switch (indexPath.section, indexPath.row) {
-
-                // Grouping By
-                case (0, 0):
-                    if let popupDialog = self?.setupGroupByPopup() {
-                        self?.present(popupDialog, animated: true, completion: nil)
-                    }
-                    
-                // Map Type
-                case (0, 1):
-                    let popupDialog = PopupDialog(title: "Map Type", message: nil, transitionStyle: .zoomIn)
-                    
-                    let standardButton = DefaultButton(title: "Standard") {
-                        DataStorageService.shared.storeMapTypeOption(option: .standard)
-                        self?.setupViewModel()
-                    }
-                    
-                    let satelliteButton = DefaultButton(title: "Satellite") {
-                        DataStorageService.shared.storeMapTypeOption(option: .satellite)
-                        self?.setupViewModel()
-                    }
-                    
-                    let hybridButton = DefaultButton(title: "Hybrid") {
-                        DataStorageService.shared.storeMapTypeOption(option: .hybrid)
-                        self?.setupViewModel()
-                    }
-                    
-                    let cancelAction = CancelButton(title: "Cancel", action: nil)
-                    popupDialog.addButtons([standardButton, satelliteButton, hybridButton, cancelAction])
-                    
-                    self?.present(popupDialog, animated: true, completion: nil)
-                    
-                // Google
-                case (1, 0):
-                    if let vc = GoogleAccessViewController.instantiateFromStoryBoard() {
-                        self?.navigationController?.pushViewController(vc, animated: true)
-                    }
-                // User Manual
-                case (2, 0):
-                    if let vc = UserManualViewController.instantiateFromStoryBoard() {
-                        self?.navigationController?.pushViewController(vc, animated: true)
-                    }
-                    
-                // Report a Bug?
-                case (2, 1):
-                    self?.sendLog()
-                    
-                // About this App
-                case (2, 2):
-                    if let vc = AboutViewController.instantiateFromStoryBoard() {
-                        self?.navigationController?.pushViewController(vc, animated: true)
-                    }
-                    
-                // Clear cache
-                case (2, 3):
-                    let popupDialog = PopupDialog(title: "Clear Cache", message: nil, transitionStyle: .zoomIn)
-                    let confirmButton = DefaultButton(title: "Confirm") {
-                        self?.clearCache()
-                    }
-
-                    let cancelButton = CancelButton(title: "Cancel", action: nil)
-                    popupDialog.addButtons([confirmButton, cancelButton])
-                    
-                    self?.present(popupDialog, animated: true, completion: nil)
-
-                default:
-                    return
+                defer { self?.tableView.deselectRow(at: indexPath, animated: true) }
+                let section = indexPath.section
+                let row = indexPath.row
+                guard let model = self?.cellViewModel[section][row] else { return }
+                if let action = model.action {
+                    action()
                 }
+
             })
             .disposed(by: disposeBag)
     }
@@ -166,60 +205,28 @@ extension SettingsViewController {
         RxTableViewSectionedReloadDataSource<SettingsSection>.TitleForHeaderInSection
         ) {
             return ({ (_, tv, ip, i) in
-                let cell = tv.dequeueReusableCell(withClass: SettingsCell.self, for: ip)
-                cell.labelKey.text = i
-                cell.labelValue.text = nil
-                cell.imageIcon.image = nil
+                let cellIdentifier = CellIdentifier<SettingsCell>(reusableIdentifier: "SettingsCell")
+                let cell = tv.dequeueReusableCellWithIdentifier(identifier: cellIdentifier, forIndexPath: ip)
+                let section = ip.section
+                let row = ip.row
                 
-                switch (ip.section, ip.row) {
-                    
-                // Grouping by
-                case (0, 0):
-                    cell.accessoryType = .none
-                    
-                    let option = DataStorageService.shared.retrieveGroupingOption()
-                    cell.labelValue.text = option.rawValue
-                    
-                // Map Type
-                case (0, 1):
-                    cell.accessoryType = .none
-                    
-                    let option = DataStorageService.shared.retrieveMapTypeOption()
-                    cell.labelValue.text = option.type.description
-                    
-                // Google
-                case (1, 0):
-                    if let userEmail = GoogleService.shared.getEmail() {
-                        cell.accessoryType = .checkmark
-                        
-                        let text = i + " - \(userEmail)"
-                        cell.labelKey.text = text
-                    }
-                    cell.imageIcon.image = UIImage(named: "icons8-google-48")
-                    
-                case (2, 0):
-                    cell.accessoryType = .disclosureIndicator
-                    
-                // Report a Bug?
-                case (2, 1):
-                    cell.accessoryType = .detailButton
-                    
-                // About this App
-                case (2, 2):
-                    cell.accessoryType = .disclosureIndicator
+                let model = self.cellViewModel[section][row]
 
-                // Clear cache
-                case (2, 3):
-                    cell.labelKey.textColor = UIColor.red
-                    cell.accessoryType = .none
-                default:
-                    cell.accessoryType = .none
+                cell.labelKey.text = model.key
+                cell.labelValue.text = model.value
+                cell.accessoryType = model.indicator
+                
+                if let iconName = model.iconName {
+                    cell.imageIcon.image = UIImage(named: iconName)
+                } else {
+                    cell.imageIcon.image = nil
                 }
+
                 return cell
             }, { (ds, section) -> String? in
                 return ds[section].model
             }
-            )
+        )
     }
     
     func clearCache() {
@@ -234,21 +241,60 @@ extension SettingsViewController {
         }
     }
     
-    func setupGroupByPopup() -> PopupDialog {
+    private func setupGroupByPopup() -> PopupDialog {
         let popupDialog = PopupDialog(title: "Group By", message: nil, transitionStyle: .zoomIn)
         
-        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) { [weak self] in
+        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) { [unowned self] in
             DataStorageService.shared.storeGroupingOption(option: .status)
-            self?.setupViewModel()
+            self.setupViewModel()
         }
         
-        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) { [weak self] in
+        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) { [unowned self] in
             DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
-            self?.setupViewModel()
+            self.setupViewModel()
         }
         
         let cancelAction = CancelButton(title: "Cancel", action: nil)
+        
         popupDialog.addButtons([statusButton, scheduleDateButton, cancelAction])
+        
+        return popupDialog
+    }
+    
+    private func setupMapTypePopup() -> PopupDialog {
+        let popupDialog = PopupDialog(title: "Map Type", message: nil, transitionStyle: .zoomIn)
+        
+        let standardButton = DefaultButton(title: "Standard") { [unowned self] in
+            DataStorageService.shared.storeMapTypeOption(option: .standard)
+            self.setupViewModel()
+        }
+        
+        let satelliteButton = DefaultButton(title: "Satellite") { [unowned self] in
+            DataStorageService.shared.storeMapTypeOption(option: .satellite)
+            self.setupViewModel()
+        }
+        
+        let hybridButton = DefaultButton(title: "Hybrid") { [unowned self] in
+            DataStorageService.shared.storeMapTypeOption(option: .hybrid)
+            self.setupViewModel()
+        }
+        
+        let cancelAction = CancelButton(title: "Cancel", action: nil)
+        
+        popupDialog.addButtons([standardButton, satelliteButton, hybridButton, cancelAction])
+        
+        return popupDialog
+    }
+    
+    private func setupClearCachePopup() -> PopupDialog {
+        let title = "Clear Cache"
+        let popupDialog = PopupDialog(title: title, message: nil, transitionStyle: .zoomIn)
+        let confirmButton = DefaultButton(title: "Confirm") { [unowned self] in
+            self.clearCache()
+        }
+        
+        let cancelButton = CancelButton(title: "Cancel", action: nil)
+        popupDialog.addButtons([confirmButton, cancelButton])
         
         return popupDialog
     }
@@ -306,8 +352,8 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
         self.present(composeVC, animated: true, completion: nil)
     }
     
-    // swiftlint:disable:next line_length
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+    func mailComposeController(_ controller: MFMailComposeViewController,
+                               didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true, completion: nil)
     }
 }

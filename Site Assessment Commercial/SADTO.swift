@@ -73,10 +73,10 @@ struct ProjectInformationStructure: Codable {
         case type           = "sa_type"
         case status         = "sa_status"
         
-        case scheduleDate   = "sa_scheduleDate"
+        case scheduleDate   = "sa_scheduleTime"
         case assignedTeam   = "sa_assignedTeam"
-        case assignedDate   = "sa_assignedDate"
-        case uploadedDate   = "sa_uploadedDate"
+        case assignedDate   = "sa_assignedTime"
+        case uploadedDate   = "sa_uploadedTime"
         
         case customerName   = "sa_customerName"
         case email          = "sa_email"
@@ -117,7 +117,6 @@ struct ProjectInformationStructure: Codable {
     }
     
     init(withZohoData data: [String: String]) {
-
         guard let prjAddr = data[CodingKeys.projectAddress.rawValue],
             let prjID = data[CodingKeys.projectID.rawValue],
             let type = data[CodingKeys.type.rawValue],
@@ -155,10 +154,10 @@ struct ProjectInformationStructure: Codable {
             "Project ID": self.projectID,
             "Type": self.type.rawValue,
             "Status": self.status.rawValue,
-            "Schedule Date": self.scheduleDate,
+            "Schedule Time": self.scheduleDate,
             "Assigned Team": self.assignedTeam,
-            "Assigned Date": self.assignedDate,
-            "Uploaded Date": self.uploadedDate,
+            "Assigned Time": self.assignedDate,
+            "Uploaded Time": self.uploadedDate,
             
             "Customer Name": self.customerName,
             "Email": self.email,
@@ -256,6 +255,7 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         self.prjImageArray = []
         
         let bundle = Bundle.main
+        
         let typeValue = self.prjInformation.type.rawValue
         
         guard let path = bundle.url(forResource: typeValue, withExtension: "plist") else { self.prjQuestionnaire = []

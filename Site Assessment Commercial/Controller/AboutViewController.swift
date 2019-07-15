@@ -74,7 +74,9 @@ extension AboutViewController {
 }
 
 extension AboutViewController: WKNavigationDelegate, WKUIDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func webView(_ webView: WKWebView,
+                        decidePolicyFor navigationAction: WKNavigationAction,
+                        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.url
         guard url != nil else {
             decisionHandler(.allow)

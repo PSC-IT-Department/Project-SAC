@@ -26,7 +26,8 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
 
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
     
@@ -34,9 +35,12 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageGalleryCell", for: indexPath) as! ImageGalleryCell
+        let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: "ImageGalleryCell")
+        let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
+                                                                    forIndexPath: indexPath)
         
         let image = images[indexPath.row]
         
@@ -45,7 +49,8 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
     }
 
     // MARK: - UICollectionViewDelegateFlowLayout
@@ -53,7 +58,7 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 84, height: 84)
+        return CGSize(width: 64, height: 64)
     }
 
 }

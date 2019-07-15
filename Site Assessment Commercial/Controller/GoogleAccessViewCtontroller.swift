@@ -39,7 +39,9 @@ class GoogleAccessViewController: UIViewController {
     private func setupForSignOut() {
         let bundle = Bundle.main
         
-        guard let signOutView = bundle.loadNibNamed("GoogleSignOut", owner: self, options: nil)?.first as? GoogleSignOutView else { return }
+        guard let signOutView = bundle.loadNibNamed("GoogleSignOut",
+                                                    owner: self,
+                                                    options: nil)?.first as? GoogleSignOutView else { return }
 
         signOutView.label.text = GoogleService.shared.getEmail()
         signOutView.signOutButton.addTarget(self, action: #selector(buttonSignOutDidClicked), for: .touchUpInside)

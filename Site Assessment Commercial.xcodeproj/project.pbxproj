@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		272CB9C59BFB653EAFF22E0B /* Pods_Site_Assessment_Commercial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */; };
 		DD0D742F224BD6B800D9C06F /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0D742E224BD6B700D9C06F /* ImageViewController.swift */; };
 		DD17AD2422442E86005DF780 /* UITextView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD17AD2322442E86005DF780 /* UITextView+Frame.swift */; };
+		DD3804F62272100400F779F2 /* AlertPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3804F52272100300F779F2 /* AlertPresentable.swift */; };
 		DD3EE64421E4F1750094E29D /* ImageGalleryCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */; };
 		DD412EE5222EC00100D6FD2F /* LoadingIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD412EE4222EC00100D6FD2F /* LoadingIndicatorView.swift */; };
 		DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */; };
@@ -17,7 +18,10 @@
 		DD4D1C57224EC1CF001DF5AC /* ImageGalleryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD4D1C56224EC1CF001DF5AC /* ImageGalleryCell.xib */; };
 		DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E490822284870004FE180 /* ReviewViewModel.swift */; };
 		DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */; };
+		DD6FFA27226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6FFA26226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift */; };
 		DD754C6E21AC699400253D58 /* Commercial.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD754C6D21AC699400253D58 /* Commercial.plist */; };
+		DD75C15122774D74007CD49C /* AddEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD75C15022774D74007CD49C /* AddEventViewController.swift */; };
+		DD75C15322774E7E007CD49C /* AddEventViewControllerCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD75C15222774E7E007CD49C /* AddEventViewControllerCells.swift */; };
 		DD767336222E0ED7001F87F7 /* NotificationCenter+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD767335222E0ED7001F87F7 /* NotificationCenter+Name.swift */; };
 		DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD767337222E1427001F87F7 /* BaseViewController.swift */; };
 		DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BEFD21A85D7600A65352 /* AppDelegate.swift */; };
@@ -90,6 +94,7 @@
 		D38745A09F38BE1C10B8782F /* Pods-Site Assessment Commercial.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.release.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.release.xcconfig"; sourceTree = "<group>"; };
 		DD0D742E224BD6B700D9C06F /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		DD17AD2322442E86005DF780 /* UITextView+Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Frame.swift"; sourceTree = "<group>"; };
+		DD3804F52272100300F779F2 /* AlertPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresentable.swift; sourceTree = "<group>"; };
 		DD3EE64321E4F1750094E29D /* ImageGalleryCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionView.swift; sourceTree = "<group>"; };
 		DD412EE4222EC00100D6FD2F /* LoadingIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorView.swift; sourceTree = "<group>"; };
 		DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportCell.swift; sourceTree = "<group>"; };
@@ -97,7 +102,10 @@
 		DD4D1C56224EC1CF001DF5AC /* ImageGalleryCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageGalleryCell.xib; sourceTree = "<group>"; };
 		DD4E490822284870004FE180 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewViewModel.swift; sourceTree = "<group>"; };
 		DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveToCustomAlbum.swift; sourceTree = "<group>"; };
+		DD6FFA26226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+DequeueReusableCellWithIdentifier.swift"; sourceTree = "<group>"; };
 		DD754C6D21AC699400253D58 /* Commercial.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Commercial.plist; sourceTree = "<group>"; };
+		DD75C15022774D74007CD49C /* AddEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewController.swift; sourceTree = "<group>"; };
+		DD75C15222774E7E007CD49C /* AddEventViewControllerCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEventViewControllerCells.swift; sourceTree = "<group>"; };
 		DD767335222E0ED7001F87F7 /* NotificationCenter+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Name.swift"; sourceTree = "<group>"; };
 		DD767337222E1427001F87F7 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		DD76BEFA21A85D7600A65352 /* Site Assessment Commercial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Site Assessment Commercial.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,6 +257,7 @@
 				DD76BF1F21A86C7500A65352 /* ReviewCell.swift */,
 				DD76BF2321A874D300A65352 /* InformationCell.swift */,
 				DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */,
+				DD75C15222774E7E007CD49C /* AddEventViewControllerCells.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -266,6 +275,7 @@
 				DD0D742E224BD6B700D9C06F /* ImageViewController.swift */,
 				DDE7F2D622526F5C0053B976 /* AboutViewController.swift */,
 				DDF8E66C2260E8E20065043F /* UserManualViewController.swift */,
+				DD75C15022774D74007CD49C /* AddEventViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -313,6 +323,8 @@
 				DD9483E0223DC4970084CE4D /* Array+Indices+IndexPath.swift */,
 				DD17AD2322442E86005DF780 /* UITextView+Frame.swift */,
 				DD4D1C53224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift */,
+				DD6FFA26226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift */,
+				DD3804F52272100300F779F2 /* AlertPresentable.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -514,16 +526,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -553,55 +560,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
-				"${BUILT_PRODUCTS_DIR}/DynamicBlurView/DynamicBlurView.framework",
-				"${BUILT_PRODUCTS_DIR}/Fusuma/Fusuma.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/MYTableViewIndex/MYTableViewIndex.framework",
-				"${BUILT_PRODUCTS_DIR}/MarqueeLabel/MarqueeLabel.framework",
-				"${BUILT_PRODUCTS_DIR}/NotificationBannerSwift/NotificationBannerSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
-				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
-				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
-				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
-				"${BUILT_PRODUCTS_DIR}/RxReachability/RxReachability.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
-				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
-				"${BUILT_PRODUCTS_DIR}/SwifterSwift/SwifterSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/YangMingShan/YangMingShan.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DynamicBlurView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Fusuma.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MYTableViewIndex.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarqueeLabel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NotificationBannerSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxReachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwifterSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YangMingShan.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -638,6 +602,8 @@
 				DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */,
 				DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */,
 				DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */,
+				DD75C15322774E7E007CD49C /* AddEventViewControllerCells.swift in Sources */,
+				DD6FFA27226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift in Sources */,
 				DD48637021B990660058EDA3 /* NewProjectReportCell.swift in Sources */,
 				DDCE69ED2224968000468CDE /* ZohoService.swift in Sources */,
 				DDF8E66D2260E8E20065043F /* UserManualViewController.swift in Sources */,
@@ -656,7 +622,9 @@
 				DDEDF4D9221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift in Sources */,
 				DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */,
 				DDA818AC223C49A800A1CA80 /* UIViewController+SetBackground.swift in Sources */,
+				DD75C15122774D74007CD49C /* AddEventViewController.swift in Sources */,
 				DD4D1C54224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift in Sources */,
+				DD3804F62272100400F779F2 /* AlertPresentable.swift in Sources */,
 				DDE7F2D722526F5C0053B976 /* AboutViewController.swift in Sources */,
 				DDB3A6B72232171600B57A69 /* Encodable+Dictionary.swift in Sources */,
 				DD76BF1A21A86AE200A65352 /* MainViewController.swift in Sources */,
@@ -882,6 +850,7 @@
 		DD7925A02256891200855B68 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BN4H5C83Z9;
 				INFOPLIST_FILE = "Site Assessment CommercialUITests/Info.plist";
@@ -893,6 +862,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Site Assessment Commercial";
@@ -902,6 +872,7 @@
 		DD7925A12256891200855B68 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = BN4H5C83Z9;
 				INFOPLIST_FILE = "Site Assessment CommercialUITests/Info.plist";
@@ -913,6 +884,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "chyapp.Site-Assessment-CommercialUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Site Assessment Commercial";

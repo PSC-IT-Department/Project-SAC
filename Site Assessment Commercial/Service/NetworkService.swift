@@ -24,13 +24,13 @@ class NetworkService {
     
     private let disposeBag = DisposeBag()
 
-    public static var sharedNetworkService: NetworkService!
+    public static var shared: NetworkService!
 
     private let reachability: Reachability!
     public private(set) var reachabilityStatus: ReachabilityStatus
 
     public static func instantiateSharedInstance() {
-        sharedNetworkService = NetworkService()
+        shared = NetworkService()
     }
     
     private init() {

@@ -35,21 +35,6 @@ extension SiteAssessmentCommercialUITests {
         wait(interval: 1.5)
     }
     
-    func waitForElementToAppear(_ element: XCUIElement, timeout: TimeInterval = 2, file: String = #file, line: Int = #line) {
-        let existsPredicate = NSPredicate(format: "exists == true")
-        
-        expectation(for: existsPredicate,
-                    evaluatedWith: element,
-                    handler: nil)
-        
-        waitForExpectations(timeout: timeout) { (error) -> Void in
-            if (error != nil) {
-                let message = "Failed to find \(element) after \(timeout) seconds."
-                self.recordFailure(withDescription: message, inFile: file, atLine: line, expected: true)
-            }
-        }
-    }
-    
     func wait(interval: TimeInterval) {
         RunLoop.current.run(until: Date().addingTimeInterval(interval))
     }
@@ -71,9 +56,7 @@ extension SiteAssessmentCommercialUITests {
         app.buttons["Status"].tap()
         
         goBack()
-        
-        let tableViewHeader = app.tables.allElementsBoundByIndex[0].otherElements["MainTableViewHeader"]
-        
+                
         wait(interval: 1.0)
     }
     

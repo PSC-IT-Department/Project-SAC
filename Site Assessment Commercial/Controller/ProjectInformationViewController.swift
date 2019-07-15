@@ -13,6 +13,8 @@ import RxCocoa
 import MapKit
 import Contacts
 
+import NotificationBannerSwift
+
 class ProjectInformationViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var startButton: UIButton!
@@ -24,9 +26,10 @@ class ProjectInformationViewController: UIViewController {
     private var currentCoordinate: CLLocationCoordinate2D?
     private var projectLocation: CLLocation!
 
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    var observableViewModel: Observable<[ProjectInformationViewModel]>!
+    private var viewModel: [ProjectInformationViewModel]!
+    private var sections = BehaviorRelay(value: [ProjectInformationViewModel]())
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +78,7 @@ extension ProjectInformationViewController {
     }
     
     private func setupViewModel() {
-        let viewModel = [
+        viewModel = [
             ProjectInformationViewModel(key: "Project Address", value: prjData.prjInformation.projectAddress),
             ProjectInformationViewModel(key: "Status", value: prjData.prjInformation.status.rawValue),
             ProjectInformationViewModel(key: "Type", value: prjData.prjInformation.type.rawValue),
@@ -88,17 +91,23 @@ extension ProjectInformationViewController {
             ProjectInformationViewModel(key: "Assigned Date", value: prjData.prjInformation.assignedDate)
         ]
         
-        observableViewModel = Observable.of(viewModel)
+        self.sections.accept(viewModel)
     }
     
     private func setupCell() {
-        observableViewModel
+        self.sections.asObservable()
             .bind(to: tableView.rx.items) { (tableView, row, data) in
                 
                 let indexPath = IndexPath(row: row, section: 0)
                 let cell = tableView.dequeueReusableCell(withClass: InformationCell.self, for: indexPath)
 
                 cell.setupCell(viewModel: data)
+                
+                if data.key == "Schedule Date" {
+                    cell.contentView.layer.borderColor = UIColor(red: 0.50, green: 0.55, blue: 0.59, alpha: 1.0).cgColor
+                    cell.contentView.layer.borderWidth = 1
+                }
+                
                 return cell
             }
             .disposed(by: disposeBag)
@@ -109,8 +118,18 @@ extension ProjectInformationViewController {
         tableView
             .rx
             .itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                self?.tableView.deselectRow(at: indexPath, animated: true)
+            .subscribe(onNext: { [unowned self] indexPath in
+                self.tableView.deselectRow(at: indexPath, animated: true)
+                let row = self.viewModel[indexPath.row]
+                if row.key == "Schedule Date",
+                    let prjAddr = self.prjData.prjInformation.projectAddress {
+                    if let vc =
+                        AddEventViewController.instantiateFromStoryBoard(prjAddr) {
+                        
+                        vc.delegate = self
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -137,8 +156,8 @@ extension ProjectInformationViewController {
                         self.navigationController?.pushViewController(vc, animated: true)
                     }
                 default:
-                    if let viewController = NewProjectReportViewController.instantiateFromStoryBoard() {
-                        self.navigationController?.pushViewController(viewController, animated: true)
+                    if let vc = NewProjectReportViewController.instantiateFromStoryBoard() {
+                        self.navigationController?.pushViewController(vc, animated: true)
                     }
                 }
             })
@@ -240,5 +259,19 @@ extension ProjectInformationViewController: MKMapViewDelegate {
         
         mapItem.openInMaps(launchOptions: launchOptions)
     }
+}
 
+extension ProjectInformationViewController: AddEventViewControllerDelegate {
+    func passingScheduleDate(date: String?) {
+        if let date = date {
+            self.prjData.prjInformation.scheduleDate = date
+            
+            DataStorageService.shared.storeData(withData: self.prjData, onCompleted: nil)
+            
+            self.setupViewModel()
+            
+            let banner = StatusBarNotificationBanner(title: "Measurement has been scheduled.", style: .success)
+            banner.show()
+        }
+    }
 }

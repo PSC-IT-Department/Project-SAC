@@ -6,14 +6,14 @@ target 'Site Assessment Commercial' do
   use_frameworks!
 
   # Pods for Site Assessment Commercial
-  pod 'RxSwift',    '~> 4.0'
-  pod 'RxCocoa',    '~> 4.0'
-  pod 'RxDataSources', '~> 3.0'
+  pod 'RxSwift', '~> 5'
+  pod 'RxCocoa', '~> 5'
+  pod 'RxDataSources', '~> 4.0'
   pod 'RxReachability'
   pod 'RxGesture'
   pod 'RxSwiftExt'
   pod 'RxAlamofire'
-  pod 'Fusuma'
+  pod 'RxBiBinding'
   pod 'YangMingShan'
   pod 'GoogleAPIClientForREST/Drive'
   pod 'GoogleAPIClientForREST/Calendar'
@@ -21,6 +21,6 @@ target 'Site Assessment Commercial' do
   pod 'SwifterSwift/UIKit'
   pod 'NotificationBannerSwift'
   pod 'MYTableViewIndex'
-  pod 'PopupDialog', '~> 0.9'
+  pod 'PopupDialog', '~> 1.1'
+  pod 'IQKeyboardManager'
 end
-

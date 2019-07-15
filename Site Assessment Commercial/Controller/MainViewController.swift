@@ -19,6 +19,8 @@ import GoogleAPIClientForREST
 import NotificationBannerSwift
 import PopupDialog
 
+import UserNotifications
+
 typealias MainSection = AnimatableSectionModel<String, MainViewModel>
 
 fileprivate extension Selector {
@@ -47,6 +49,7 @@ class MainViewController: UIViewController {
         loadData()
         setupView()
 
+        setupUserNotification()
         setupDataSource()
         setupViewModel()
         setupGoogleSignIn()
@@ -54,14 +57,16 @@ class MainViewController: UIViewController {
         setupCellTapHandling()
         setupRefreshControl()
         setupDelegate()
-        setupNotificationCenter()
         
         setupButtonTitleTapHandling()
         setupBarButtonFilterTapHandling()
+        
+        setBadgeIndicator()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupNotificationCenter()
 
         setupCurrentUser()
     }
@@ -88,7 +93,6 @@ extension MainViewController {
         let type = DataStorageService.shared.retrieveTypeOption()
         if let prjList = DataStorageService.shared.retrieveProjectList(type: type) {
             self.prjList = prjList
-            
         }
     }
     
@@ -135,7 +139,36 @@ extension MainViewController {
         self.tableView.backgroundColor = UIColor.clear
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
         self.setBackground(false)
+    }
+    
+    private func setupUserNotification() {
+        let application = UIApplication.shared
+        if #available(iOS 10.0, *) {
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.badge, .alert, .sound]) { _, _ in }
+        } else {
+            let defaultSetting = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(defaultSetting)
+        }
+        application.registerForRemoteNotifications()
         
+        application.applicationIconBadgeNumber = 1
+    }
+    
+    private func setBadgeIndicator() {
+        let application = UIApplication.shared
+        
+        let allPrjList = DataStorageService.shared.projectList
+        
+        if let count = allPrjList?.filter({ (saData) -> Bool in
+            if let status = saData.prjInformation.status, status == .pending {
+                return true
+            } else {
+                return false
+            }
+        }).count {
+            application.applicationIconBadgeNumber = count
+        }
     }
     
     private func setupDataSource() {
@@ -154,7 +187,7 @@ extension MainViewController {
     private func setupGoogleSignIn() {
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive]
+        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive, kGTLRAuthScopeCalendar]
         GIDSignIn.sharedInstance().shouldFetchBasicProfile = true
         GIDSignIn.sharedInstance().signInSilently()
     }
@@ -458,10 +491,10 @@ extension MainViewController: NotificationBannerDelegate {
         }
         
         var style: BannerStyle = .none
-        if msg == "Online Mode", NetworkService.sharedNetworkService.reachabilityStatus == .connected {
+        if msg == "Online Mode", NetworkService.shared.reachabilityStatus == .connected {
             style = .info
             self.refreshDataManually(withDelay: 0.0)
-        } else if msg == "Offline Mode", NetworkService.sharedNetworkService.reachabilityStatus == .disconnected {
+        } else if msg == "Offline Mode", NetworkService.shared.reachabilityStatus == .disconnected {
             style = .warning
         }
         

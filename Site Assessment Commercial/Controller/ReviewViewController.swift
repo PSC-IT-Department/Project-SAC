@@ -48,56 +48,57 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
     
     @IBAction func buttonSaveDidClicked(_ sender: Any) {
         
-        guard let prjID = prjData.prjInformation.projectID else {
+        guard let prjID = prjData.prjInformation.projectID,
+            let prjData = prjData
+            else {
             return
         }
         
         var msg: Notification.Name = .ErrorMsg
         var msgObject: Any = prjID
-
-        LoadingIndicatorView.show("Processing...")
         
-        if NetworkService.sharedNetworkService.reachabilityStatus == .connected {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
-                ZohoService.shared.setRemoteToUploading(projectID: prjID) {success in
-                    guard let strongSelf = self else { return }
-                    print("success = \(success)")
-                    if success {
-                        print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
-                        
-                        NotificationCenter.default.post(name: .ProcessingMsg, object: msgObject)
-                        
-                        GoogleService.shared.uploadProject(with: strongSelf.prjData) { (success, error) in
-                            if let err = error {
-                                print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
-                            }
-                            
-                            if success {
-                                print("GoogleService.sharedGoogleService.uploadProject successfully.")
-                                ZohoService.shared.uploadProject(withData: strongSelf.prjData) { (success) in
-                                    if success {
-                                        print("ZohoService.sharedZohoService.uploadProject successfully.")
-                                        NotificationCenter.default.post(name: .CompleteMsg, object: msgObject)
-                                    } else {
-                                        print("ZohoService.sharedZohoService.uploadProject failed.")
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
-                    }
-                }
-                LoadingIndicatorView.hide()
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-            
-        } else {
+        guard NetworkService.shared.reachabilityStatus == .connected else {
             msg = .WarningMsg
             msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
             LoadingIndicatorView.hide()
             NotificationCenter.default.post(name: msg, object: msgObject)
             self.navigationController?.popToRootViewController(animated: true)
+            return
+        }
+        
+        LoadingIndicatorView.show("Processing...")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+            ZohoService.shared.setRemoteToUploading(projectID: prjID) { success in
+                print("success = \(success)")
+                if success {
+                    print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
+                    
+                    NotificationCenter.default.post(name: .ProcessingMsg, object: msgObject)
+                    
+                    GoogleService.shared.uploadProject(with: prjData) { (success, error) in
+                        if let err = error {
+                            print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
+                        }
+                        
+                        if success {
+                            print("GoogleService.sharedGoogleService.uploadProject successfully.")
+                            ZohoService.shared.uploadProject(withData: prjData) { (success) in
+                                if success {
+                                    print("ZohoService.sharedZohoService.uploadProject successfully.")
+                                    NotificationCenter.default.post(name: .CompleteMsg, object: msgObject)
+                                } else {
+                                    print("ZohoService.sharedZohoService.uploadProject failed.")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
+                }
+            }
+            LoadingIndicatorView.hide()
+            self?.navigationController?.popToRootViewController(animated: true)
         }
     }
 }
@@ -128,7 +129,7 @@ extension ReviewViewController {
         let allQuestions = self.prjData.prjQuestionnaire.compactMap({$0.Questions}).joined()
         
         let questionsViewModel = allQuestions.compactMap({ReviewViewModel(key: $0.Name, value: $0.Value)})
-                
+        
         viewModel.append(contentsOf: questionsViewModel)
         
         observableViewModel = Observable.of(viewModel)

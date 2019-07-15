@@ -18,7 +18,7 @@ enum NewProjectReportCellType: String, Codable {
     case multipleSelection  = "Multiple Selection"
     case inputs             = "Inputs"
     case trussType          = "Truss Type"
-    case selectionsWithImageOther = "Selections With Image Other"
+    case selection = "Selections With Image Other"
 }
 
 typealias ImageGallerySection = AnimatableSectionModel<String, String>
@@ -46,7 +46,9 @@ class TrussTypeCell: UICollectionViewCell {
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
             configureCell: { (_, collectionView, indexPath, element) in
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellID, for: indexPath) as? ImageGalleryCell else { return UICollectionViewCell() }
+                let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: self.cellID)
+                let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
+                                                                            forIndexPath: indexPath)
                 
                 if let image = UIImage(named: element) {
                     cell.imageView.image = image
@@ -56,7 +58,13 @@ class TrussTypeCell: UICollectionViewCell {
                 return cell
         },
             configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) in
-                let section = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: indexPath) as! CollectionReusableView
+                let section = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: "Section",
+                    for: indexPath
+                    // swiftlint:disable:next force_cast
+                    ) as! CollectionReusableView
+                
                 section.labelSectionName.text = "\(dataSource[indexPath.section].model)"
                 return section
             }
@@ -91,15 +99,6 @@ class TrussTypeCell: UICollectionViewCell {
         textField.inputAssistantItem.leadingBarButtonGroups = []
         textField.inputAssistantItem.trailingBarButtonGroups = []
 
-        /*
-        if let imgAttrs = imageAttrs {
-            let images = imgAttrs.compactMap { UIImage(contentsOfFile: $0.name) }
-            
-            print("images.count = \(images.count)")
-            self.images = images
-        }
-         */
-
         collectionView.reloadData()
     }
     
@@ -127,7 +126,7 @@ class MultipleSelectionCell: UICollectionViewCell {
     
     func setupCell(with question: QuestionStructure) {
         labelKey.text = question.Name
-        
+                
         optionGroup.forEach { $0.isHidden = true }
         
         if let options = question.Options {
@@ -135,6 +134,8 @@ class MultipleSelectionCell: UICollectionViewCell {
                 
                 optionGroup[index].setTitle(option, for: .normal)
                 optionGroup[index].isHidden = false
+                
+                print("question.value = \(question.Value)")
                 
                 question.Value?.split(separator: ",").compactMap({String($0)}).forEach({
                     if optionGroup[index].title(for: .normal) == $0 {
@@ -187,7 +188,8 @@ class ImageCell: UICollectionViewCell {
     
     private let imageDefault = UIImage(named: "Add_Pictures")!
 
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    override func preferredLayoutAttributesFitting(
+        _ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         
         layoutAttributes.bounds.size.height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         
@@ -195,7 +197,7 @@ class ImageCell: UICollectionViewCell {
     }
     
     func loadImages(_ questionName: String) {
-        guard let prjFolder = DataStorageService.shared.currentProjectHomeDirectory else {
+        guard let prjFolder = DataStorageService.shared.projectDir else {
             print("[retrieveData - FileManager.default.urls] failed.")
             return
         }
@@ -342,7 +344,7 @@ class InputsCell: UICollectionViewCell {
     }
 }
 
-class SelectionsWithImageOtherCell: UICollectionViewCell {
+class SelectionCell: UICollectionViewCell {
     
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var imageView: UIImageView!
