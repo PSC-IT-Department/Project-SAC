@@ -493,7 +493,9 @@ class GoogleService {
             onCompleted?(error)
         }
     }
-    
+}
+
+extension GoogleService {
     public func checkDuplicateEventsByEventName(eventName: String) {
         fetchCalendarEventsList { (list, error) in
             if let eventList = list, error == nil {
@@ -586,7 +588,7 @@ class GoogleService {
         newEvent.reminders?.useDefault = false
         
         let query = GTLRCalendarQuery_EventsInsert.query(withObject: newEvent, calendarId: calendarID)
-
+        
         calendarService.executeQuery(query) { (_, _, error) in
             onCompleted(error)
         }

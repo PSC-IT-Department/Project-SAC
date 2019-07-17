@@ -418,7 +418,7 @@
 					<string>Other</string>
 				</array>
 				<key>Default</key>
-				<string>No</string>
+				<string></string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>
@@ -445,7 +445,7 @@
 					<string>M</string>
 				</array>
 				<key>Default</key>
-				<string>No</string>
+				<string></string>
 				<key>Image</key>
 				<string></string>
 				<key>Mandatory</key>

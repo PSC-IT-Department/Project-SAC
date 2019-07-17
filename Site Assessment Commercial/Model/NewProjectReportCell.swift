@@ -126,24 +126,30 @@ class MultipleSelectionCell: UICollectionViewCell {
     
     func setupCell(with question: QuestionStructure) {
         labelKey.text = question.Name
-                
+
         optionGroup.forEach { $0.isHidden = true }
         
         if let options = question.Options {
             for (index, option) in options.enumerated() {
-                
                 optionGroup[index].setTitle(option, for: .normal)
                 optionGroup[index].isHidden = false
-                
-                print("question.value = \(question.Value)")
-                
-                question.Value?.split(separator: ",").compactMap({String($0)}).forEach({
-                    if optionGroup[index].title(for: .normal) == $0 {
-                        optionGroup[index].isChecked = true
-                    }
-                })
             }
         }
+        
+        let optionIndexedTitles = optionGroup.enumerated().compactMap { (offset, element) -> (Int, String?) in
+            return (offset, element.title(for: .normal))
+        }
+        
+        question.Value?.split(separator: ",").compactMap({String($0)}).forEach({ (value) in
+            if let index = optionIndexedTitles.firstIndex(where: {$0.1 == value}) {
+                optionGroup[index].isChecked = true
+            } else {
+                if let index = optionIndexedTitles.firstIndex(where: {$0.1 == "Other"}) as? Int {
+                    optionGroup[index].setTitle(value, for: .normal)
+                    optionGroup[index].isChecked = true
+                }
+            }
+        })
     }
     
     override func prepareForReuse() {

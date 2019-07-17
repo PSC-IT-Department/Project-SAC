@@ -55,7 +55,7 @@ class SiteAssessmentCommercialTests: XCTestCase {
         print("ele = \(ele)")
         
 */
-        var arr = [1, 2, 3, 4]
+        let arr = [1, 2, 3, 4]
         
         let related = arr.filter({$0 % 3 == 0})
         

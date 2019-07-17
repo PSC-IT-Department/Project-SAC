@@ -138,9 +138,9 @@ extension SettingsViewController {
                                     }}),
             SettingsCellViewModel(key: "Check Updates",
                                   indicator: .detailButton,
-                                  action: {[unowned self] in
-                                    
-                                    if let myVer = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                                  action: {
+                                    let bundle = Bundle.main
+                                    if let myVer = bundle.infoDictionary?["CFBundleShortVersionString"] as? String,
                                         let url = URL(string: "https://polaronsolar.com/wp-content/uploads/sapp/index.html?cur=\(myVer)") {
                                         
                                         print("url = \(url)")

@@ -410,11 +410,9 @@ extension NewProjectReportViewController {
     }
     
     func loadData() -> [EachSection] {
-        
         let eachSections = self.prjData.prjQuestionnaire.compactMap { section -> EachSection in
-            
             let questions = section.Questions.filter({
-                $0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil) || ($0.Default != "" && $0.Default != nil)
+                $0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil)
             })
             return EachSection(model: section.Name, items: questions)
         }
@@ -919,7 +917,6 @@ extension NewProjectReportViewController: SelectionCellDelegate {
 
         let secNum = indexPath.section
         let questions = data.prjQuestionnaire[secNum].Questions
-        
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == key})
         
         let (matchedQuestions, notMatchedQuestions) = relatedQuestions.stablePartition { question in
@@ -927,7 +924,6 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         }
         
         let newIndices = matchedQuestions.compactMap({questions.firstIndex(of: $0)})
-        
         // Set the mantadory field of questions that matches the option to Yes
         newIndices.forEach { (index) in
             let indexPath = IndexPath(row: index, section: secNum)
@@ -940,7 +936,6 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         }
         
         let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
-        
         oldIndices.forEach { (index) in
             let indexPath = IndexPath(row: index, section: secNum)
             var q = questions[index]
@@ -949,9 +944,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
             self.updateQuestion(indexPath: indexPath, question: q)
             data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Mandatory = "No"
         }
-        
-        print("data = \(data.prjQuestionnaire)")
-        
+                
         let answeredQuestions = self.initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
         
         answeredQuestions.forEach { (question) in

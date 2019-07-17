@@ -141,9 +141,9 @@ class ZohoService {
                 onCompleted?(nil)
                 return
             }
-            
+
             var downloadBaseURL = "\(self.baseURL)/api/\(self.format)/\(self.appName)/view/"
-            
+
             let criteriaValue = "\(self.saAssignedTeam)==\(assignedTeam)&&\(self.saStatus)==Pending"
 
             var criteria = ""
@@ -158,7 +158,7 @@ class ZohoService {
                 print("default")
                 return
             }
-                        
+
             guard var components = URLComponents(string: downloadBaseURL) else {
                 onCompleted?(nil)
                 return
@@ -171,9 +171,9 @@ class ZohoService {
                 URLQueryItem(name: "raw", value: self.rawValue),
                 URLQueryItem(name: "criteria", value: criteria)
                 ]
-            
+
             components.queryItems = queryItems
-            
+
             /* -------------------------- Zoho Creator Only -------------------------- */
             // https://stackoverflow.com/questions/43052657/encode-using-urlcomponents-in-swift
             components.percentEncodedQuery = components.percentEncodedQuery?
@@ -185,7 +185,8 @@ class ZohoService {
                 return
             }
             
-            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+            let urlSession = URLSession.shared
+            let task = urlSession.dataTask(with: url) { (data, _, error) in
                 if let err = error {
                     print("Error = \(err)")
                 }
@@ -251,7 +252,8 @@ class ZohoService {
             return
         }
         
-        let task = URLSession.shared.uploadTask(with: request, from: uploadData) { (data, response, error) in
+        let urlSession = URLSession.shared
+        let task = urlSession.uploadTask(with: request, from: uploadData) { (data, response, error) in
             if let err = error {
                 print ("error: \(err)")
             }
