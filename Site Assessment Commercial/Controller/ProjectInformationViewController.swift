@@ -156,7 +156,7 @@ extension ProjectInformationViewController {
                         self.navigationController?.pushViewController(vc, animated: true)
                     }
                 default:
-                    if let vc = NewProjectReportViewController.instantiateFromStoryBoard() {
+                    if let vc = ContainerViewController.instantiateFromStoryBoard() {
                         self.navigationController?.pushViewController(vc, animated: true)
                     }
                 }

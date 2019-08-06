@@ -30,9 +30,10 @@ PODS:
   - IQKeyboardManager (6.4.0)
   - MarqueeLabel (4.0.0)
   - MYTableViewIndex (0.8.0)
-  - NotificationBannerSwift (2.3.0):
+  - NotificationBannerSwift (2.5.1):
     - MarqueeLabel (~> 4.0.0)
     - SnapKit (~> 5.0.0)
+  - PagingKit (1.10.0)
   - PopupDialog (1.1.0):
     - DynamicBlurView (~> 3.0.1)
   - ReachabilitySwift (4.3.1)
@@ -82,6 +83,7 @@ DEPENDENCIES:
   - IQKeyboardManager
   - MYTableViewIndex
   - NotificationBannerSwift
+  - PagingKit
   - PopupDialog (~> 1.1)
   - RxAlamofire
   - RxBiBinding
@@ -107,6 +109,7 @@ SPEC REPOS:
     - MarqueeLabel
     - MYTableViewIndex
     - NotificationBannerSwift
+    - PagingKit
     - PopupDialog
     - ReachabilitySwift
     - RxAlamofire
@@ -133,7 +136,8 @@ SPEC CHECKSUMS:
   IQKeyboardManager: fcef267266379c003181fc3592f6bdb8bf4db839
   MarqueeLabel: b55b26e690b6ad41faedd95cbf5eae6f1d1735b4
   MYTableViewIndex: 55d5d8557b3f2a4de270d8c0260b41f3918ba4e3
-  NotificationBannerSwift: fdc44b934be7a8175f7a7170a75a11c672990e70
+  NotificationBannerSwift: e55dd801b0d78f1a7bacb10d722a935ec95f94a3
+  PagingKit: 05ff12fc68f9f7ca10d75a7acdcc6c362c7f4fe3
   PopupDialog: 42fb7a0bc4fafdf89fef8b5b2b127a6023f3e1cc
   ReachabilitySwift: 4032e2f59586e11e3b0ebe15b167abdd587a388b
   RxAlamofire: e7875a012aff55345672d0f70a2a9cd6aeb0f211
@@ -149,6 +153,6 @@ SPEC CHECKSUMS:
   SwifterSwift: 96f90594b370802f01647c2b1229c74a84ffafee
   YangMingShan: 561cfbb769e8cf679d3f23d8ae7030402ddb6495
 
-PODFILE CHECKSUM: d5854e59709268965a42cdf83e5daa0b71fc40c2
+PODFILE CHECKSUM: 20eace3e5e7c1866bf1e41f0255b73262bb5eed5
 
-COCOAPODS: 1.7.2
+COCOAPODS: 1.7.5

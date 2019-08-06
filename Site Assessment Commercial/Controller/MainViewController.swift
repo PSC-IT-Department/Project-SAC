@@ -490,16 +490,13 @@ extension MainViewController: NotificationBannerDelegate {
             return
         }
         
-        var style: BannerStyle = .none
+        var style: BannerStyle = .warning
         if msg == "Online Mode", NetworkService.shared.reachabilityStatus == .connected {
             style = .info
             self.refreshDataManually(withDelay: 0.0)
-        } else if msg == "Offline Mode", NetworkService.shared.reachabilityStatus == .disconnected {
-            style = .warning
         }
         
         showBanner(title: msg, style: style)
-
     }
 
     private func showBanner(title: String, style: BannerStyle) {

@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GIDSignIn.sharedInstance().clientID = "644156199174-ug9k96eocdquskuc8a5465isp10n2feo.apps.googleusercontent.com"
 
-        print("homeDictionary = \(DataStorageService.shared.homeDirectory.path)")
+        print("Home Dictionary = \(DataStorageService.shared.homeDirectory.path)")
         return true
     }
     

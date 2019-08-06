@@ -22,8 +22,8 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fCp-xp-nn7">
                         <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Add_Pictures" translatesAutoresizingMaskIntoConstraints="NO" id="dnd-og-AUe">
-                                <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Add_Pictures" translatesAutoresizingMaskIntoConstraints="NO" id="dnd-og-AUe">
+                                <rect key="frame" x="-10" y="-10" width="84" height="84"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="dnd-og-AUe" secondAttribute="height" multiplier="1:1" id="7eT-KN-4V6"/>
                                 </constraints>
@@ -31,10 +31,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="dnd-og-AUe" secondAttribute="bottom" id="LE9-qC-Jt4"/>
-                            <constraint firstAttribute="trailing" secondItem="dnd-og-AUe" secondAttribute="trailing" id="f1D-od-RGk"/>
-                            <constraint firstItem="dnd-og-AUe" firstAttribute="leading" secondItem="fCp-xp-nn7" secondAttribute="leading" id="qwg-fG-EdD"/>
-                            <constraint firstItem="dnd-og-AUe" firstAttribute="top" secondItem="fCp-xp-nn7" secondAttribute="top" id="uV1-bq-UlX"/>
+                            <constraint firstItem="dnd-og-AUe" firstAttribute="centerY" secondItem="fCp-xp-nn7" secondAttribute="centerY" id="dEa-W9-Cjl"/>
+                            <constraint firstItem="dnd-og-AUe" firstAttribute="centerX" secondItem="fCp-xp-nn7" secondAttribute="centerX" id="xLt-tm-q3L"/>
                         </constraints>
                     </view>
                 </subviews>

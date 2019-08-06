@@ -17,6 +17,9 @@
 		DD4D1C54224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4D1C53224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift */; };
 		DD4D1C57224EC1CF001DF5AC /* ImageGalleryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD4D1C56224EC1CF001DF5AC /* ImageGalleryCell.xib */; };
 		DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E490822284870004FE180 /* ReviewViewModel.swift */; };
+		DD6975CA22EA116E0043E791 /* TvSelectionsWithImageOtherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703A822E8B8DD004C3ED8 /* TvSelectionsWithImageOtherCell.xib */; };
+		DD6975CB22EA12100043E791 /* TvMultipleSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703A922E8B930004C3ED8 /* TvMultipleSelectionCell.xib */; };
+		DD6975CC22EA12130043E791 /* TvNotesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703AA22E8B998004C3ED8 /* TvNotesCell.xib */; };
 		DD6BC1D921FB846200D0AB48 /* SaveToCustomAlbum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6BC1D821FB846200D0AB48 /* SaveToCustomAlbum.swift */; };
 		DD6FFA27226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6FFA26226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift */; };
 		DD754C6E21AC699400253D58 /* Commercial.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD754C6D21AC699400253D58 /* Commercial.plist */; };
@@ -42,6 +45,12 @@
 		DD79259C2256891200855B68 /* Site_Assessment_CommercialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79259B2256891200855B68 /* Site_Assessment_CommercialUITests.swift */; };
 		DD7925AA2256891900855B68 /* Site_Assessment_CommercialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */; };
 		DD85EC0921ED02CE009C8F4A /* MyCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */; };
+		DD87039D22E8A4E0004C3ED8 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD87039C22E8A4E0004C3ED8 /* ContainerViewController.swift */; };
+		DD87039F22E8AFF4004C3ED8 /* ContentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD87039E22E8AFF4004C3ED8 /* ContentTableViewController.swift */; };
+		DD8703A122E8B19E004C3ED8 /* TvImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703A022E8B19E004C3ED8 /* TvImageCell.xib */; };
+		DD8703A522E8B7E6004C3ED8 /* TvInputsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703A422E8B7E6004C3ED8 /* TvInputsCell.xib */; };
+		DD8703A722E8B882004C3ED8 /* TvTrussTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD8703A622E8B882004C3ED8 /* TvTrussTypeCell.xib */; };
+		DD8703AC22E8BB3B004C3ED8 /* ContentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8703AB22E8BB3B004C3ED8 /* ContentTableViewCell.swift */; };
 		DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */; };
 		DD8AE19221C017AF00969F12 /* CollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */; };
 		DD8B6D6F223C80400022D7A8 /* PopupDialog+GroupingBy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8B6D6E223C80400022D7A8 /* PopupDialog+GroupingBy.swift */; };
@@ -132,6 +141,15 @@
 		DD7925A92256891900855B68 /* Site_Assessment_CommercialTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Site_Assessment_CommercialTests.swift; sourceTree = "<group>"; };
 		DD7925AB2256891900855B68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD85EC0821ED02CE009C8F4A /* MyCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCheckBox.swift; sourceTree = "<group>"; };
+		DD87039C22E8A4E0004C3ED8 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		DD87039E22E8AFF4004C3ED8 /* ContentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTableViewController.swift; sourceTree = "<group>"; };
+		DD8703A022E8B19E004C3ED8 /* TvImageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvImageCell.xib; sourceTree = "<group>"; };
+		DD8703A422E8B7E6004C3ED8 /* TvInputsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvInputsCell.xib; sourceTree = "<group>"; };
+		DD8703A622E8B882004C3ED8 /* TvTrussTypeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvTrussTypeCell.xib; sourceTree = "<group>"; };
+		DD8703A822E8B8DD004C3ED8 /* TvSelectionsWithImageOtherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvSelectionsWithImageOtherCell.xib; sourceTree = "<group>"; };
+		DD8703A922E8B930004C3ED8 /* TvMultipleSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvMultipleSelectionCell.xib; sourceTree = "<group>"; };
+		DD8703AA22E8B998004C3ED8 /* TvNotesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TvNotesCell.xib; sourceTree = "<group>"; };
+		DD8703AB22E8BB3B004C3ED8 /* ContentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTableViewCell.swift; sourceTree = "<group>"; };
 		DD8AE18D21BACA6A00969F12 /* NewProjectReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProjectReportViewModel.swift; sourceTree = "<group>"; };
 		DD8AE19121C017AF00969F12 /* CollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableView.swift; sourceTree = "<group>"; };
 		DD8B6D6E223C80400022D7A8 /* PopupDialog+GroupingBy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopupDialog+GroupingBy.swift"; sourceTree = "<group>"; };
@@ -258,6 +276,7 @@
 				DD76BF2321A874D300A65352 /* InformationCell.swift */,
 				DD48636F21B990660058EDA3 /* NewProjectReportCell.swift */,
 				DD75C15222774E7E007CD49C /* AddEventViewControllerCells.swift */,
+				DD8703AB22E8BB3B004C3ED8 /* ContentTableViewCell.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -276,6 +295,8 @@
 				DDE7F2D622526F5C0053B976 /* AboutViewController.swift */,
 				DDF8E66C2260E8E20065043F /* UserManualViewController.swift */,
 				DD75C15022774D74007CD49C /* AddEventViewController.swift */,
+				DD87039C22E8A4E0004C3ED8 /* ContainerViewController.swift */,
+				DD87039E22E8AFF4004C3ED8 /* ContentTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -371,6 +392,12 @@
 				DDB7CC4522453BDC0081D62C /* InputsCell.xib */,
 				DD4D1C56224EC1CF001DF5AC /* ImageGalleryCell.xib */,
 				DDE7F2E02253F4480053B976 /* ImageCell.xib */,
+				DD8703A022E8B19E004C3ED8 /* TvImageCell.xib */,
+				DD8703A422E8B7E6004C3ED8 /* TvInputsCell.xib */,
+				DD8703A622E8B882004C3ED8 /* TvTrussTypeCell.xib */,
+				DD8703A822E8B8DD004C3ED8 /* TvSelectionsWithImageOtherCell.xib */,
+				DD8703A922E8B930004C3ED8 /* TvMultipleSelectionCell.xib */,
+				DD8703AA22E8B998004C3ED8 /* TvNotesCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -484,6 +511,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6975CC22EA12130043E791 /* TvNotesCell.xib in Resources */,
+				DD6975CB22EA12100043E791 /* TvMultipleSelectionCell.xib in Resources */,
+				DD6975CA22EA116E0043E791 /* TvSelectionsWithImageOtherCell.xib in Resources */,
 				DDB7CC4622453BDC0081D62C /* InputsCell.xib in Resources */,
 				DD4D1C57224EC1CF001DF5AC /* ImageGalleryCell.xib in Resources */,
 				DDD8B49F2242C41C000F94A5 /* MultipleSelectionCell.xib in Resources */,
@@ -496,10 +526,13 @@
 				DD76BF0821A85D7800A65352 /* LaunchScreen.storyboard in Resources */,
 				DD9483E8223FFEB40084CE4D /* Residential.plist in Resources */,
 				DDB7CC4422453A830081D62C /* ARCell.xib in Resources */,
+				DD8703A522E8B7E6004C3ED8 /* TvInputsCell.xib in Resources */,
 				DDD03C962242D3FC00C00FB2 /* TrussTypeCell.xib in Resources */,
+				DD8703A122E8B19E004C3ED8 /* TvImageCell.xib in Resources */,
 				DD76BF0521A85D7800A65352 /* Assets.xcassets in Resources */,
 				DD76BF0321A85D7600A65352 /* Main.storyboard in Resources */,
 				DDCC6327224A90A20060A1D9 /* NotesCell.xib in Resources */,
+				DD8703A722E8B882004C3ED8 /* TvTrussTypeCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,6 +643,7 @@
 				DD0D742F224BD6B800D9C06F /* ImageViewController.swift in Sources */,
 				DD76BEFE21A85D7600A65352 /* AppDelegate.swift in Sources */,
 				DD76DBD8221DC76E00DFC9D5 /* GoogleService.swift in Sources */,
+				DD87039D22E8A4E0004C3ED8 /* ContainerViewController.swift in Sources */,
 				DD76BF1621A86A8200A65352 /* MainCell.swift in Sources */,
 				DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */,
 				DD909D6B21B04F1E00BC9736 /* SADTO.swift in Sources */,
@@ -624,6 +658,7 @@
 				DDA818AC223C49A800A1CA80 /* UIViewController+SetBackground.swift in Sources */,
 				DD75C15122774D74007CD49C /* AddEventViewController.swift in Sources */,
 				DD4D1C54224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift in Sources */,
+				DD87039F22E8AFF4004C3ED8 /* ContentTableViewController.swift in Sources */,
 				DD3804F62272100400F779F2 /* AlertPresentable.swift in Sources */,
 				DDE7F2D722526F5C0053B976 /* AboutViewController.swift in Sources */,
 				DDB3A6B72232171600B57A69 /* Encodable+Dictionary.swift in Sources */,
@@ -639,6 +674,7 @@
 				DDDD2352221F07430067D6EF /* GoogleSIgnOutView.swift in Sources */,
 				DD76BF2621A8AB8000A65352 /* MainViewModel.swift in Sources */,
 				DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */,
+				DD8703AC22E8BB3B004C3ED8 /* ContentTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +787,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -805,6 +842,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

@@ -23,4 +23,5 @@ target 'Site Assessment Commercial' do
   pod 'MYTableViewIndex'
   pod 'PopupDialog', '~> 1.1'
   pod 'IQKeyboardManager'
+  pod 'PagingKit'
 end

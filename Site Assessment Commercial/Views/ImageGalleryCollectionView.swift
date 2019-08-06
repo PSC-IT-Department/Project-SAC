@@ -54,11 +54,10 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     }
 
     // MARK: - UICollectionViewDelegateFlowLayout
-    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 64, height: 64)
+        return CGSize(width: 32, height: 32)
     }
 
 }

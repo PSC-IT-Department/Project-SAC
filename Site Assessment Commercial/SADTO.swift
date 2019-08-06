@@ -251,6 +251,8 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
     }
     
     init(withZohoData data: [String: String]) {
+        
+        // print("withZohoData data = \(data)")
         self.prjInformation = ProjectInformationStructure(withZohoData: data)
         self.prjImageArray = []
         
@@ -284,7 +286,7 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
             self.prjImageArray = imageArray
 
         case .failure(let error):
-            print("Decoder failed. Error = \(error.localizedDescription)")
+            print("Decoder failed. Error = \(error)")
             self.prjQuestionnaire = []
         }
     }
@@ -303,6 +305,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
     var Options: [String]?
     var Default: String?
     var Image: String?
+    var isHidden: String
     var Mandatory: String
     var Value: String?
     var Interdependence: String?
@@ -315,6 +318,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         case Options
         case Default
         case Image
+        case isHidden
         case Mandatory
         case Value
         case Interdependence
@@ -337,6 +341,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         Options     = try values.decode([String].self, forKey: .Options)
         Default     = try values.decode(String.self, forKey: .Default)
         Image       = try values.decode(String.self, forKey: .Image)
+        isHidden    = try values.decode(String.self, forKey: .isHidden)
         Mandatory   = try values.decode(String.self, forKey: .Mandatory)
         Interdependence = try values.decode(String.self, forKey: .Interdependence)
         Dependent  = try values.decode([String: String].self, forKey: .Dependent)
@@ -350,6 +355,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         self.QType       = question.QType
         self.Options     = question.Options
         self.Default     = question.Default
+        self.isHidden    = question.isHidden
         self.Mandatory   = question.Mandatory
         self.Image       = question.Image
         self.Interdependence = question.Interdependence
@@ -364,6 +370,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
         self.QType       = .inputs
         self.Options     = nil
         self.Default     = nil
+        self.isHidden    = "Yes"
         self.Mandatory   = "No"
         self.Image       = nil
         self.Interdependence = nil

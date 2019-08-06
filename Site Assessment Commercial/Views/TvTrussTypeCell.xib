@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TvTrussTypeCell" id="YBG-uS-MF9" customClass="TvTrussTypeCell" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="400"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YBG-uS-MF9" id="WYe-br-F05">
+                <rect key="frame" x="0.0" y="0.0" width="768" height="399.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yP9-fV-Fl0">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="399.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UM0-TI-Uq9">
+                                <rect key="frame" x="8" y="0.0" width="752" height="40"/>
+                                <color key="backgroundColor" name="PSC_Green"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="ccg-IU-Ke6"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Sny-YP-lgo">
+                                <rect key="frame" x="12" y="136" width="744" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="uEM-us-89h"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="102" contentMode="scaleToFill" scrollEnabled="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Tdn-mH-7fZ" customClass="ImageGalleryCollectionView" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                <rect key="frame" x="12" y="176" width="744" height="215.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <viewLayoutGuide key="safeArea" id="vmP-dZ-XiK"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="safeArea" id="PK9-wR-wdi">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                            </collectionView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Truss_Type" translatesAutoresizingMaskIntoConstraints="NO" id="J35-gZ-z6s">
+                                <rect key="frame" x="228" y="48" width="312" height="80"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Tdn-mH-7fZ" secondAttribute="bottom" constant="8" id="19W-op-8BX"/>
+                            <constraint firstItem="Sny-YP-lgo" firstAttribute="leading" secondItem="yP9-fV-Fl0" secondAttribute="leading" constant="12" id="5Bd-hI-FXB"/>
+                            <constraint firstItem="J35-gZ-z6s" firstAttribute="centerX" secondItem="yP9-fV-Fl0" secondAttribute="centerX" id="FX9-Qm-ddU"/>
+                            <constraint firstAttribute="trailing" secondItem="Sny-YP-lgo" secondAttribute="trailing" constant="12" id="PDt-Jf-VdI"/>
+                            <constraint firstItem="Tdn-mH-7fZ" firstAttribute="leading" secondItem="yP9-fV-Fl0" secondAttribute="leading" constant="12" id="UGx-W5-aG0"/>
+                            <constraint firstAttribute="trailing" secondItem="UM0-TI-Uq9" secondAttribute="trailing" constant="8" id="X6b-ty-tb8"/>
+                            <constraint firstItem="Sny-YP-lgo" firstAttribute="top" secondItem="J35-gZ-z6s" secondAttribute="bottom" constant="8" id="ZtZ-it-mYo"/>
+                            <constraint firstItem="J35-gZ-z6s" firstAttribute="top" secondItem="UM0-TI-Uq9" secondAttribute="bottom" constant="8" id="fE0-Js-3sa"/>
+                            <constraint firstItem="UM0-TI-Uq9" firstAttribute="top" secondItem="yP9-fV-Fl0" secondAttribute="top" id="gqz-Bq-Nr7"/>
+                            <constraint firstAttribute="trailing" secondItem="Tdn-mH-7fZ" secondAttribute="trailing" constant="12" id="kfK-gI-gfj"/>
+                            <constraint firstItem="Tdn-mH-7fZ" firstAttribute="top" secondItem="Sny-YP-lgo" secondAttribute="bottom" constant="8" id="mkp-QR-0Qf"/>
+                            <constraint firstItem="UM0-TI-Uq9" firstAttribute="leading" secondItem="yP9-fV-Fl0" secondAttribute="leading" constant="8" id="saW-jg-BHT"/>
+                            <constraint firstItem="Tdn-mH-7fZ" firstAttribute="top" secondItem="Sny-YP-lgo" secondAttribute="bottom" constant="8" id="vn9-c1-4DE"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="yP9-fV-Fl0" firstAttribute="top" secondItem="WYe-br-F05" secondAttribute="top" id="AsQ-tD-lBr"/>
+                    <constraint firstItem="yP9-fV-Fl0" firstAttribute="leading" secondItem="WYe-br-F05" secondAttribute="leading" id="Dn2-dt-gTR"/>
+                    <constraint firstAttribute="trailing" secondItem="yP9-fV-Fl0" secondAttribute="trailing" id="RyJ-2E-93T"/>
+                    <constraint firstAttribute="bottom" secondItem="yP9-fV-Fl0" secondAttribute="bottom" id="iLL-dE-Bsf"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="collectionView" destination="Tdn-mH-7fZ" id="GMi-0Q-F8f"/>
+                <outlet property="imageTrussType" destination="J35-gZ-z6s" id="DtP-cd-tGs"/>
+                <outlet property="imageView" destination="J35-gZ-z6s" id="mWV-4e-4D4"/>
+                <outlet property="labelKey" destination="UM0-TI-Uq9" id="ATh-zT-4zh"/>
+                <outlet property="textField" destination="Sny-YP-lgo" id="XVU-Qc-xxs"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="100.44642857142857"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Truss_Type" width="312" height="79.5"/>
+        <namedColor name="PSC_Green">
+            <color red="0.59999999999999998" green="0.76470588235294112" blue="0.30588235294117649" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
