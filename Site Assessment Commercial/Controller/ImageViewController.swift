@@ -45,7 +45,7 @@ class ImageViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: { _ in self.centerScrollViewContents() }, completion: nil)
+        coordinator.animate(alongsideTransition: { [weak self] _ in self?.centerScrollViewContents() }, completion: nil)
     }
     
     @IBAction func scrollViewDoubleTapped(recognizer: UITapGestureRecognizer) {
@@ -106,6 +106,10 @@ class ImageViewController: UIViewController {
         
         scrollView.zoom(to: rectToZoomTo, animated: true)
     }
+
+    deinit {
+        print("ImageViewController deinit")
+    }
 }
 
 extension ImageViewController {
@@ -114,8 +118,8 @@ extension ImageViewController {
             .rx
             .tapGesture()
             .when(.recognized)
-            .subscribe(onNext: { _ in
-                self.dismiss(animated: true, completion: nil)
+            .subscribe(onNext: { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
     }

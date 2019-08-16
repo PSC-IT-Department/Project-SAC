@@ -74,7 +74,7 @@ class MainViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if self.refreshControl.isRefreshing { self.refreshControl.endRefreshing() }
+        if refreshControl.isRefreshing { refreshControl.endRefreshing() }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -91,8 +91,8 @@ extension MainViewController {
     private func loadData() {
         
         let type = DataStorageService.shared.retrieveTypeOption()
-        if let prjList = DataStorageService.shared.retrieveProjectList(type: type) {
-            self.prjList = prjList
+        if let retrievedPrjList = DataStorageService.shared.retrieveProjectList(type: type) {
+            prjList = retrievedPrjList
         }
     }
     
@@ -110,35 +110,35 @@ extension MainViewController {
         
         let newPrjList = pendingProjects.compactMap { SiteAssessmentDataStructure(withZohoData: $0) }
         
-        self.prjList.append(contentsOf: newPrjList)
+        prjList.append(contentsOf: newPrjList)
         
-        DataStorageService.shared.updateLocalProject(prjList: self.prjList)
+        DataStorageService.shared.updateLocalProject(prjList: prjList)
         newPrjList.forEach {DataStorageService.shared.storeData(withData: $0, onCompleted: nil)}
     }
     
     func reloadPrjList() {
-        self.prjList = nil
+        prjList = nil
         
-        self.loadData()
-        self.refreshDataManually()
+        loadData()
+        refreshDataManually()
     }
     
     private func setupView() {
         
         let title = DataStorageService.shared.retrieveTypeOption()
-        self.navigationItem.titleView = titleButton
+        navigationItem.titleView = titleButton
         titleButton.setTitle(title.rawValue, for: .normal)
         
         // Auto Layout
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 44.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44.0
         
-        self.tableView.sectionHeaderHeight = UITableView.automaticDimension
-        self.tableView.estimatedSectionHeaderHeight = 44.0
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 44.0
         
-        self.tableView.backgroundColor = UIColor.clear
-        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-        self.setBackground(false)
+        tableView.backgroundColor = UIColor.clear
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+        setBackground(false)
     }
     
     private func setupUserNotification() {
@@ -179,7 +179,7 @@ extension MainViewController {
             titleForHeaderInSection: titleForSection
         )
         
-        self.sections.asObservable()
+        sections.asObservable()
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -196,27 +196,27 @@ extension MainViewController {
         titleButton
             .rx
             .tap
-            .subscribe(onNext: { [unowned self] (_) in
+            .subscribe(onNext: { [weak self] (_) in
                 let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
                 
                 let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
                     DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
-                    self.titleButton.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
+                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
                     
-                    self.reloadPrjList()
+                    self?.reloadPrjList()
                 }
                 
                 let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
                     DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
                     
-                    self.titleButton.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
+                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
                     
-                    self.reloadPrjList()
+                    self?.reloadPrjList()
                 }
                 
                 popup.addButtons([resButton, comButton])
                 
-                self.present(popup, animated: true, completion: nil)
+                self?.present(popup, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
     }
@@ -225,26 +225,26 @@ extension MainViewController {
         barButtonFilter
             .rx
             .tap
-            .subscribe(onNext: { [unowned self] (_) in
+            .subscribe(onNext: { [weak self] (_) in
                 let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
                 
                 let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
                     DataStorageService.shared.storeGroupingOption(option: .status)
                     
-                    self.setupViewModel()
+                    self?.setupViewModel()
                 }
                 
                 let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
                     DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
                     
-                    self.setupViewModel()
+                    self?.setupViewModel()
                 }
                 
                 let cancelAction = CancelButton(title: "Cancel", action: nil)
                 
                 popup.addButtons([statusButton, scheduleDateButton, cancelAction])
                 
-                self.present(popup, animated: true, completion: nil)
+                self?.present(popup, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
     }
@@ -271,8 +271,8 @@ extension MainViewController {
     }
     
     @objc func refreshData(_ sender: Any) {
-        self.refreshControl.beginRefreshing()
-        self.fetchZohoData { [weak self] success in
+        refreshControl.beginRefreshing()
+        fetchZohoData { [weak self] success in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.refreshControl.endRefreshing()
             }
@@ -285,7 +285,7 @@ extension MainViewController {
     }
     
     private func fetchZohoData(onCompleted: ((Bool) -> Void)?) {
-        guard let title = self.titleButton.title(for: .normal),
+        guard let title = titleButton.title(for: .normal),
             let type = SiteAssessmentType(rawValue: title)
             else {
                 onCompleted?(false)
@@ -320,7 +320,7 @@ extension MainViewController {
     
     @objc func shortcutToGoogleSignIn(_ sender: UITapGestureRecognizer) {
         if let viewController = GoogleAccessViewController.instantiateFromStoryBoard() {
-            self.navigationController?.pushViewController(viewController, animated: true)
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
     
@@ -375,7 +375,7 @@ extension MainViewController {
             dictionary = newDict
         }
         
-        let sections = dictionary.map { (key, value) -> MainSection in
+        let viewModel = dictionary.map { (key, value) -> MainSection in
             let model = key
             let items = value.compactMap({ prjData -> MainViewModel? in
                 if let key = prjData.prjInformation.status, let value = prjData.prjInformation.projectAddress {
@@ -388,7 +388,8 @@ extension MainViewController {
             
             return MainSection(model: model, items: items)
         }
-        self.sections.accept(sections)
+
+        sections.accept(viewModel)
     }
     
     private func setupCellTapHandling() {
@@ -440,20 +441,16 @@ extension MainViewController: NotificationBannerDelegate {
             print("onDidReceiveComplete - Invalid message.")
             return
         }
-        
-        if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
 
-            prjList[index].prjInformation.status = .completed
-            
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd-MMM-yyyy"
-            let dateString = formatter.string(from: Date())
-            prjList[index].prjInformation.uploadedDate = dateString
-            
-            DataStorageService.shared.storeData(withData: prjList[index], onCompleted: nil)
-            DataStorageService.shared.updateProject(prjData: prjList[index])
-            setupViewModel()
+        print("onDidGetCompleteMsg")
+
+        DataStorageService.shared.setProjectStatus(projectID: prjID, status: .completed)
+
+        if let _prjList = DataStorageService.shared.reloadProjectList() {
+            prjList = _prjList
         }
+
+        setupViewModel()
     }
     
     @objc func onDidGetProcessingMsg(_ msg: Notification) {
@@ -461,11 +458,14 @@ extension MainViewController: NotificationBannerDelegate {
             print("onDidReceiveProcessing - Invalid message.")
             return
         }
-        
-        if let index = prjList.firstIndex(where: {$0.prjInformation.projectID == prjID}) {
-            prjList[index].prjInformation.status = .uploading
-            setupViewModel()
+
+        DataStorageService.shared.setProjectStatus(projectID: prjID, status: .completed)
+
+        if let _prjList = DataStorageService.shared.reloadProjectList() {
+            prjList = _prjList
         }
+
+        setupViewModel()
         
     }
     
@@ -493,7 +493,7 @@ extension MainViewController: NotificationBannerDelegate {
         var style: BannerStyle = .warning
         if msg == "Online Mode", NetworkService.shared.reachabilityStatus == .connected {
             style = .info
-            self.refreshDataManually(withDelay: 0.0)
+            refreshDataManually(withDelay: 0.0)
         }
         
         showBanner(title: msg, style: style)
@@ -526,7 +526,7 @@ extension MainViewController: GIDSignInDelegate, GIDSignInUIDelegate {
         } else {
             guard let email = user.profile.email else { return }
             DataStorageService.shared.writeToLog("User Email is \(email)")
-            GoogleService.shared.storeGoogleAccountInformation(signIn: signIn)
+            GoogleService.shared.storeGoogleAccountInformation(_signIn: signIn)
         }
     }
 }

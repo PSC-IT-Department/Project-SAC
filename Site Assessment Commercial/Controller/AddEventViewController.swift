@@ -105,13 +105,12 @@ class AddEventViewController: UIViewController {
     }
     
     deinit {
-        let notification = NotificationCenter.default
-        notification.removeObserver(self)
+        print("AddEventViewController deinit")
     }
     
     @IBAction func scheduleButtonDidClicked(_ sender: UIButton) {
         
-        GoogleService.shared.fetchCalendarList(onCompleted: { [weak self]list, _ in
+        GoogleService.shared.fetchCalendarList(onCompleted: { [weak self] list, _ in
             if let list = list, let calendarID = list.first,
                 let eventData = self?.eventData {
                
@@ -121,14 +120,13 @@ class AddEventViewController: UIViewController {
                 
                 GoogleService.shared.addEventToCalendar(calendarId: calendarID,
                                                         name: eventData.name, startTime: eventData.startTime,
-                                                        endTime: eventData.endTime) { [weak self] (error) in
+                                                        endTime: eventData.endTime, notes: eventData.notes) { [weak self] (error) in
                     if let err = error {
                         print("Error = \(err.localizedDescription)")
                         return
                     } else {
                         self?.delegate.passingScheduleDate(date: eventData.startTime)
                         self?.navigationController?.popViewController(animated: true)
-
                     }
                 }
             }
@@ -139,21 +137,21 @@ class AddEventViewController: UIViewController {
 extension AddEventViewController {
     
     private func setupEventData() {
-        eventData = DataModel(name: self.projectAddress, location: self.projectAddress)
+        eventData = DataModel(name: projectAddress, location: projectAddress)
     }
     
     private func setupView() {
-        self.title = "Add New Event"
+        title = "Add New Event"
         
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+        navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
         
         // Auto Layout
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 42.0
         
-        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-        self.setBackground()
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+        setBackground()
     }
     
     private func setupDataSource() {
@@ -164,7 +162,7 @@ extension AddEventViewController {
             titleForHeaderInSection: titleForSection
         )
         
-        self.sections.asObservable()
+        sections.asObservable()
             .bind(to: tableView.rx.items(dataSource: reloadDataSource))
             .disposed(by: disposeBag)
     }
@@ -173,7 +171,7 @@ extension AddEventViewController {
         TableViewSectionedDataSource<AddEventSection>.ConfigureCell,
         TableViewSectionedDataSource<AddEventSection>.TitleForHeaderInSection
         ) {
-            return ({ (_, tv, ip, i) in
+            return ({ [weak self] (_, tv, ip, i) in
 
                 guard let type = i.type else { return UITableViewCell() }
                 switch type {
@@ -195,14 +193,14 @@ extension AddEventViewController {
                     let cell = tv.dequeueReusableCellWithIdentifier(identifier: cellIdentifier, forIndexPath: ip)
                     cell.setupCell(item: i)
                     
-                    cell.dateValueChanged { [unowned self] (datetime) in
+                    cell.dateValueChanged { [weak self] (datetime) in
                         print("dateValueChanged = \(datetime), i.key = \(String(describing: i.key))")
                         
                         if let key = i.key {
                             if key == "Start Time" {
-                                self.eventData.startTime = datetime
+                                self?.eventData.startTime = datetime
                             } else {
-                                self.eventData.endTime = datetime
+                                self?.eventData.endTime = datetime
                             }
                         }
                     }
@@ -213,7 +211,7 @@ extension AddEventViewController {
                     let cellIdentifier = CellIdentifier<AEMapViewCell>(reusableIdentifier: identifier)
                     let cell = tv.dequeueReusableCellWithIdentifier(identifier: cellIdentifier, forIndexPath: ip)
                     
-                    self.locationManager.delegate = self
+                    self?.locationManager.delegate = self
                     
                     cell.setupCell(item: i)
                     return cell
@@ -245,10 +243,10 @@ extension AddEventViewController {
     
     private func setupViewModel() {
         let viewModel = [
-            AddEventDataViewModel(key: "Event Name", value: self.projectAddress, type: .textCell),
+            AddEventDataViewModel(key: "Event Name", value: projectAddress, type: .textCell),
             AddEventDataViewModel(key: "Start Time", type: .datePickerCell),
             AddEventDataViewModel(key: "End Time", type: .datePickerCell),
-            AddEventDataViewModel(key: "Location", value: self.projectAddress, type: .mapViewCell),
+            AddEventDataViewModel(key: "Location", value: projectAddress, type: .mapViewCell),
             AddEventDataViewModel(key: "Notes", type: .notesCell)
         ]
         
@@ -307,7 +305,6 @@ extension AddEventViewController {
             .setDelegate(self)
             .disposed(by: disposeBag)
     }
-    
 }
 
 // UITableViewDelegate

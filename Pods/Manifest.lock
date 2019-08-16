@@ -70,7 +70,7 @@ PODS:
   - RxSwiftExt/RxCocoa (5.0.0):
     - RxCocoa (~> 5.0)
     - RxSwiftExt/Core
-  - SnapKit (5.0.0)
+  - SnapKit (5.0.1)
   - SwifterSwift/UIKit (5.0.0)
   - YangMingShan (2.0.1):
     - YangMingShan/YMSPhotoPicker (= 2.0.1)
@@ -149,7 +149,7 @@ SPEC CHECKSUMS:
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
   RxSwiftExt: 4564187392cc53823ef241fa4a11647861567026
-  SnapKit: fd22d10eb9aff484d79a8724eab922c1ddf89bcf
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwifterSwift: 96f90594b370802f01647c2b1229c74a84ffafee
   YangMingShan: 561cfbb769e8cf679d3f23d8ae7030402ddb6495
 

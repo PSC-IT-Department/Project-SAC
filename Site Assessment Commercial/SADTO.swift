@@ -84,19 +84,19 @@ struct ProjectInformationStructure: Codable {
     }
 
     init() {
-        self.projectAddress = ""
-        self.projectID      = ""
-        self.type           = .SiteAssessmentNone
-        self.status         = .pending
+        projectAddress = ""
+        projectID      = ""
+        type           = .SiteAssessmentNone
+        status         = .pending
 
-        self.scheduleDate   = ""
-        self.assignedTeam   = ""
-        self.assignedDate   = ""
-        self.uploadedDate   = ""
+        scheduleDate   = ""
+        assignedTeam   = ""
+        assignedDate   = ""
+        uploadedDate   = ""
         
-        self.customerName   = ""
-        self.email          = ""
-        self.phoneNumber    = ""
+        customerName   = ""
+        email          = ""
+        phoneNumber    = ""
     }
     
     init(from decoder: Decoder) throws {
@@ -150,18 +150,18 @@ struct ProjectInformationStructure: Codable {
     func toDictionary() -> [String: String?] {
         
        return [
-            "Project Address": self.projectAddress,
-            "Project ID": self.projectID,
-            "Type": self.type.rawValue,
-            "Status": self.status.rawValue,
-            "Schedule Time": self.scheduleDate,
-            "Assigned Team": self.assignedTeam,
-            "Assigned Time": self.assignedDate,
-            "Uploaded Time": self.uploadedDate,
+            "Project Address": projectAddress,
+            "Project ID": projectID,
+            "Type": type.rawValue,
+            "Status": status.rawValue,
+            "Schedule Time": scheduleDate,
+            "Assigned Team": assignedTeam,
+            "Assigned Time": assignedDate,
+            "Uploaded Time": uploadedDate,
             
-            "Customer Name": self.customerName,
-            "Email": self.email,
-            "Phone Number": self.phoneNumber
+            "Customer Name": customerName,
+            "Email": email,
+            "Phone Number": phoneNumber
         ]
     }
 }
@@ -232,15 +232,15 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
     }
     
     init() {
-        self.prjInformation = ProjectInformationStructure()
-        self.prjQuestionnaire = []
-        self.prjImageArray = []
+        prjInformation = ProjectInformationStructure()
+        prjQuestionnaire = []
+        prjImageArray = []
     }
     
     init(with info: ProjectInformationStructure, questions: [SectionStructure], array: [ImageArrayStructure]) {
-        self.prjInformation = info
-        self.prjQuestionnaire = questions
-        self.prjImageArray = array
+        prjInformation = info
+        prjQuestionnaire = questions
+        prjImageArray = array
     }
     
     init(from decoder: Decoder) throws {
@@ -253,14 +253,14 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
     init(withZohoData data: [String: String]) {
         
         // print("withZohoData data = \(data)")
-        self.prjInformation = ProjectInformationStructure(withZohoData: data)
-        self.prjImageArray = []
+        prjInformation = ProjectInformationStructure(withZohoData: data)
+        prjImageArray = []
         
         let bundle = Bundle.main
         
-        let typeValue = self.prjInformation.type.rawValue
+        let typeValue = prjInformation.type.rawValue
         
-        guard let path = bundle.url(forResource: typeValue, withExtension: "plist") else { self.prjQuestionnaire = []
+        guard let path = bundle.url(forResource: typeValue, withExtension: "plist") else { prjQuestionnaire = []
             return
         }
         
@@ -270,24 +270,24 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         
         switch result {
         case .success(let allData):
-            self.prjQuestionnaire = allData
+            prjQuestionnaire = allData
             
-            allData.enumerated().forEach { (sectionNum, section) in
+            allData.enumerated().forEach {(sectionNum, section) in
                 section.Questions.enumerated().forEach({ (questionIndex, question) in
                     if let theData = data.first(where: { (key, _) -> Bool in
                         key == question.Key }) {
-                        self.prjQuestionnaire[sectionNum].Questions[questionIndex].Value = theData.value
+                        prjQuestionnaire[sectionNum].Questions[questionIndex].Value = theData.value
                     }
                 })
             }
             
             let allImageQuestions = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image})
             let imageArray = allImageQuestions.compactMap({ImageArrayStructure(key: $0.Name, images: [])})
-            self.prjImageArray = imageArray
+            prjImageArray = imageArray
 
         case .failure(let error):
             print("Decoder failed. Error = \(error)")
-            self.prjQuestionnaire = []
+            prjQuestionnaire = []
         }
     }
     

@@ -30,6 +30,6 @@ extension UIViewController {
         
         view.addSubview(imageView)
         
-        self.view.sendSubviewToBack(imageView)
+        view.sendSubviewToBack(imageView)
     }
 }

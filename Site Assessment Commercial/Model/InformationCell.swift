@@ -12,7 +12,7 @@ class InformationCell: UITableViewCell {
 
     @IBOutlet weak var labelField: UILabel!
     @IBOutlet weak var labelValue: UILabel!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -23,10 +23,9 @@ class InformationCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     func setupCell(viewModel: ProjectInformationViewModel) {
         labelField.text = viewModel.key
         labelValue.text = viewModel.value
     }
-
 }

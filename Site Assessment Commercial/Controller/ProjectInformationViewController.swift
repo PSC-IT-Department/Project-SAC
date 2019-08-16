@@ -42,7 +42,6 @@ class ProjectInformationViewController: UIViewController {
         setupCellTapHandling()
         setupStartButton()
         setupStartButtonTapHandling()
-        
     }
 
     static func instantiateFromStoryBoard() -> ProjectInformationViewController? {
@@ -56,25 +55,28 @@ class ProjectInformationViewController: UIViewController {
     }
     
     deinit {
+        mapView.removeAnnotations(mapView.annotations)
         mapView.removeFromSuperview()
         mapView = nil
+
+        print("ProjectInformationViewController deinit")
     }
 }
 
 extension ProjectInformationViewController {
 
     private func setupView() {
-        self.title = self.prjData.prjInformation.projectAddress
+        title = prjData.prjInformation.projectAddress
         
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+        navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
 
         // Auto Layout
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 42.0
         
-        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-        self.setBackground()
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+        setBackground()
     }
     
     private func setupViewModel() {
@@ -91,11 +93,11 @@ extension ProjectInformationViewController {
             ProjectInformationViewModel(key: "Assigned Date", value: prjData.prjInformation.assignedDate)
         ]
         
-        self.sections.accept(viewModel)
+        sections.accept(viewModel)
     }
     
     private func setupCell() {
-        self.sections.asObservable()
+        sections.asObservable()
             .bind(to: tableView.rx.items) { (tableView, row, data) in
                 
                 let indexPath = IndexPath(row: row, section: 0)
@@ -188,18 +190,18 @@ extension ProjectInformationViewController: CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
         
         let geoCoder = CLGeocoder()
-        geoCoder.geocodeAddressString(prjData.prjInformation.projectAddress) { (placemarks, _) in
+        geoCoder.geocodeAddressString(prjData.prjInformation.projectAddress) {[weak self] (placemarks, _) in
             guard let placemarks = placemarks,
                 let location = placemarks.first?.location
                 else { return }
             
-            self.setupLocation(with: location)
+            self?.setupLocation(with: location)
         }
     }
     
     private func setupLocation(with location: CLLocation) {
         
-        self.projectLocation = location
+        projectLocation = location
         
         let annotation = MKPointAnnotation()
         
@@ -264,11 +266,11 @@ extension ProjectInformationViewController: MKMapViewDelegate {
 extension ProjectInformationViewController: AddEventViewControllerDelegate {
     func passingScheduleDate(date: String?) {
         if let date = date {
-            self.prjData.prjInformation.scheduleDate = date
+            prjData.prjInformation.scheduleDate = date
             
-            DataStorageService.shared.storeData(withData: self.prjData, onCompleted: nil)
+            DataStorageService.shared.storeData(withData: prjData, onCompleted: nil)
             
-            self.setupViewModel()
+            setupViewModel()
             
             let banner = StatusBarNotificationBanner(title: "Measurement has been scheduled.", style: .success)
             banner.show()

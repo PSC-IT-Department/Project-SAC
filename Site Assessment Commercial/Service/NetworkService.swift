@@ -51,7 +51,7 @@ class NetworkService {
          */
         
         reachability.rx.status
-            .subscribe(onNext: { status in
+            .subscribe(onNext: { [unowned self] status in
                 switch status {
                 case .cellular, .wifi:
                     self.reachabilityStatus = .connected

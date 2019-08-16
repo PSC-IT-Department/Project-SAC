@@ -51,7 +51,7 @@ class NewProjectReportViewController: UIViewController {
     
     private var totalMissing: Int = -1 {
         didSet {
-            if self.totalMissing == 0 {
+            if totalMissing == 0 {
                 setupReviewButton(status: .review)
             }
         }
@@ -69,7 +69,7 @@ class NewProjectReportViewController: UIViewController {
                 return result + questionCount
             }
             
-            self.totalMissing = count
+            totalMissing = count
         }
     }
     
@@ -98,10 +98,10 @@ class NewProjectReportViewController: UIViewController {
 
 extension NewProjectReportViewController {
     func setupView() {
-        self.title = "Questionnaire"
+        title = "Questionnaire"
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
-        self.setBackground()
+        navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+        setBackground()
     }
     
     func setupCollectionViewCell() {
@@ -135,7 +135,7 @@ extension NewProjectReportViewController {
             configureSupplementaryView: configureSupplementaryView
         )
         
-        self.sections
+        sections
             .asObservable()
             .bind(to: collectionView.rx.items(dataSource: cvReloadDataSource))
             .disposed(by: disposeBag)
@@ -172,8 +172,8 @@ extension NewProjectReportViewController {
     
     func addQuestions(indexPath: IndexPath, value: String) {
         
-        guard let question = self.getQuestionByIndexPath(indexPath: indexPath) else { return }
-        guard let data = self.prjData else { return }
+        guard let question = getQuestionByIndexPath(indexPath: indexPath) else { return }
+        guard let data = prjData else { return }
         let secNum = indexPath.section
         let questions = data.prjQuestionnaire[secNum].Questions
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == question.Key})
@@ -214,10 +214,10 @@ extension NewProjectReportViewController {
             let lastIndex = relatedIndices.last
             else { return }
         
-        self.initialValue[indexPath.section].items.replaceSubrange(firstIndex ... lastIndex, with: array)
+        initialValue[indexPath.section].items.replaceSubrange(firstIndex ... lastIndex, with: array)
         
-        self.reloadData()
-        self.reloadIndexItems()
+        reloadData()
+        reloadIndexItems()
     }
     
     func setupCellTapHandling() {
@@ -394,7 +394,7 @@ extension NewProjectReportViewController {
     }
     
     func setupViewModel() {
-        sections.accept(self.initialValue)
+        sections.accept(initialValue)
     }
     
     func updateValue(indexPath: IndexPath, value: String?) {
@@ -406,11 +406,11 @@ extension NewProjectReportViewController {
     }
     
     func reloadData() {
-        sections.accept(self.initialValue)
+        sections.accept(initialValue)
     }
     
     func loadData() -> [EachSection] {
-        let eachSections = self.prjData.prjQuestionnaire.compactMap { section -> EachSection in
+        let eachSections = prjData.prjQuestionnaire.compactMap { section -> EachSection in
             let questions = section.Questions.filter({
                 $0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil)
             })
@@ -424,7 +424,7 @@ extension NewProjectReportViewController {
         CollectionViewSectionedDataSource<EachSection>.ConfigureCell,
         CollectionViewSectionedDataSource<EachSection>.ConfigureSupplementaryView
         ) {
-            return ({ (_, cv, ip, item) in
+            return ({ [unowned self] (_, cv, ip, item) in
                     
                     switch item.QType {
                     case .image:
@@ -524,8 +524,8 @@ extension NewProjectReportViewController {
                             .rx
                             .tapGesture()
                             .when(.recognized)
-                            .subscribe(onNext: { [unowned self] _ in
-                                self.presentImageViewController(imageName: item.Image)
+                            .subscribe(onNext: { [weak self] _ in
+                                self?.presentImageViewController(imageName: item.Image)
                             })
                             .disposed(by: cell.disposeBag)
                         
@@ -544,8 +544,8 @@ extension NewProjectReportViewController {
                             .rx
                             .tapGesture()
                             .when(.recognized)
-                            .subscribe(onNext: { [unowned self] (_) in
-                                self.presentImageViewController(imageName: item.Image)
+                            .subscribe(onNext: { [weak self] (_) in
+                                self?.presentImageViewController(imageName: item.Image)
                             })
                             .disposed(by: cell.disposeBag)
                         
@@ -570,7 +570,7 @@ extension NewProjectReportViewController {
         if let photoName = imageName, photoName != "" {
             if let vc = ImageViewController.instantiateFromStoryBoard(imageName: photoName) {
                 vc.photoName = photoName
-                self.present(vc, animated: true, completion: nil)
+                present(vc, animated: true, completion: nil)
             }
         }
     }
@@ -655,7 +655,7 @@ extension NewProjectReportViewController: YMSPhotoPickerViewControllerDelegate {
         alertController.addAction(dismissAction)
         alertController.addAction(settingsAction)
         
-        self.present(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
     func photoPickerViewControllerDidReceiveCameraAccessDenied(_ picker: YMSPhotoPickerViewController!) {
@@ -790,7 +790,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { [weak self] (_) in
                     if let textField = alertViewController.textFields?.first, let text = textField.text {
                         button.setTitle(text, for: .normal)
                         
@@ -801,21 +801,21 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                                 values.append(text)
                             }
                             value = values.joined(separator: ",")
-                            self.updateValue(indexPath: indexPath, value: value)
+                            self?.updateValue(indexPath: indexPath, value: value)
                         }
                     }
                 }
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
                     button.isChecked = false
-                    self.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: nil)
                     return
                 }
                 
                 alertViewController.addAction(confirmAction)
                 alertViewController.addAction(cancelAction)
                 
-                self.present(alertViewController, animated: true, completion: nil)
+                present(alertViewController, animated: true, completion: nil)
             }
             
             if var values = question.Value?.split(separator: ",").compactMap({String($0)}) {
@@ -828,7 +828,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
             }
 
         case .selection:
-            guard let cell = self.collectionView.cellForItem(at: indexPath) as? SelectionCell else { return }
+            guard let cell = collectionView.cellForItem(at: indexPath) as? SelectionCell else { return }
             cell.optionGroup.forEach { $0.isChecked = false }
             if value == "Other" {
                 let alertViewController = UIAlertController(title: "Other", message: nil, preferredStyle: .alert)
@@ -837,37 +837,37 @@ extension NewProjectReportViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[unowned self] (_) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[weak self] (_) in
                     if let textField = alertViewController.textFields?.first, let text = textField.text {
                         value = text
                         button.setTitle(value, for: .normal)
-                        self.updateValue(indexPath: indexPath, value: value)
-                        self.reloadData()
+                        self?.updateValue(indexPath: indexPath, value: value)
+                        self?.reloadData()
 
                     }
                 }
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {[unowned self] (_) in
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {[weak self] (_) in
                     button.isChecked = false
-                    self.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: nil)
                     return
                 }
                 
                 alertViewController.addAction(confirmAction)
                 alertViewController.addAction(cancelAction)
 
-                self.present(alertViewController, animated: true, completion: nil)
+                present(alertViewController, animated: true, completion: nil)
             }
  
         default:
             break
         }
         
-        self.updateValue(indexPath: indexPath, value: value)
-        self.reloadData()
+        updateValue(indexPath: indexPath, value: value)
+        reloadData()
 
         if question.Interdependence == "Yes" {
-            self.showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
+            showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
         }
     }
     
@@ -906,12 +906,12 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         alertViewController.addAction(confirmAction)
         alertViewController.addAction(cancelAction)
         
-        self.present(alertViewController, animated: true, completion: nil)
+        present(alertViewController, animated: true, completion: nil)
     }
     
     private func showQuestionsBasedOnDependency(key: String, indexPath: IndexPath, newValue: String) {
         
-        guard var data = self.prjData else { return }
+        guard var data = prjData else { return }
         
         if data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value == newValue { return }
 
@@ -925,46 +925,46 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         
         let newIndices = matchedQuestions.compactMap({questions.firstIndex(of: $0)})
         // Set the mantadory field of questions that matches the option to Yes
-        newIndices.forEach { (index) in
+        newIndices.forEach { [weak self] (index) in
             let indexPath = IndexPath(row: index, section: secNum)
             var q = questions[index]
             
             q.Mandatory = "Yes"
-            self.updateQuestion(indexPath: indexPath, question: q)
+            self?.updateQuestion(indexPath: indexPath, question: q)
             
             data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Mandatory = "Yes"
         }
         
         let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
-        oldIndices.forEach { (index) in
+        oldIndices.forEach { [weak self] (index) in
             let indexPath = IndexPath(row: index, section: secNum)
             var q = questions[index]
             
             q.Mandatory = "No"
-            self.updateQuestion(indexPath: indexPath, question: q)
+            self?.updateQuestion(indexPath: indexPath, question: q)
             data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Mandatory = "No"
         }
                 
-        let answeredQuestions = self.initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
+        let answeredQuestions = initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
         
-        answeredQuestions.forEach { (question) in
-            self.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
+        answeredQuestions.forEach {[weak self] (question) in
+            self?.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
                 if let row = element.Questions.firstIndex(where: {$0.Name == question.Name && $0.Mandatory == "Yes"}) {
                     let indexPath = IndexPath(row: row, section: offset)
-                        self.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value = question.Value
+                    self?.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value = question.Value
                 }
             })
         }
         
-        self.initialValue = self.loadData()
+        initialValue = loadData()
         
-        self.reloadData()
-        self.reloadIndexItems()
+        reloadData()
+        reloadIndexItems()
         
     }
     
     private func updateQuestion(indexPath: IndexPath, question: QuestionStructure) {
-        self.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row] = question
+        prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row] = question
     }
 }
 
@@ -989,14 +989,14 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
     }
     
     func reloadIndexItems() {
-        self.tableViewIndexController.tableViewIndex.reloadData()
+        tableViewIndexController.tableViewIndex.reloadData()
     }
     
     func updateIndexItems(indexPath: IndexPath, checked: Bool) {
         
         let text = String("\(indexPath.section):\(indexPath.row)")
         
-        guard let indexItem = self.tableViewIndex.items.first(where: { view in
+        guard let indexItem = tableViewIndex.items.first(where: { view in
             guard let label = view as? UILabel else {return false}
             return label.text == text
         }) else { return }
@@ -1024,7 +1024,7 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
         
         let kind = UICollectionView.elementKindSectionHeader
         guard let indexPath    = mapIndexItemToSection(item, index: index),
-            let collectionView = self.collectionView,
+            let collectionView = collectionView,
             let attrs          = collectionView.layoutAttributesForSupplementaryElement(ofKind: kind, at: indexPath)
             else {
                 return false

@@ -92,7 +92,7 @@ class ZohoService {
             return
         }
         
-        let criteriaValue = "\(self.mtmGoogleAccount)==\(ggAccount)"
+        let criteriaValue = "\(mtmGoogleAccount)==\(ggAccount)"
         let queryItems = [
             URLQueryItem(name: "authtoken", value: authtokenValue),
             URLQueryItem(name: "zc_ownername", value: zc_ownernameValue),
@@ -114,7 +114,7 @@ class ZohoService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+        let task = URLSession.shared.dataTask(with: url) { [weak self] (data, _, error) in
             if let err = error {
                 print("Error = \(err)")
             }
@@ -122,7 +122,9 @@ class ZohoService {
             guard let responseData = data,
                 let jsonResponse = ((try? JSONSerialization.jsonObject(with:
                     responseData, options: []) as? [String: [[String: String]]]) as [String: [[String: String]]]??),
-                let zohoAccount = jsonResponse?[self.mtmFormName]?.first?[self.mtmZohoAccount]
+                let mtmFormName = self?.mtmFormName,
+                let mtmZohoAccount = self?.mtmZohoAccount,
+                let zohoAccount = jsonResponse?[mtmFormName]?.first?[mtmZohoAccount]
                 else {
                     onCompleted?(nil)
                     return
@@ -136,7 +138,7 @@ class ZohoService {
     }
 
     public func getProjectList(type: SiteAssessmentType, onCompleted: (([[String: String]]?) -> Void)?) {
-        self.lookupZohoUser { zohoAccount in
+        lookupZohoUser { [unowned self] zohoAccount in
             guard let assignedTeam = zohoAccount else {
                 onCompleted?(nil)
                 return
@@ -179,20 +181,20 @@ class ZohoService {
             components.percentEncodedQuery = components.percentEncodedQuery?
                 .replacingOccurrences(of: "&&", with: "%26%26")
             /* ----------------------------------------------------------------------- */
-            
+
             guard let url = components.url else {
                 onCompleted?(nil)
                 return
             }
-            
+
             let urlSession = URLSession.shared
-            let task = urlSession.dataTask(with: url) { (data, _, error) in
+            let task = urlSession.dataTask(with: url) { [unowned self] (data, _, error) in
                 if let err = error {
                     print("Error = \(err)")
                 }
-                
+
                 let formName = (type == .SiteAssessmentCommercial) ? self.sacFormName : self.saFormName
-                
+
                 if let responseData = data,
                     let jsonResponse = ((try? JSONSerialization.jsonObject(with:
                         responseData, options: []) as? [String: [[String: String]]])),
@@ -217,7 +219,7 @@ class ZohoService {
 
         let data = DataStorageService.shared.retrieveCurrentProjectData()
         let type = data.prjInformation.type
-        let viewName = (type == .SiteAssessmentCommercial) ? self.sacReportName : self.saReportName
+        let viewName = (type == .SiteAssessmentCommercial) ? sacReportName : saReportName
         let action = "/record/update"
         let uploadBaseURL = "\(baseURL)/api/\(zc_ownernameValue)/\(format)/\(appName)/view/" + viewName + action
 
@@ -269,7 +271,7 @@ class ZohoService {
             }
             
             if let dataString = String(data: respData, encoding: .utf8) {
-//                print("dataString: \(dataString)")
+                print("dataString: \(dataString)")
                 DataStorageService.shared.writeToLog("dataString: \(dataString)")
 
                 if dataString.contains("Success") {
@@ -303,6 +305,7 @@ class ZohoService {
         allQuestions.forEach({ sendData.updateValue($0.1 ?? "", forKey: $0.0) })
         
         uploadData(projectID: prjID, saData: sendData) { (success) in
+            print("uploadProject success = \(success)")
             onCompleted?(success)
         }
     }

@@ -45,7 +45,7 @@ class TrussTypeCell: UICollectionViewCell {
     func setupDataSource() {
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
-            configureCell: { (_, collectionView, indexPath, element) in
+            configureCell: { [unowned self] (_, collectionView, indexPath, element) in
                 let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: self.cellID)
                 let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
                                                                             forIndexPath: indexPath)
@@ -141,12 +141,14 @@ class MultipleSelectionCell: UICollectionViewCell {
         }
         
         question.Value?.split(separator: ",").compactMap({String($0)}).forEach({ (value) in
-            if let index = optionIndexedTitles.firstIndex(where: {$0.1 == value}) {
-                optionGroup[index].isChecked = true
-            } else {
-                if let index = optionIndexedTitles.firstIndex(where: {$0.1 == "Other"}) {
-                    optionGroup[index].setTitle(value, for: .normal)
+            autoreleasepool {
+                if let index = optionIndexedTitles.firstIndex(where: {$0.1 == value}) {
                     optionGroup[index].isChecked = true
+                } else {
+                    if let index = optionIndexedTitles.firstIndex(where: {$0.1 == "Other"}) {
+                        optionGroup[index].setTitle(value, for: .normal)
+                        optionGroup[index].isChecked = true
+                    }
                 }
             }
         })
@@ -214,21 +216,18 @@ class ImageCell: UICollectionViewCell {
         switch result {
         case .success(let urls):
             let imageUrls = urls.filter({$0.lastPathComponent.contains(questionName) && $0.pathExtension == "png"})
-            
-            let imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
-                
+            let _imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
                 if let image = UIImage(contentsOfFile: url.path) {
                     let fileName = url.deletingPathExtension().lastPathComponent
                     let imgAttr = ImageAttributes(name: fileName)
                     
                     return (image, imgAttr)
                 }
-                
                 return (nil, nil)
             })
             
-            self.imageAttrs = imageAttrs.compactMap({$0.1})
-            self.images = imageAttrs.compactMap({$0.0})
+            imageAttrs = _imageAttrs.compactMap({$0.1})
+            images = _imageAttrs.compactMap({$0.0})
 
         default:
             break
@@ -252,7 +251,7 @@ class ImageCell: UICollectionViewCell {
         labelKey.text = nil
         collectionView.images = [imageDefault]
     }
-    
+
 }
 
 class NotesCell: UICollectionViewCell {

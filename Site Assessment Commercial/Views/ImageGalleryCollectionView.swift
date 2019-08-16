@@ -21,8 +21,8 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        self.dataSource = self
-        self.delegate = self
+        dataSource = self
+        delegate = self
 
     }
     

@@ -17,36 +17,34 @@ class SaveToCustomAlbum: NSObject {
     private override init() {
         super.init()
         
-        if let assetCollection = fetchAssetCollectionForAlbum() {
-            self.assetCollection = assetCollection
+        if let _assetCollection = fetchAssetCollectionForAlbum() {
+            assetCollection = _assetCollection
             return
         }
     }
     
     private func checkAuthorizationWithHandler(completion: @escaping ((_ success: Bool) -> Void)) {
         if PHPhotoLibrary.authorizationStatus() == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({ (_) in
-                self.checkAuthorizationWithHandler(completion: completion)
+            PHPhotoLibrary.requestAuthorization({[weak self] (_) in
+                self?.checkAuthorizationWithHandler(completion: completion)
             })
         } else if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.createAlbumIfNeeded { (success) in
+            createAlbumIfNeeded { (success) in
                 if success {
                     completion(true)
                 } else {
                     completion(false)
                 }
-                
             }
-            
         } else {
             completion(false)
         }
     }
     
     private func createAlbumIfNeeded(completion: @escaping ((_ success: Bool) -> Void)) {
-        if let assetCollection = fetchAssetCollectionForAlbum() {
+        if let _assetCollection = fetchAssetCollectionForAlbum() {
             // Album already exists
-            self.assetCollection = assetCollection
+            assetCollection = _assetCollection
             completion(true)
         } else {
             let library = PHPhotoLibrary.shared()
@@ -77,11 +75,13 @@ class SaveToCustomAlbum: NSObject {
     }
     
     func saveImages(imageArray: [UIImage]) {
-        imageArray.forEach { self.save(image: $0) }
+        imageArray.forEach {
+            self.save(image: $0)
+        }
     }
     
     func save(image: UIImage) {
-        self.checkAuthorizationWithHandler { [weak self] (success) in
+        checkAuthorizationWithHandler { [weak self] (success) in
             if success, let collection = self?.assetCollection {
                 PHPhotoLibrary.shared().performChanges({
                     let assetChangeRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
@@ -104,8 +104,7 @@ class SaveToCustomAlbum: NSObject {
     }
     
     func saveMovieToLibrary(movieURL: URL) {
-        
-        self.checkAuthorizationWithHandler { [weak self] (success) in
+        checkAuthorizationWithHandler { [weak self] (success) in
             if success, let collection = self?.assetCollection {
 
                 let library = PHPhotoLibrary.shared()

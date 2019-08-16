@@ -76,7 +76,6 @@
 		DDEC154721B1D78700BF4083 /* DataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154621B1D78700BF4083 /* DataStorageService.swift */; };
 		DDEC154921B1DA4C00BF4083 /* ProjectInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */; };
 		DDEDF4D9221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEDF4D8221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift */; };
-		DDF369AD225CF65F005334C1 /* ThirdpartyInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = DDF369AC225CF65F005334C1 /* ThirdpartyInfo.plist */; };
 		DDF8E66D2260E8E20065043F /* UserManualViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF8E66C2260E8E20065043F /* UserManualViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -175,7 +174,6 @@
 		DDEC154621B1D78700BF4083 /* DataStorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorageService.swift; sourceTree = "<group>"; };
 		DDEC154821B1DA4C00BF4083 /* ProjectInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectInformationViewModel.swift; sourceTree = "<group>"; };
 		DDEDF4D8221C9D9000F0C2F8 /* GoogleAccessViewCtontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAccessViewCtontroller.swift; sourceTree = "<group>"; };
-		DDF369AC225CF65F005334C1 /* ThirdpartyInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ThirdpartyInfo.plist; sourceTree = "<group>"; };
 		DDF8E66C2260E8E20065043F /* UserManualViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManualViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -262,7 +260,6 @@
 				DD909D6A21B04F1E00BC9736 /* SADTO.swift */,
 				DD85EC0A21ED02D5009C8F4A /* Extensions */,
 				DDDD2350221F01040067D6EF /* View */,
-				DDF369AC225CF65F005334C1 /* ThirdpartyInfo.plist */,
 			);
 			path = "Site Assessment Commercial";
 			sourceTree = "<group>";
@@ -519,7 +516,6 @@
 				DDD8B49F2242C41C000F94A5 /* MultipleSelectionCell.xib in Resources */,
 				DDE7F2E12253F4480053B976 /* ImageCell.xib in Resources */,
 				DDDD234F221F00FD0067D6EF /* GoogleSignOut.xib in Resources */,
-				DDF369AD225CF65F005334C1 /* ThirdpartyInfo.plist in Resources */,
 				DDE7F2D92252730D0053B976 /* about.html in Resources */,
 				DD754C6E21AC699400253D58 /* Commercial.plist in Resources */,
 				DDCC6325224A7EDF0060A1D9 /* SelectionsWithImageOtherCell.xib in Resources */,

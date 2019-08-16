@@ -37,7 +37,7 @@ class UserManualViewController: UIViewController {
 extension UserManualViewController {
     
     private func setupView() {
-        self.title = "User Manual"
+        title = "User Manual"
     }
     
     private func webViewLoadPages() {

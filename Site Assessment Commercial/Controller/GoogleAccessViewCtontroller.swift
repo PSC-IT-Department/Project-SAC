@@ -33,7 +33,7 @@ class GoogleAccessViewController: UIViewController {
     }
     
     private func setupView() {
-        self.title = "Google"
+        title = "Google"
     }
     
     private func setupForSignOut() {
@@ -47,27 +47,27 @@ class GoogleAccessViewController: UIViewController {
         signOutView.signOutButton.addTarget(self, action: #selector(buttonSignOutDidClicked), for: .touchUpInside)
         signOutView.center = view.center
         
-        self.view.addSubview(signOutView)
+        view.addSubview(signOutView)
     }
     
     @objc func buttonSignOutDidClicked(_ sender: UIButton) {
         let alertVC = UIAlertController(title: "Sign Out", message: "", preferredStyle: .alert)
         
-        let actionConfrim = UIAlertAction(title: "Yes", style: .default, handler: { _ in
+        let actionConfrim = UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
             GIDSignIn.sharedInstance()?.signOut()
             GoogleService.shared.resetGoogleUserInformation()
-            self.navigationController?.popToRootViewController(animated: true)
+            self?.navigationController?.popToRootViewController(animated: true)
 
         })
         
-        let actionCancel = UIAlertAction(title: "No", style: .cancel, handler: { _ in
-            self.navigationController?.popToRootViewController(animated: true)
+        let actionCancel = UIAlertAction(title: "No", style: .cancel, handler: { [weak self] _ in
+            self?.navigationController?.popToRootViewController(animated: true)
         })
         
         alertVC.addAction(actionConfrim)
         alertVC.addAction(actionCancel)
         
-        self.present(alertVC, animated: true, completion: nil)
+        present(alertVC, animated: true, completion: nil)
     }
     
     private func setupForSignIn() {
@@ -85,12 +85,12 @@ class GoogleAccessViewController: UIViewController {
 
 // MARK: - GIDSignInDelegate
 extension GoogleAccessViewController: GIDSignInDelegate {
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+    func sign(_ _signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if let error = error {
             print(error)
         } else {
-            GoogleService.shared.storeGoogleAccountInformation(signIn: signIn)
-            self.navigationController?.popToRootViewController(animated: true)
+            GoogleService.shared.storeGoogleAccountInformation(_signIn: _signIn)
+            navigationController?.popToRootViewController(animated: true)
         }
     }
 }

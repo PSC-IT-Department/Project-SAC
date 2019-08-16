@@ -32,13 +32,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="Lbe-lA-vVl">
-                                <rect key="frame" x="8" y="56" width="748" height="72"/>
+                                <rect key="frame" x="8" y="56" width="748" height="78"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="uYj-sj-h6d">
-                                        <rect key="frame" x="0.0" y="0.0" width="748" height="22"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="uYj-sj-h6d">
+                                        <rect key="frame" x="0.0" y="0.0" width="748" height="24"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfV-tH-ZAl" userLabel="1. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="374" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfV-tH-ZAl" userLabel="1. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 1. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -47,8 +48,9 @@
                                                     <action selector="buttonTappedWithSender:" destination="M29-Jx-oJP" eventType="touchUpInside" id="oYS-uC-eBA"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w2d-9V-fDF" userLabel="3. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="374" y="0.0" width="374" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w2d-9V-fDF" userLabel="3. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="374.5" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 3. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -59,11 +61,12 @@
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Q5d-gt-G0E">
-                                        <rect key="frame" x="0.0" y="25" width="748" height="22"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Q5d-gt-G0E">
+                                        <rect key="frame" x="0.0" y="27" width="748" height="24"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ekh-Eh-G3Q" userLabel="2. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="374" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ekh-Eh-G3Q" userLabel="2. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 2. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -72,8 +75,9 @@
                                                     <action selector="buttonTappedWithSender:" destination="M29-Jx-oJP" eventType="touchUpInside" id="imo-jZ-2r9"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vEM-sj-99g" userLabel="4. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="374" y="0.0" width="374" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vEM-sj-99g" userLabel="4. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="374.5" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 4. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -84,11 +88,12 @@
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="0hX-T0-Pwo">
-                                        <rect key="frame" x="0.0" y="50" width="748" height="22"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="0hX-T0-Pwo">
+                                        <rect key="frame" x="0.0" y="54" width="748" height="24"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNy-vH-N58" userLabel="5. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="373" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNy-vH-N58" userLabel="5. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 5. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -97,8 +102,9 @@
                                                     <action selector="buttonTappedWithSender:" destination="M29-Jx-oJP" eventType="touchUpInside" id="iPg-js-KxT"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RIM-6o-YV6" userLabel="6. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="375" y="0.0" width="373" height="22"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RIM-6o-YV6" userLabel="6. ABCDEFG" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
+                                                <rect key="frame" x="374.5" y="0.0" width="373.5" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 6. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -116,7 +122,7 @@
                                 </constraints>
                             </stackView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="cko-iU-jpI">
-                                <rect key="frame" x="236" y="136" width="296" height="166.5"/>
+                                <rect key="frame" x="241.5" y="142" width="285" height="160.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="cko-iU-jpI" secondAttribute="height" multiplier="16:9" id="ZEz-kG-7cR"/>
                                 </constraints>
@@ -159,9 +165,9 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="CheckBox_Unchecked" width="14" height="14"/>
+        <image name="CheckBox_Unchecked" width="24" height="24"/>
         <namedColor name="PSC_Green">
-            <color red="0.59999999999999998" green="0.76470588235294112" blue="0.30588235294117649" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.60000002384185791" green="0.76499998569488525" blue="0.3059999942779541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

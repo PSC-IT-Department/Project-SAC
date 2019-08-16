@@ -34,6 +34,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
             id) as? ReviewViewController
         
         viewController?.prjData = data
+
         return viewController
     }
     
@@ -45,7 +46,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
         setupCell()
         setupButton()
     }
-    
+
     @IBAction func buttonSaveDidClicked(_ sender: Any) {
         
         guard let prjID = prjData.prjInformation.projectID,
@@ -62,7 +63,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
             msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
             LoadingIndicatorView.hide()
             NotificationCenter.default.post(name: msg, object: msgObject)
-            self.navigationController?.popToRootViewController(animated: true)
+            navigationController?.popToRootViewController(animated: true)
             return
         }
         
@@ -101,19 +102,23 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
             self?.navigationController?.popToRootViewController(animated: true)
         }
     }
+
+    deinit {
+        print("ReviewViewController deinit")
+    }
 }
 
 extension ReviewViewController {
     
     private func setupView() {
-        self.title = "Review"
-        self.setBackground()
+        title = "Review"
+        setBackground()
         
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 44.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44.0
 
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+        navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
     }
 
     private func setupViewModel() {
@@ -125,8 +130,8 @@ extension ReviewViewController {
             ReviewViewModel(key: "Assigned Date", value: prjData.prjInformation.assignedDate),
             ReviewViewModel(key: "Uploaded Date", value: prjData.prjInformation.uploadedDate)
         ]
-        
-        let allQuestions = self.prjData.prjQuestionnaire.compactMap({$0.Questions}).joined()
+
+        let allQuestions = prjData.prjQuestionnaire.compactMap({$0.Questions}).joined()
         
         let questionsViewModel = allQuestions.compactMap({ReviewViewModel(key: $0.Name, value: $0.Value)})
         

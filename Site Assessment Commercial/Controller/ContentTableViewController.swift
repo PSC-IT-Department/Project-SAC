@@ -24,17 +24,19 @@ typealias ContentSection = AnimatableSectionModel<String, QuestionStructure>
 
 class ContentTableViewController: UIViewController {
 
+    var upperViewController: ContainerViewController?
+
     @IBOutlet weak var tableView: UITableView!
 
     private var disposeBag = DisposeBag()
     private var sections = BehaviorRelay(value: [ContentSection]())
-    
+
     var sectionData: SectionStructure!
     
     private var sectionMissing: Int = -1 {
         didSet {
-            if self.sectionMissing == 0 {
-                // setupReviewButton(status: .review)
+            if sectionMissing == 0 {
+                upperViewController?.sectionReadyToReview(section: sectionData.Name, numberOfQuestions: 1)
             }
         }
     }
@@ -49,7 +51,18 @@ class ContentTableViewController: UIViewController {
     private let ImageCellID  = "TvImageCell"
     private let IGCellID     = "ImageGalleryCell"
     
-    var initialValue: [ContentSection]! = []
+    var initialValue: [ContentSection]! = [] {
+        didSet {
+            let count = initialValue.reduce(0) { (result, section) -> Int in
+
+                let questionCount = section.items.filter({
+                    $0.isHidden == "No" && ($0.Value == nil || $0.Value == "")}).count
+                return result + questionCount
+            }
+
+            sectionMissing = count
+        }
+    }
     
     var prjImageArray: [ImageArrayStructure]! = []
     
@@ -62,14 +75,14 @@ class ContentTableViewController: UIViewController {
         setupCellTapHandling()
 
         // Auto Layout
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 42.0
         
-        self.tableView.sectionHeaderHeight = UITableView.automaticDimension
-        self.tableView.estimatedSectionHeaderHeight = 44.0
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 44.0
         
-        self.tableView.backgroundColor = UIColor.clear
-        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.backgroundColor = UIColor.clear
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
         
         prjImageArray = DataStorageService.shared.retrieveCurrentProjectData().prjImageArray
     }
@@ -106,6 +119,9 @@ class ContentTableViewController: UIViewController {
         )
     }
 
+    deinit {
+        print("ContentTableViewController deinit")
+    }
 }
 
 extension ContentTableViewController {
@@ -134,7 +150,7 @@ extension ContentTableViewController {
         RxTableViewSectionedReloadDataSource<ContentSection>.ConfigureCell,
         RxTableViewSectionedReloadDataSource<ContentSection>.TitleForHeaderInSection
         ) {
-            return ({(_, tv, ip, item) in
+            return ({[unowned self] (_, tv, ip, item) in
                 switch item.QType {
                 case .image:
                     let cellIdentifier = CellIdentifier<TvImageCell>(reusableIdentifier: self.ImageCellID)
@@ -149,11 +165,12 @@ extension ContentTableViewController {
                         let imageAttrs = cell.imageAttrs {
                         self.prjImageArray[index].images = imageAttrs
                     }
-                    
-                    if !(cell.collectionView.images.count >= 2) {
-                        self.updateValue(indexPath: ip, value: "Yes")
-                    }
 
+                    /*
+                    if (cell.collectionView.images.count >= 2) {
+//                        self.updateValue(indexPath: ip, value: "Yes")
+                    }
+                     */
                     return cell
                     
                 case .notes:
@@ -270,14 +287,14 @@ extension ContentTableViewController {
     }
     
     private func setupDataSource() {
-        let (configureCell, titleForSection) = self.tableViewDataSourceUI()
+        let (configureCell, titleForSection) = tableViewDataSourceUI()
         
         let dataSource = RxTableViewSectionedReloadDataSource<ContentSection>(
             configureCell: configureCell,
             titleForHeaderInSection: titleForSection
         )
         
-        self.sections.asObservable()
+        sections.asObservable()
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -288,45 +305,52 @@ extension ContentTableViewController {
         guard let firstContent = sectionData.Questions.first else {
             return arr
         }
-        
+
+        var count = 1
         let secName = sectionData.Name
-        if secName == "ROOF & SHINGLE" || secName == "TRUSS & RAFTER" || secName == "BREAKER PANEL" {
-            let firstSection = ContentSection(model: "", items: [firstContent])
+
+        var items: [QuestionStructure] = []
+        if secName == "ROOF & SHINGLE" || secName == "TRUSS & RAFTER" || secName == "BREAKER PANEL",
+            let question = sectionData.Questions.first {
+            let model = question.Name
+            let firstSection = ContentSection(model: model, items: [firstContent])
             
             arr.append(firstSection)
-            
-            let model = sectionData.Name
-            let items = Array(sectionData.Questions.dropFirst()).filter({$0.isHidden == "No"})
-            let questionsSection = ContentSection(model: model, items: items)
 
-            if let number = sectionData.Questions.first?.Value, number != "" {
-                
+            if let value = question.Value,
+                let intValue = Int(value),
+                let firstOption = question.Options?.first,
+                let intFirst = Int(firstOption),
+                intValue > intFirst {
+
+                count = intValue
             }
-            
-            arr.append(questionsSection)
-            
-            return arr
+
+            items = Array(sectionData.Questions.dropFirst().filter({$0.isHidden == "No"}))
         } else {
-            let model = sectionData.Name
-            let items = Array(sectionData.Questions).filter({$0.isHidden == "No"})
-            let questionsSection = ContentSection(model: model, items: items)
-            
-            arr.append(questionsSection)
-            
-            return arr
+            items = Array(sectionData.Questions.filter({$0.isHidden == "No"}))
         }
+
+        let repeatedItems = Array(repeating: items, count: count).flatMap({$0})
+
+        let model = sectionData.Name
+        let questionsSection = ContentSection(model: model, items: repeatedItems)
+
+        arr.append(questionsSection)
+
+        return arr
     }
     
     func setupViewModel() {
         initialValue = loadData()
-        sections.accept(self.initialValue)
+        sections.accept(initialValue)
     }
     
     private func presentImageViewController(imageName: String?) {
         if let photoName = imageName, photoName != "" {
             if let vc = ImageViewController.instantiateFromStoryBoard(imageName: photoName) {
                 vc.photoName = photoName
-                self.present(vc, animated: true, completion: nil)
+                present(vc, animated: true, completion: nil)
             }
         }
     }
@@ -336,62 +360,14 @@ extension ContentTableViewController {
     }
     
     func reloadData() {
-        sections.accept(self.initialValue)
+        sections.accept(initialValue)
     }
     
     func addQuestions(indexPath: IndexPath, value: String?) {
-        // guard let question = self.getQuestionByIndexPath(indexPath: indexPath) else { return }
-        guard let data = self.initialValue else { return }
-        
-        /*
-        let secNum = indexPath.section
-        let questions = data.prjQuestionnaire[secNum].Questions
-        let relatedQuestions = questions.filter({$0.Dependent?.first?.key == question.Key})
-        
-        let relatedIndices = relatedQuestions.compactMap({questions.firstIndex(of: $0)})
-        
-        guard let count = Int(value),
-            let option = question.Options?.first
-            else { return }
-        
-        let range = option.split(separator: "-").compactMap({Int($0.trimmingCharacters(in: .whitespaces))})
-        
-        guard range.count == 2,
-            let first = range.first,
-            let last = range.last,
-            (first ... last).contains(count)
-            else { return }
-        
-        let repeatQuestions = Array(repeating: relatedQuestions, count: count)
-        let array = repeatQuestions.enumerated().compactMap { (offset, element) -> [QuestionStructure] in
-            
-            var e = element
-            if offset > 0 {
-                e = e.compactMap({ question -> QuestionStructure in
-                    var q = question
-                    
-                    q.Key.append("_\(offset)")
-                    q.Name.append("_\(offset)")
-                    
-                    return q
-                })
-            }
-            
-            return e
-            }.joined()
-        
-        guard let firstIndex = relatedIndices.first,
-            let lastIndex = relatedIndices.last
-            else { return }
-        
-        self.initialValue[indexPath.section].items.replaceSubrange(firstIndex ... lastIndex, with: array)
-        
-        self.reloadData()
-         */
     }
     
     func getData() -> [ContentSection] {
-        return self.initialValue
+        return initialValue
     }
 
     func setupCellTapHandling() {
@@ -406,9 +382,7 @@ extension ContentTableViewController {
                     if self?.checkPermission() == true {
                         let pickerViewController = YMSPhotoPickerViewController()
                         pickerViewController.numberOfPhotoToSelect = 30
-                        
                         self?.yms_presentCustomAlbumPhotoView(pickerViewController, delegate: self)
-                        
                     } else {
                         let title = item.Name
                         let message = "No permission to access, please allow in settings."
@@ -544,7 +518,7 @@ extension ContentTableViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) { [weak self] (_) in
                     if let textField = alertViewController.textFields?.first, let text = textField.text {
                         button.setTitle(text, for: .normal)
                         
@@ -555,21 +529,21 @@ extension ContentTableViewController: SelectionCellDelegate {
                                 values.append(text)
                             }
                             value = values.joined(separator: ",")
-                            self.updateValue(indexPath: indexPath, value: value)
+                            self?.updateValue(indexPath: indexPath, value: value)
                         }
                     }
                 }
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self]_ in
                     button.isChecked = false
-                    self.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: nil)
                     return
                 }
                 
                 alertViewController.addAction(confirmAction)
                 alertViewController.addAction(cancelAction)
                 
-                self.present(alertViewController, animated: true, completion: nil)
+                present(alertViewController, animated: true, completion: nil)
             }
             
             if var values = question.Value?.split(separator: ",").compactMap({String($0)}) {
@@ -582,7 +556,7 @@ extension ContentTableViewController: SelectionCellDelegate {
             }
             
         case .selection:
-            guard let cell = self.tableView.cellForRow(at: indexPath) as? TvSelectionCell else { return }
+            guard let cell = tableView.cellForRow(at: indexPath) as? TvSelectionCell else { return }
             cell.optionGroup.forEach { $0.isChecked = false }
             if value == "Other" {
                 let alertViewController = UIAlertController(title: "Other", message: nil, preferredStyle: .alert)
@@ -591,38 +565,37 @@ extension ContentTableViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[unowned self] (_) in
-                    if let textField = alertViewController.textFields?.first, let text = textField.text {
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[weak self] (_) in
+                    if let textField = alertViewController.textFields?.first,
+                        let text = textField.text {
                         value = text
                         button.setTitle(value, for: .normal)
-                        self.updateValue(indexPath: indexPath, value: value)
-                        self.reloadData()
-                        
+                        self?.updateValue(indexPath: indexPath, value: value)
+                        self?.reloadData()
                     }
                 }
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {[unowned self] (_) in
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {[weak self] (_) in
                     button.isChecked = false
-                    self.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: nil)
                     return
                 }
                 
                 alertViewController.addAction(confirmAction)
                 alertViewController.addAction(cancelAction)
                 
-                self.present(alertViewController, animated: true, completion: nil)
+                present(alertViewController, animated: true, completion: nil)
             }
             
         default:
             break
         }
-        
-        self.updateValue(indexPath: indexPath, value: value)
-        self.reloadData()
-        
+
         if question.Interdependence == "Yes" {
-            self.showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
+            showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
         }
+        updateValue(indexPath: indexPath, value: value)
+        reloadData()
     }
     
     private func addToValue(value: String?) -> String {
@@ -660,20 +633,28 @@ extension ContentTableViewController: SelectionCellDelegate {
         alertViewController.addAction(confirmAction)
         alertViewController.addAction(cancelAction)
         
-        self.present(alertViewController, animated: true, completion: nil)
+        present(alertViewController, animated: true, completion: nil)
+    }
+
+    private func loadOriginalData() -> [ContentSection] {
+        guard let data = sectionData else { return [] }
+
+        let originalData = ContentSection(model: data.Name, items: data.Questions)
+
+        return [originalData]
     }
     
     private func showQuestionsBasedOnDependency(key: String, indexPath: IndexPath, newValue: String) {
-        guard let question = self.getQuestionByIndexPath(indexPath: indexPath) else { return }
-        guard let data = self.initialValue else { return }
-                
-        let secCount = self.initialValue.count
+        guard let question = getQuestionByIndexPath(indexPath: indexPath) else { return }
+        guard var data = initialValue else { return }
+
+        let secCount = data.count
         if question.Key == "sa_numberOfRoofShingle" || question.Key == "sa_numberOfTrussRafter" || question.Key == "sa_numberOfBreakerPanels" {
             if let storedValue = question.Value,
                 let intValue = Int(storedValue) {
                 
                 if intValue > secCount - 1 {
-                    guard let relatedSections = self.initialValue.last else { return }
+                    guard let relatedSections = data.last else { return }
                     let repeatedSections = Array(repeating: relatedSections, count: intValue - secCount + 1).enumerated().compactMap { (arg0) -> ContentSection in
                         
                         let (offset, element) = arg0
@@ -694,62 +675,41 @@ extension ContentTableViewController: SelectionCellDelegate {
                         return section
                     }
                     
-                    self.initialValue += repeatedSections
+                    data += repeatedSections
                 } else {
-                    let newInitalValue = Array(self.initialValue.dropLast(abs(intValue - secCount + 1)))
-                    self.initialValue = newInitalValue
+                    let newInitalValue = Array(initialValue.dropLast(abs(intValue - secCount + 1)))
+                    data = newInitalValue
                 }
             }
-            
-            self.reloadData()
+
+            initialValue = data
             return
         }
-        
-        let secNum = indexPath.section
-        let questions = data[indexPath.section].items
+
+        let plainData = loadOriginalData()
+        var questions = plainData[0].items.filter({!($0.Name.contains("#"))})
+
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == key})
-        
         let (matchedQuestions, notMatchedQuestions) = relatedQuestions.stablePartition { question in
             question.Dependent?.first?.value == newValue
         }
-        
-        let newIndices = matchedQuestions.compactMap({questions.firstIndex(of: $0)})
-        // Set the mantadory field of questions that matches the option to Yes
-        newIndices.forEach { (index) in
-            let indexPath = IndexPath(row: index, section: secNum)
-            var q = questions[index]
-            
-            q.isHidden = "No"
-            self.updateQuestion(indexPath: indexPath, question: q)
-        }
-        
-        let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
-        oldIndices.forEach { (index) in
-            let indexPath = IndexPath(row: index, section: secNum)
-            var q = questions[index]
-            
-            q.isHidden = "Yes"
-            self.updateQuestion(indexPath: indexPath, question: q)
-        }
-        
-        let answeredQuestions = self.initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
 
+        let newIndices = matchedQuestions.compactMap({questions.firstIndex(of: $0)})
+        newIndices.forEach { questions[$0].isHidden = "No" }
+
+        let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
+        oldIndices.forEach { questions[$0].isHidden = "Yes" }
+
+        let answeredQuestions = data[indexPath.section].items.filter({$0.isHidden == "No" && ($0.Value != "" || $0.Value != nil) })
         answeredQuestions.forEach { (question) in
-            self.initialValue.enumerated().forEach({ (offset, element) in
-                if let row = element.items.firstIndex(where: {$0.Name == question.Name && $0.isHidden == "No"}) {
-                    let indexPath = IndexPath(row: row, section: offset)
-                    self.updateQuestion(indexPath: indexPath, question: question)
-                }
-            })
+            if let index = questions.firstIndex(where: {$0.Name == question.Name}) {
+                questions[index].Value = question.Value
+            }
         }
- 
-//        self.initialValue = self.loadData()
-        
-        self.reloadData()
-    }
-    
-    private func updateQuestion(indexPath: IndexPath, question: QuestionStructure) {
-//        self.sectionData .prjQuestionnaire[indexPath.section].Questions[indexPath.row] = question
+
+        let showedQuestions = questions.filter({$0.isHidden == "No"})
+
+        initialValue[indexPath.section].items = showedQuestions
     }
 }
 
@@ -804,7 +764,7 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
         alertController.addAction(dismissAction)
         alertController.addAction(settingsAction)
         
-        self.present(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
     func photoPickerViewControllerDidReceiveCameraAccessDenied(_ picker: YMSPhotoPickerViewController!) {
@@ -838,13 +798,13 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                 let prjID = DataStorageService.shared.currentProjectID
                 else { return }
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
                 
-                DataStorageService.shared.storeImages(
+                DataStorageService.shared.storeImages (
                     prjID: prjID,
                     name: item.Name,
-                    images: [compressedImage]) { (imageAttrs, error) in
+                    images: [compressedImage]) {[weak self] (imageAttrs, error) in
                         if let err = error {
                             print("Error = \(err)")
                         }
@@ -884,7 +844,6 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                     contentMode: .aspectFill,
                     options: options,
                     resultHandler: { (image, _) in
-                        
                         if let compressedImage = image?.compressed(quality: 1.0) {
                             imageArray.append(compressedImage)
                         }
@@ -903,7 +862,7 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                 DataStorageService.shared.storeImages (
                     prjID: prjID,
                     name: item.Name,
-                    images: imageArray) {(imageAttrs, error) in
+                    images: imageArray) { [weak self] (imageAttrs, error) in
                         if let err = error {
                             print("Error = \(err)")
                         }
@@ -919,9 +878,6 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                         
                         self?.updateValue(indexPath: indexPath, value: "Yes")
                         self?.reloadData()
-                        
-                        self?.tableView.beginUpdates()
-                        self?.tableView.endUpdates()
                 }
             }
         }

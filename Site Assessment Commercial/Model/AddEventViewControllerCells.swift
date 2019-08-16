@@ -48,7 +48,7 @@ class AETextCell: UITableViewCell {
     }
     
     func textValueChanged(action: @escaping (String) -> Void) {
-        self.textValueChanged = action
+        textValueChanged = action
     }
     
     override func prepareForReuse() {
@@ -90,6 +90,7 @@ class AEDatePickerCell: UITableViewCell {
         guard let newDate = dateFormatter.date(from: dateString) else { return }
         
         datePicker.date = newDate
+        datePicker.datePickerMode = .dateAndTime
     }
 
     func setupCell(item: AddEventDataViewModel) {
@@ -117,7 +118,7 @@ class AEDatePickerCell: UITableViewCell {
     }
     
     func dateValueChanged(action: @escaping (String) -> Void) {
-        self.dateValueChanged = action
+        dateValueChanged = action
     }
     
     @IBAction func datePickerChanged(_ sender: UIDatePicker) {
@@ -190,7 +191,7 @@ class AENotesCell: UITableViewCell {
     }
     
     func textValueChanged(action: @escaping (String) -> Void) {
-        self.textValueChanged = action
+        textValueChanged = action
     }
     
     func toggleShowTextView() {

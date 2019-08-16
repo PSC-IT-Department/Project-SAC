@@ -56,21 +56,25 @@ class DataStorageService {
     }
     
     public func updateProject(prjData: SiteAssessmentDataStructure) {
-        if let index = self.projectList?.firstIndex(where: {
+        if let index = projectList?.firstIndex(where: {
             $0.prjInformation.projectID == prjData.prjInformation.projectID}) {
-            self.projectList?[index] = prjData
+            projectList?[index] = prjData
         }
+    }
+
+    public func reloadProjectList() ->[SiteAssessmentDataStructure]? {
+        return projectList
     }
     
     public func updateLocalProject(prjList: [SiteAssessmentDataStructure]) {
         
-        if let localPrj = self.projectList {
+        if let localPrj = projectList {
                        
             let newProjects = prjList.filter({newPrj in
                 !localPrj.contains(where: {$0.prjInformation.projectID == newPrj.prjInformation.projectID})
             })
             
-            self.projectList?.append(contentsOf: newProjects)
+            projectList?.append(contentsOf: newProjects)
         }
     }
     
@@ -108,7 +112,7 @@ class DataStorageService {
                 }
             }
             
-            self.projectList = prjList
+            projectList = prjList
         default:
             return
         }
@@ -169,7 +173,6 @@ class DataStorageService {
     }
     
     public func storeData(withData saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> Void)?) {
-        
         guard let jsonData = try? JSONEncoder().encode(saData),
             let data = try? NSKeyedArchiver.archivedData(withRootObject: jsonData, requiringSecureCoding: false),
             let prjID = saData.prjInformation.projectID,
@@ -186,13 +189,24 @@ class DataStorageService {
         let result = Result {try data.write(to: file)}
         switch result {
         case .success:
-            print("storeData successfully.")
+            print("DataStorageService.storeData successfully.")
             onCompleted?(true, nil)
         case .failure(let error):
-            print("storeData failed.")
+            print("DataStorageService.storeData failed.")
             onCompleted?(false, error)
         }
+    }
 
+    public func setProjectStatus(projectID: String, status: UploadStatus) {
+        if let index = projectList?.firstIndex(where: {
+            $0.prjInformation.projectID == projectID }) {
+            projectList?[index].prjInformation.status = status
+
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd-MMM-yyyy"
+            let dateString = formatter.string(from: Date())
+            projectList?[index].prjInformation.uploadedDate = dateString
+        }
     }
     
     public func setCurrentProject(projectID: String) {
@@ -202,7 +216,7 @@ class DataStorageService {
     
     public func retrieveCurrentProjectData() -> SiteAssessmentDataStructure {
         guard let currentProjectID = currentProjectID,
-            let prjData = self.projectList?.first(where: {
+            let prjData = projectList?.first(where: {
                 $0.prjInformation.projectID == currentProjectID}) else {
                     return SiteAssessmentDataStructure()
         }
@@ -211,15 +225,14 @@ class DataStorageService {
     }
     
     public func storeCurrentProjectData(data: SiteAssessmentDataStructure) {
-        if let index = self.projectList?.firstIndex(where: {
+        if let index = projectList?.firstIndex(where: {
             $0.prjInformation.projectID == data.prjInformation.projectID}) {
-            self.projectList?[index] = data
+            projectList?[index] = data
         }
     }
     
     public func retrieveProjectList(type: SiteAssessmentType) -> [SiteAssessmentDataStructure]? {
-    
-        if let prjList = self.projectList?.filter({$0.prjInformation.type == type}) {
+        if let prjList = projectList?.filter({$0.prjInformation.type == type}) {
             return prjList
         } else {
             return nil

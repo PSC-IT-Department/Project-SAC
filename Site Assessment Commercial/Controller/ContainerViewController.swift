@@ -16,18 +16,27 @@ import NotificationBannerSwift
 import PopupDialog
 
 class ContainerViewController: UIViewController {
-    let prjData = DataStorageService.shared.retrieveCurrentProjectData()
-       
+    var prjData = DataStorageService.shared.retrieveCurrentProjectData()
+
     static let id = "ContainerViewController"
 
     var menuViewController: PagingMenuViewController!
     var contentViewController: PagingContentViewController!
 
     static var sizingCell = TitleLabelMenuViewCell(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
-    
+
+    private var totalMissingSections: [String: Bool] = [:] {
+        didSet {
+            let totalCount = totalMissingSections.dropLast().count
+            let count = totalMissingSections.dropLast().filter({$0.value == true}).count
+            totalMissing = totalCount - count
+        }
+    }
+
     private var totalMissing: Int = -1 {
         didSet {
-            if self.totalMissing == 0 {
+            print("totalMissing = \(totalMissing)")
+            if totalMissing == 0 {
                 setupReviewButton(status: .review)
             }
         }
@@ -52,23 +61,29 @@ class ContainerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.title = "Questionnaire"
 
         menuViewController.register(type: TitleLabelMenuViewCell.self, forCellWithReuseIdentifier: "identifier")
         menuViewController.registerFocusView(view: UnderlineFocusView())
         
         dataSource = makeDataSource()
-        
+
         setupReviewButtonTapHandling()
     }
     
     private func makeDataSource() -> [(menu: String, content: UIViewController)] {
-        return prjData.prjQuestionnaire.compactMap({
-            let title = $0.Name
-            let content = ContentTableViewController.instantiateFromStoryBoard(section: $0.self)
+        var _totalMissingSections: [String: Bool] = [:]
+        let _dataSource = prjData.prjQuestionnaire.compactMap({section -> (menu: String, content: UIViewController) in
+            let title = section.Name
+            let content = ContentTableViewController.instantiateFromStoryBoard(section: section.self)
+            content.upperViewController = self
+
+            _totalMissingSections.updateValue(false, forKey: section.Name)
             return (menu: title, content: content)
         })
+
+        totalMissingSections = _totalMissingSections
+
+        return _dataSource
     }
     
     override func viewDidLayoutSubviews() {
@@ -102,6 +117,22 @@ class ContainerViewController: UIViewController {
         }
     }
     
+    func sectionReadyToReview(section: String, numberOfQuestions: Int) {
+        totalMissingSections.updateValue(true, forKey: section)
+    }
+
+    func setupPrjDataQuestionnaire(sections: [SectionStructure]) {
+
+        let _prjData = prjData
+        autoreleasepool {
+            sections.forEach {[weak self] (section) in
+                if let sectionIndex = _prjData.prjQuestionnaire.firstIndex(where: {$0.Name == section.Name}) {
+                    self?.prjData.prjQuestionnaire[sectionIndex] = section
+                }
+            }
+        }
+    }
+
     func setupReviewButtonTapHandling() {
         reviewButton
             .rx
@@ -109,14 +140,12 @@ class ContainerViewController: UIViewController {
             .subscribe(onNext: { [weak self] (_) in
                 guard let allVcData = self?.dataSource.compactMap({($0.content as? ContentTableViewController)?.getData()}) else { return }
 
+                let _prjData = self?.prjData
+
                 let data = allVcData.compactMap({ eachSection -> SectionStructure? in
-                    
                     let section = eachSection.flatMap({$0.items})
-
-                    if let sectionName = eachSection.filter({$0.model != "" && !$0.model.contains("-")}).first?.model,
-                        var returnedSection = self?.prjData.prjQuestionnaire.filter({$0.Name == sectionName}).first
-
-                        {
+                    if let sectionName = eachSection.filter({!$0.model.contains("#") && !$0.model.contains("-")}).first?.model,
+                        var returnedSection = _prjData?.prjQuestionnaire.filter({$0.Name == sectionName}).first {
                             let questionsSection = returnedSection.Questions.compactMap({ (question) -> QuestionStructure? in
                                 var q = question
                                 
@@ -125,16 +154,16 @@ class ContainerViewController: UIViewController {
                                 q.Value = value
                                 return q
                             })
-                            
+
                             returnedSection.Questions = questionsSection
                             return returnedSection
                     } else {
                         return nil
                     }
                 })
-                
-                print("data = \(data)")
-                
+
+                self?.setupPrjDataQuestionnaire(sections: data)
+
                 guard let totalMissing = self?.totalMissing,
                     let newPrjData = self?.prjData
                     else { return }
@@ -144,25 +173,45 @@ class ContainerViewController: UIViewController {
                 
                 let banner = StatusBarNotificationBanner(title: "Project data saved successfully.", style: .success)
                 banner.show()
-                
+
                 if totalMissing == 0 {
                     if let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: newPrjData) {
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                 } else {
-                    let title = "Project data saved successfully."
-                    let msg = "Complete the questionnaire to proceed to next step, still Missing: \(totalMissing)."
-                    let popup = PopupDialog(title: title, message: msg)
-                    
-                    let confirmButton = PopupDialogButton(title: "OK", action: nil)
-                    
-                    popup.addButton(confirmButton)
-                    
-                    self?.present(popup, animated: true, completion: nil)
+                    let msgContent = allVcData.dropLast().compactMap({ (content) -> [(modelName: String, items: [String])] in
+                        return content.compactMap({ (section) -> (modelName: String, items: [String])? in
+                            let model = section.model
+                            let questions = section.items.filter({($0.Value == nil || $0.Value == "") && $0.Mandatory == "Yes"})
+                            if questions.isEmpty {
+                                return nil
+                            }
+                            let questionNames = questions.compactMap({$0.Name})
+                            return (modelName: model, items: questionNames)
+                        })
+                    }).first?.first
+
+                    if let sectionName = msgContent?.modelName,
+                        let firstQuestion = msgContent?.items.first {
+
+                        let title = "Project data saved successfully."
+                        let msg = "Complete the questionnaire to proceed to next step, still Missing: \(totalMissing) sections.\n" +
+                                    "Section: \(sectionName), question: \(firstQuestion)"
+                        let popup = PopupDialog(title: title, message: msg)
+
+                        let confirmButton = PopupDialogButton(title: "OK", action: nil)
+
+                        popup.addButton(confirmButton)
+
+                        self?.present(popup, animated: true, completion: nil)
+                    }
                 }
-                
             })
             .disposed(by: disposeBag)
+    }
+
+    deinit {
+        print("ContainerViewController deinit")
     }
 }
 

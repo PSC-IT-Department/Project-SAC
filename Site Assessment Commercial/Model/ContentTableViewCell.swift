@@ -34,7 +34,8 @@ class TvTrussTypeCell: UITableViewCell {
         
         let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
             configureCell: { (_, collectionView, indexPath, element) in
-                let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: self.cellID)
+                let cellId = "ImageGalleryCell"
+                let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: cellId)
                 let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
                                                                             forIndexPath: indexPath)
                 
@@ -46,7 +47,7 @@ class TvTrussTypeCell: UITableViewCell {
                 return cell
         },
             configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) in
-                let section = collectionView.dequeueReusableSupplementaryView(
+                let section = collectionView.dequeueReusableSupplementaryView (
                     ofKind: kind,
                     withReuseIdentifier: "Section",
                     for: indexPath
@@ -114,7 +115,10 @@ class TvMultipleSelectionCell: UITableViewCell {
     func setupCell(with question: QuestionStructure) {
         labelKey.text = question.Name
         
-        optionGroup.forEach { $0.isHidden = true }
+        optionGroup.forEach {
+            $0.isHidden = true
+            $0.imageView?.contentMode = .scaleAspectFit
+        }
         
         if let options = question.Options {
             for (index, option) in options.enumerated() {
@@ -128,12 +132,14 @@ class TvMultipleSelectionCell: UITableViewCell {
         }
         
         question.Value?.split(separator: ",").compactMap({String($0)}).forEach({ (value) in
-            if let index = optionIndexedTitles.firstIndex(where: {$0.1 == value}) {
-                optionGroup[index].isChecked = true
-            } else {
-                if let index = optionIndexedTitles.firstIndex(where: {$0.1 == "Other"}) {
-                    optionGroup[index].setTitle(value, for: .normal)
+            autoreleasepool {
+                if let index = optionIndexedTitles.firstIndex(where: {$0.1 == value}) {
                     optionGroup[index].isChecked = true
+                } else {
+                    if let index = optionIndexedTitles.firstIndex(where: {$0.1 == "Other"}) {
+                        optionGroup[index].setTitle(value, for: .normal)
+                        optionGroup[index].isChecked = true
+                    }
                 }
             }
         })
@@ -173,7 +179,7 @@ class TvImageCell: UITableViewCell {
         case .success(let urls):
             let imageUrls = urls.filter({$0.lastPathComponent.contains(questionName) && $0.pathExtension == "png"})
             
-            let imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
+            let _imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
                 
                 if let image = UIImage(contentsOfFile: url.path) {
                     let fileName = url.deletingPathExtension().lastPathComponent
@@ -185,8 +191,8 @@ class TvImageCell: UITableViewCell {
                 return (nil, nil)
             })
             
-            self.images = imageAttrs.compactMap({$0.0})
-            self.imageAttrs = imageAttrs.compactMap({$0.1})
+            images = _imageAttrs.compactMap({$0.0})
+            imageAttrs = _imageAttrs.compactMap({$0.1})
             
         default:
             break
@@ -308,7 +314,11 @@ class TvSelectionCell: UITableViewCell {
     var indexPath: IndexPath!
     
     func setupCell(question: QuestionStructure) {
-        
+        optionGroup.forEach({
+            $0.imageView?.contentMode = .scaleAspectFit
+            $0.imageEdgeInsets = UIEdgeInsets(top: 1.0, left: 1.0, bottom: 1.0, right: 1.0)
+        })
+
         labelKey.text = question.Name
         
         if let options = question.Options {
@@ -327,6 +337,7 @@ class TvSelectionCell: UITableViewCell {
         
         if let value = question.Value, value != "" {
             optionGroup.first(where: {$0.title(for: .normal) == value})?.isChecked = true
+//            labelKey.backgroundColor = UIColor.init(named: "PSC_Green")
         }
         
         if let imageName = question.Image, imageName != "" {
@@ -339,7 +350,7 @@ class TvSelectionCell: UITableViewCell {
             imageField.isHidden = true
         }
         
-        self.layoutIfNeeded()
+//        layoutIfNeeded()
     }
     
     override func prepareForReuse() {

@@ -64,22 +64,26 @@ class SettingsViewController: UIViewController {
         setupCellTapHandling()
         setupDelegate()
     }
+
+    deinit {
+        print("SettingsViewController deinit")
+    }
 }
 
 extension SettingsViewController {
 
     private func setupView() {
-        self.title = "Settings"
-        self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-        self.tableView.backgroundColor = UIColor(white: 0.667, alpha: 0.2)
+        title = "Settings"
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.backgroundColor = UIColor(white: 0.667, alpha: 0.2)
         
         // Auto Layout
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 42.0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 42.0
         
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
-        self.setBackground()
+        navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+        setBackground()
 
     }
     
@@ -112,9 +116,9 @@ extension SettingsViewController {
             SettingsCellViewModel(key: google,
                                   iconName: iconName,
                                   indicator: .checkmark,
-                                  action: {[unowned self] in
+                                  action: {[weak self] in
                                     if let vc = GoogleAccessViewController.instantiateFromStoryBoard() {
-                                        self.navigationController?.pushViewController(vc, animated: true)
+                                        self?.navigationController?.pushViewController(vc, animated: true)
                                     }}),
             SettingsCellViewModel(key: "Zoho")
         ]
@@ -122,19 +126,19 @@ extension SettingsViewController {
         let defaultCellData = [
             SettingsCellViewModel(key: "User Manual",
                                   indicator: .disclosureIndicator,
-                                  action: {[unowned self] in
+                                  action: {[weak self] in
                                     if let vc = UserManualViewController.instantiateFromStoryBoard() {
-                                        self.navigationController?.pushViewController(vc, animated: true)
+                                        self?.navigationController?.pushViewController(vc, animated: true)
                                     }}),
             SettingsCellViewModel(key: "Report a Bug?",
                                   indicator: .detailButton,
-                                  action: {[unowned self] in
-                                    self.sendLog()}),
+                                  action: {[weak self] in
+                                    self?.sendLog()}),
             SettingsCellViewModel(key: "About this App",
                                   indicator: .disclosureIndicator,
-                                  action: {[unowned self] in
+                                  action: {[weak self] in
                                     if let vc = AboutViewController.instantiateFromStoryBoard() {
-                                        self.navigationController?.pushViewController(vc, animated: true)
+                                        self?.navigationController?.pushViewController(vc, animated: true)
                                     }}),
             SettingsCellViewModel(key: "Check Updates",
                                   indicator: .detailButton,
@@ -147,9 +151,11 @@ extension SettingsViewController {
                                         UIApplication.shared.open(url)
                                     }}),
             SettingsCellViewModel(key: "Clear Cache",
-                                  action: {[unowned self] in
-                                    let popupDialog = self.setupClearCachePopup()
-                                    self.present(popupDialog, animated: true, completion: nil)})
+                                  action: {[weak self] in
+                                    if let popupDialog = self?.setupClearCachePopup() {
+                                        self?.present(popupDialog, animated: true, completion: nil)
+                                    }
+            })
         ]
         
         cellViewModel = [preferencesCellData, IntegrationCellData, defaultCellData]
@@ -160,18 +166,18 @@ extension SettingsViewController {
             SettingsSection(model: "Default", items: cellViewModel[2])
         ]
 
-        self.sections.accept(settingsSections)
+        sections.accept(settingsSections)
     }
     
     private func setupDataSource() {
-        let (configureCell, titleForSection) = self.tableViewDataSourceUI()
+        let (configureCell, titleForSection) = tableViewDataSourceUI()
     
         let dataSource = RxTableViewSectionedReloadDataSource<SettingsSection>(
             configureCell: configureCell,
             titleForHeaderInSection: titleForSection
         )
     
-        self.sections.asObservable()
+        sections.asObservable()
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
     }
@@ -204,8 +210,9 @@ extension SettingsViewController {
         RxTableViewSectionedReloadDataSource<SettingsSection>.ConfigureCell,
         RxTableViewSectionedReloadDataSource<SettingsSection>.TitleForHeaderInSection
         ) {
-            return ({ (_, tv, ip, i) in
-                let cellIdentifier = CellIdentifier<SettingsCell>(reusableIdentifier: "SettingsCell")
+            return ({[unowned self] (_, tv, ip, i) in
+                let cellId = "SettingsCell"
+                let cellIdentifier = CellIdentifier<SettingsCell>(reusableIdentifier: cellId)
                 let cell = tv.dequeueReusableCellWithIdentifier(identifier: cellIdentifier, forIndexPath: ip)
                 let section = ip.section
                 let row = ip.row
@@ -331,7 +338,7 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
             
             alertVC.addAction(confirmAction)
             
-            self.present(alertVC, animated: true, completion: nil)
+            present(alertVC, animated: true, completion: nil)
             return
         }
         
@@ -349,7 +356,7 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
             composeVC.addAttachmentData(data, mimeType: "text/plain", fileName: "log")
         }
         
-        self.present(composeVC, animated: true, completion: nil)
+        present(composeVC, animated: true, completion: nil)
     }
     
     func mailComposeController(_ controller: MFMailComposeViewController,
