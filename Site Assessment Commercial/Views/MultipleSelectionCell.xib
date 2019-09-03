@@ -23,7 +23,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="arC-gY-EsE">
                         <rect key="frame" x="0.0" y="0.0" width="748" height="140"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jY2-pM-E73">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jY2-pM-E73">
                                 <rect key="frame" x="8" y="0.0" width="732" height="40"/>
                                 <color key="backgroundColor" name="PSC_Green"/>
                                 <constraints>
@@ -37,10 +37,10 @@
                                 <rect key="frame" x="12" y="48" width="676" height="84"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="3AO-VS-DAR">
-                                        <rect key="frame" x="0.0" y="0.0" width="337" height="70"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="337" height="76"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1qk-Zf-CJu" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 1. ABCDEFG" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -50,7 +50,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1BO-t5-zkD" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="24" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="26" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 3. CDEFGHI" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -60,7 +60,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SHp-Dy-ViU" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="48" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="52" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 5. EFGHIJK" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -72,10 +72,10 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="tm6-PL-SMf">
-                                        <rect key="frame" x="339" y="0.0" width="337" height="70"/>
+                                        <rect key="frame" x="339" y="0.0" width="337" height="76"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YoR-DH-IwM" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 2. BCDEFGH" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -85,7 +85,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tfR-aS-Qqj" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="24" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="26" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 4. DEFGHIJ" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -95,7 +95,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6xt-h2-KFq" customClass="MyCheckBox" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="48" width="337" height="22"/>
+                                                <rect key="frame" x="0.0" y="52" width="337" height="24"/>
                                                 <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 <state key="normal" title=" 6. FGHIJKL" image="CheckBox_Unchecked">
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -146,9 +146,9 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="CheckBox_Unchecked" width="14" height="14"/>
+        <image name="CheckBox_Unchecked" width="24" height="24"/>
         <namedColor name="PSC_Green">
-            <color red="0.59999999999999998" green="0.76470588235294112" blue="0.30588235294117649" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.60000002384185791" green="0.76499998569488525" blue="0.3059999942779541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

@@ -50,7 +50,7 @@ class ZohoService {
     public static func instantiateSharedInstance() {
         shared = ZohoService()
     }
-    
+
     init () {
         guard let path = Bundle.main.url(forResource: "ThirdpartyInfo", withExtension: "plist") else {
             print("ThirdpartyInfo.plist cannot find.")
@@ -113,8 +113,9 @@ class ZohoService {
             onCompleted?(nil)
             return
         }
-        
-        let task = URLSession.shared.dataTask(with: url) { [weak self] (data, _, error) in
+
+        let urlSession = URLSession.shared
+        let task = urlSession.dataTask(with: url) { [weak self] (data, _, error) in
             if let err = error {
                 print("Error = \(err)")
             }
@@ -188,7 +189,8 @@ class ZohoService {
             }
 
             let urlSession = URLSession.shared
-            let task = urlSession.dataTask(with: url) { [unowned self] (data, _, error) in
+            let task = urlSession.dataTask(with: url) {
+                [unowned self, weak dataStorageService = DataStorageService.shared] (data, _, error) in
                 if let err = error {
                     print("Error = \(err)")
                 }
@@ -199,20 +201,19 @@ class ZohoService {
                     let jsonResponse = ((try? JSONSerialization.jsonObject(with:
                         responseData, options: []) as? [String: [[String: String]]])),
                     let zohoData = jsonResponse[formName] {
-                    DataStorageService.shared.writeToLog("dataTask decoded successfully.")
-                    DataStorageService.shared.writeToLog("zohoData = \(zohoData)")
+                    dataStorageService?.writeToLog("dataTask decoded successfully.")
+                    dataStorageService?.writeToLog("zohoData = \(zohoData)")
                     // print("zohoData = \(zohoData)")
                     onCompleted?(zohoData)
                     return
                 } else {
-                    DataStorageService.shared.writeToLog("dataTask decoded failed.")
+                    dataStorageService?.writeToLog("dataTask decoded failed.")
                     onCompleted?(nil)
                 }
             }
             
             task.resume()
         }
-
     }
     
     public func uploadData(projectID: String, saData: [String: String], onCompleted: ((Bool) -> Void)?) {
@@ -256,7 +257,8 @@ class ZohoService {
         }
         
         let urlSession = URLSession.shared
-        let task = urlSession.uploadTask(with: request, from: uploadData) { (data, response, error) in
+        let task = urlSession.uploadTask(with: request, from: uploadData) {
+            [weak dataStorageService = DataStorageService.shared] (data, response, error) in
             if let err = error {
                 print ("error: \(err)")
             }
@@ -265,14 +267,14 @@ class ZohoService {
                 let response = response as? HTTPURLResponse,
                 (200...299).contains(response.statusCode)
                 else {
-                    DataStorageService.shared.writeToLog("uploadData respData = data")
+                    dataStorageService?.writeToLog("uploadData respData = data")
                     onCompleted?(false)
                     return
             }
             
             if let dataString = String(data: respData, encoding: .utf8) {
                 print("dataString: \(dataString)")
-                DataStorageService.shared.writeToLog("dataString: \(dataString)")
+                dataStorageService?.writeToLog("dataString: \(dataString)")
 
                 if dataString.contains("Success") {
                     print("Success.")
@@ -281,7 +283,7 @@ class ZohoService {
                 }
             } else {
                 print("uploadData dataString conversion failed.")
-                DataStorageService.shared.writeToLog("uploadData dataString conversion failed.")
+                dataStorageService?.writeToLog("uploadData dataString conversion failed.")
                 onCompleted?(false)
             }
         }

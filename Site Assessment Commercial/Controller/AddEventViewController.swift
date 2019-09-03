@@ -110,17 +110,19 @@ class AddEventViewController: UIViewController {
     
     @IBAction func scheduleButtonDidClicked(_ sender: UIButton) {
         
-        GoogleService.shared.fetchCalendarList(onCompleted: { [weak self] list, _ in
+        GoogleService.shared.fetchCalendarList(onCompleted: {
+            [weak self, weak googleService = GoogleService.shared] list, _ in
             if let list = list, let calendarID = list.first,
                 let eventData = self?.eventData {
                
-                GoogleService.shared.calendarId = calendarID
+                googleService?.calendarId = calendarID
                 
-                GoogleService.shared.checkDuplicateEventsByEventName(eventName: eventData.name)
+                googleService?.checkDuplicateEventsByEventName(eventName: eventData.name)
                 
-                GoogleService.shared.addEventToCalendar(calendarId: calendarID,
+                googleService?.addEventToCalendar(calendarId: calendarID,
                                                         name: eventData.name, startTime: eventData.startTime,
-                                                        endTime: eventData.endTime, notes: eventData.notes) { [weak self] (error) in
+                                                        endTime: eventData.endTime, notes: eventData.notes) {
+                                                            [weak self] (error) in
                     if let err = error {
                         print("Error = \(err.localizedDescription)")
                         return

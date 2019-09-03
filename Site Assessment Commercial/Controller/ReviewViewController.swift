@@ -42,6 +42,7 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
         
         setupView()
+        setupTableView()
         setupViewModel()
         setupCell()
         setupButton()
@@ -52,50 +53,50 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
         guard let prjID = prjData.prjInformation.projectID,
             let prjData = prjData
             else {
-            return
+                print("buttonSaveDidClicked prjId or prjData is empty")
+                return
         }
-        
-        var msg: Notification.Name = .ErrorMsg
-        var msgObject: Any = prjID
-        
+
         guard NetworkService.shared.reachabilityStatus == .connected else {
-            msg = .WarningMsg
-            msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
+            let msgObject = "Offline Mode. File(s) saved sucessfully, will be uploaded later."
             LoadingIndicatorView.hide()
-            NotificationCenter.default.post(name: msg, object: msgObject)
+            NotificationCenter.default.post(name: .WarningMsg, object: msgObject)
             navigationController?.popToRootViewController(animated: true)
             return
         }
         
         LoadingIndicatorView.show("Processing...")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
-            ZohoService.shared.setRemoteToUploading(projectID: prjID) { success in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self,
+                                                                weak zohoService = ZohoService.shared,
+            weak googleService = GoogleService.shared] in
+            zohoService?.setRemoteToUploading(projectID: prjID) { success in
                 print("success = \(success)")
                 if success {
                     print("ZohoService.sharedZohoService.setRemoteToUploading successfully.")
-                    
-                    NotificationCenter.default.post(name: .ProcessingMsg, object: msgObject)
-                    
-                    GoogleService.shared.uploadProject(with: prjData) { (success, error) in
+                    NotificationCenter.default.post(name: .ProcessingMsg, object: prjID)
+                    googleService?.uploadProject(with: prjData) { (success, error) in
                         if let err = error {
                             print("GoogleService.sharedGoogleService.uploadProject failed. Error=\(err)")
+                            NotificationCenter.default.post(name: .ErrorMsg, object: err)
                         }
                         
                         if success {
                             print("GoogleService.sharedGoogleService.uploadProject successfully.")
-                            ZohoService.shared.uploadProject(withData: prjData) { (success) in
+                            zohoService?.uploadProject(withData: prjData) { (success) in
                                 if success {
                                     print("ZohoService.sharedZohoService.uploadProject successfully.")
-                                    NotificationCenter.default.post(name: .CompleteMsg, object: msgObject)
+                                    NotificationCenter.default.post(name: .CompleteMsg, object: prjID)
                                 } else {
                                     print("ZohoService.sharedZohoService.uploadProject failed.")
+                                    NotificationCenter.default.post(name: .ErrorMsg, object: nil)
                                 }
                             }
                         }
                     }
                 } else {
                     print("ZohoService.sharedZohoService.setRemoteToUploading failed.")
+                    NotificationCenter.default.post(name: .ErrorMsg, object: nil)
                 }
             }
             LoadingIndicatorView.hide()
@@ -113,12 +114,14 @@ extension ReviewViewController {
     private func setupView() {
         title = "Review"
         setBackground()
-        
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44.0
 
         // https://stackoverflow.com/questions/28733936/change-color-of-back-button-in-navigation-bar @Tiep Vu Van
         navigationController?.navigationBar.tintColor = UIColor(named: "PSC_Blue")
+    }
+
+    private func setupTableView() {
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44.0
     }
 
     private func setupViewModel() {

@@ -39,7 +39,6 @@ class DataStorageService {
 
     private init() {
         getHomeDirectory()
-        
         loadLocalProject()
     }
     
@@ -62,7 +61,7 @@ class DataStorageService {
         }
     }
 
-    public func reloadProjectList() ->[SiteAssessmentDataStructure]? {
+    public func reloadProjectList() -> [SiteAssessmentDataStructure]? {
         return projectList
     }
     
@@ -159,7 +158,6 @@ class DataStorageService {
             switch result {
             case .success:
                 //            SaveToCustomAlbum.shared.save(image: image)
-
                 writeToLog("[storeImages - img.pngData()?.write] success.")
                 return ImageAttributes(name: fileName)
             case .failure(let error):
@@ -182,7 +180,7 @@ class DataStorageService {
                 onCompleted?(false, SiteAssessmentError.jsonEncodeFailed)
                 return
         }
-                
+
         let filename = String(t) + prjID
         let file = homeDirectory.appendingPathComponent(filename).appendingPathExtension("json")
         
@@ -197,6 +195,12 @@ class DataStorageService {
         }
     }
 
+    public func loadCategoryImageArray(category: String) -> [SectionImageArrayStructure]? {
+        let prjData = retrieveCurrentProjectData()
+
+        return prjData.prjImageArray.first(where: {$0.name == category})?.sections
+    }
+
     public func setProjectStatus(projectID: String, status: UploadStatus) {
         if let index = projectList?.firstIndex(where: {
             $0.prjInformation.projectID == projectID }) {
@@ -206,6 +210,10 @@ class DataStorageService {
             formatter.dateFormat = "dd-MMM-yyyy"
             let dateString = formatter.string(from: Date())
             projectList?[index].prjInformation.uploadedDate = dateString
+
+            if let prjData = projectList?[index], status == .completed {
+                storeCurrentProjectData(data: prjData)
+            }
         }
     }
     
@@ -218,6 +226,7 @@ class DataStorageService {
         guard let currentProjectID = currentProjectID,
             let prjData = projectList?.first(where: {
                 $0.prjInformation.projectID == currentProjectID}) else {
+                    print("Cant find the project data, return default one")
                     return SiteAssessmentDataStructure()
         }
         

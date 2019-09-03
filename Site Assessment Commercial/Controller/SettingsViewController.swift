@@ -111,7 +111,6 @@ extension SettingsViewController {
         }
         
         let iconName = "icons8-google-48"
-
         let IntegrationCellData = [
             SettingsCellViewModel(key: google,
                                   iconName: iconName,
@@ -146,8 +145,6 @@ extension SettingsViewController {
                                     let bundle = Bundle.main
                                     if let myVer = bundle.infoDictionary?["CFBundleShortVersionString"] as? String,
                                         let url = URL(string: "https://polaronsolar.com/wp-content/uploads/sapp/index.html?cur=\(myVer)") {
-                                        
-                                        print("url = \(url)")
                                         UIApplication.shared.open(url)
                                     }}),
             SettingsCellViewModel(key: "Clear Cache",
@@ -237,28 +234,43 @@ extension SettingsViewController {
     }
     
     func clearCache() {
-        guard let homeDir = DataStorageService.shared.homeDirectory else { return }
-        
-        let result = Result {try FileManager.default.removeItem(at: homeDir)}
+        guard let dataStorageService = DataStorageService.shared,
+            let homeDir = dataStorageService.homeDirectory
+            else { return }
+
+        let fileManager = FileManager.default
+
+        /*
+        let result = Result {try fileManager.removeItem(at: homeDir)}
         switch result {
         case .success:
             print("Success")
         case .failure(let error):
             print("Error = \(error)")
         }
+         */
+        
+        guard let filePaths = try? fileManager.contentsOfDirectory(at: homeDir,
+                                                                   includingPropertiesForKeys: nil,
+                                                                   options: []) else { return }
+        for filePath in filePaths {
+            try? fileManager.removeItem(at: filePath)
+        }
     }
     
     private func setupGroupByPopup() -> PopupDialog {
         let popupDialog = PopupDialog(title: "Group By", message: nil, transitionStyle: .zoomIn)
         
-        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) { [unowned self] in
-            DataStorageService.shared.storeGroupingOption(option: .status)
-            self.setupViewModel()
+        let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
+            [weak self, weak dataStorageService = DataStorageService.shared] in
+            dataStorageService?.storeGroupingOption(option: .status)
+            self?.setupViewModel()
         }
         
-        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) { [unowned self] in
-            DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
-            self.setupViewModel()
+        let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
+            [weak self, weak dataStorageService = DataStorageService.shared] in
+            dataStorageService?.storeGroupingOption(option: .scheduleDate)
+            self?.setupViewModel()
         }
         
         let cancelAction = CancelButton(title: "Cancel", action: nil)
@@ -271,19 +283,22 @@ extension SettingsViewController {
     private func setupMapTypePopup() -> PopupDialog {
         let popupDialog = PopupDialog(title: "Map Type", message: nil, transitionStyle: .zoomIn)
         
-        let standardButton = DefaultButton(title: "Standard") { [unowned self] in
-            DataStorageService.shared.storeMapTypeOption(option: .standard)
-            self.setupViewModel()
+        let standardButton = DefaultButton(title: "Standard") {
+            [weak self, weak dataStorageService = DataStorageService.shared] in
+            dataStorageService?.storeMapTypeOption(option: .standard)
+            self?.setupViewModel()
         }
         
-        let satelliteButton = DefaultButton(title: "Satellite") { [unowned self] in
-            DataStorageService.shared.storeMapTypeOption(option: .satellite)
-            self.setupViewModel()
+        let satelliteButton = DefaultButton(title: "Satellite") {
+            [weak self, weak dataStorageService = DataStorageService.shared] in
+            dataStorageService?.storeMapTypeOption(option: .satellite)
+            self?.setupViewModel()
         }
         
-        let hybridButton = DefaultButton(title: "Hybrid") { [unowned self] in
-            DataStorageService.shared.storeMapTypeOption(option: .hybrid)
-            self.setupViewModel()
+        let hybridButton = DefaultButton(title: "Hybrid") {
+            [weak self, weak dataStorageService = DataStorageService.shared] in
+            dataStorageService?.storeMapTypeOption(option: .hybrid)
+            self?.setupViewModel()
         }
         
         let cancelAction = CancelButton(title: "Cancel", action: nil)
@@ -296,8 +311,8 @@ extension SettingsViewController {
     private func setupClearCachePopup() -> PopupDialog {
         let title = "Clear Cache"
         let popupDialog = PopupDialog(title: title, message: nil, transitionStyle: .zoomIn)
-        let confirmButton = DefaultButton(title: "Confirm") { [unowned self] in
-            self.clearCache()
+        let confirmButton = DefaultButton(title: "Confirm") { [weak self] in
+            self?.clearCache()
         }
         
         let cancelButton = CancelButton(title: "Cancel", action: nil)

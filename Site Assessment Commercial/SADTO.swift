@@ -176,8 +176,8 @@ struct ImageAttributes: Codable {
     }
     
     init() {
-        self.name = ""
-        self.status = .pending
+        name = ""
+        status = .pending
     }
     
     init(name: String, status: UploadStatus = .pending) {
@@ -192,38 +192,119 @@ struct ImageAttributes: Codable {
     }
 }
 
+struct CategoryImageArrayStructure: Codable {
+    var name: String
+    var count: Int
+    var sections: [SectionImageArrayStructure] {
+        didSet {
+            count = sections.reduce(0, { (result, section) -> Int in
+                return result + section.count
+            })
+        }
+    }
+
+    private enum CodingKeys: CodingKey {
+        case name
+        case sections
+        case count
+    }
+
+    init() {
+        name = ""
+        sections = []
+        count = 0
+    }
+
+    init(name: String, imageArray: [SectionImageArrayStructure]) {
+        self.name = name
+        self.count = 0
+        self.sections = imageArray
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        name = try values.decode(String.self, forKey: .name)
+        sections = try values.decode([SectionImageArrayStructure].self, forKey: .sections)
+        count = try values.decode(Int.self, forKey: .count)
+    }
+}
+
+struct SectionImageArrayStructure: Codable {
+    var name: String
+    var count: Int
+    var imageArrays: [ImageArrayStructure] {
+        didSet {
+            count = imageArrays.reduce(0, { (result, array) -> Int in
+                return result + array.count
+            })
+        }
+    }
+
+    private enum CodingKeys: CodingKey {
+        case name
+        case imageArrays
+        case count
+    }
+
+    init() {
+        name = ""
+        imageArrays = []
+        count = 0
+    }
+
+    init(name: String, imageArrays: [ImageArrayStructure]) {
+        self.name = name
+        self.count = 0
+        self.imageArrays = imageArrays
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        name = try values.decode(String.self, forKey: .name)
+        imageArrays = try values.decode([ImageArrayStructure].self, forKey: .imageArrays)
+        count = try values.decode(Int.self, forKey: .count)
+    }
+}
+
 struct ImageArrayStructure: Codable {
     var key: String
-    var images: [ImageAttributes]?
-    
+    var count: Int
+    var images: [ImageAttributes]? {
+        didSet {
+            count = images?.count ?? 0
+        }
+    }
+
     private enum CodingKeys: CodingKey {
         case key
         case images
+        case count
     }
-    
+
     init() {
-        self.key = ""
-        self.images = []
+        key = ""
+        images = []
+        count = 0
     }
-    
+
     init(key: String, images: [ImageAttributes]?) {
         self.key = key
         self.images = images
+        self.count = images?.count ?? 0
     }
-    
+
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         key        = try values.decode(String.self, forKey: .key)
         images     = try values.decode([ImageAttributes].self, forKey: .images)
+        count      = try values.decode(Int.self, forKey: .count)
     }
-    
 }
 
 struct SiteAssessmentDataStructure: Codable, Equatable {
-    
     var prjInformation: ProjectInformationStructure
     var prjQuestionnaire: [SectionStructure]
-    var prjImageArray: [ImageArrayStructure]
+    var prjImageArray: [CategoryImageArrayStructure]
     
     private enum CodingKeys: String, CodingKey {
         case prjInformation = "detail"
@@ -237,7 +318,7 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         prjImageArray = []
     }
     
-    init(with info: ProjectInformationStructure, questions: [SectionStructure], array: [ImageArrayStructure]) {
+    init(with info: ProjectInformationStructure, questions: [SectionStructure], array: [CategoryImageArrayStructure]) {
         prjInformation = info
         prjQuestionnaire = questions
         prjImageArray = array
@@ -247,19 +328,15 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         prjInformation      = try values.decode(ProjectInformationStructure.self, forKey: .prjInformation)
         prjQuestionnaire    = try values.decode([SectionStructure].self, forKey: .prjQuestionnaire)
-        prjImageArray       = try values.decode([ImageArrayStructure].self, forKey: .prjImageArray)
+        prjImageArray       = try values.decode([CategoryImageArrayStructure].self, forKey: .prjImageArray)
     }
     
     init(withZohoData data: [String: String]) {
-        
-        // print("withZohoData data = \(data)")
         prjInformation = ProjectInformationStructure(withZohoData: data)
         prjImageArray = []
         
         let bundle = Bundle.main
-        
         let typeValue = prjInformation.type.rawValue
-        
         guard let path = bundle.url(forResource: typeValue, withExtension: "plist") else { prjQuestionnaire = []
             return
         }
@@ -272,7 +349,9 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
         case .success(let allData):
             prjQuestionnaire = allData
             
-            allData.enumerated().forEach {(sectionNum, section) in
+            allData.enumerated().forEach {(arg) in
+
+                let (sectionNum, section) = arg
                 section.Questions.enumerated().forEach({ (questionIndex, question) in
                     if let theData = data.first(where: { (key, _) -> Bool in
                         key == question.Key }) {
@@ -281,9 +360,11 @@ struct SiteAssessmentDataStructure: Codable, Equatable {
                 })
             }
             
-            let allImageQuestions = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image})
-            let imageArray = allImageQuestions.compactMap({ImageArrayStructure(key: $0.Name, images: [])})
-            prjImageArray = imageArray
+//            let allImageQuestions = allData.compactMap({$0.Questions}).joined().filter({$0.QType == .image})
+//            let imageArray = allImageQuestions.compactMap({ImageArrayStructure(key: $0.Name, images: [])})
+
+//            print("To-Do: //prjImageArray = imageArray")
+            //prjImageArray = imageArray
 
         case .failure(let error):
             print("Decoder failed. Error = \(error)")
@@ -365,18 +446,18 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
     }
     
     init() {
-        self.Name        = ""
-        self.Key         = ""
-        self.QType       = .inputs
-        self.Options     = nil
-        self.Default     = nil
-        self.isHidden    = "Yes"
-        self.Mandatory   = "No"
-        self.Image       = nil
-        self.Interdependence = nil
-        self.Dependent   = nil
-        self.Value       = nil
-        self.identity    = nil
+        Name        = ""
+        Key         = ""
+        QType       = .inputs
+        Options     = nil
+        Default     = nil
+        isHidden    = "Yes"
+        Mandatory   = "No"
+        Image       = nil
+        Interdependence = nil
+        Dependent   = nil
+        Value       = nil
+        identity    = nil
     }
     
 }
@@ -384,7 +465,7 @@ struct QuestionStructure: IdentifiableType, Codable, Equatable, Hashable {
 struct SectionStructure: Codable {
     var Name: String
     var Questions: [QuestionStructure]
-    
+
     init() {
         self.Name = ""
         self.Questions = []

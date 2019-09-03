@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		272CB9C59BFB653EAFF22E0B /* Pods_Site_Assessment_Commercial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */; };
+		4BFD4BEE230C443C0064E871 /* UITableView+ReloadWithoutAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD4BED230C443C0064E871 /* UITableView+ReloadWithoutAnimation.swift */; };
 		DD0D742F224BD6B800D9C06F /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0D742E224BD6B700D9C06F /* ImageViewController.swift */; };
 		DD17AD2422442E86005DF780 /* UITextView+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD17AD2322442E86005DF780 /* UITextView+Frame.swift */; };
 		DD3804F62272100400F779F2 /* AlertPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3804F52272100300F779F2 /* AlertPresentable.swift */; };
@@ -97,6 +98,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4BFD4BED230C443C0064E871 /* UITableView+ReloadWithoutAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+ReloadWithoutAnimation.swift"; sourceTree = "<group>"; };
 		5EC725C3B8EBD5DEE4ED71F6 /* Pods_Site_Assessment_Commercial.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Site_Assessment_Commercial.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD3D4EF6F70EB09AC05F271F /* Pods-Site Assessment Commercial.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.debug.xcconfig"; sourceTree = "<group>"; };
 		D38745A09F38BE1C10B8782F /* Pods-Site Assessment Commercial.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Site Assessment Commercial.release.xcconfig"; path = "Pods/Target Support Files/Pods-Site Assessment Commercial/Pods-Site Assessment Commercial.release.xcconfig"; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 				DD4D1C53224D4D91001DF5AC /* TableViewIndex+BackgroundView.swift */,
 				DD6FFA26226F6293007664B6 /* UICollectionView+DequeueReusableCellWithIdentifier.swift */,
 				DD3804F52272100300F779F2 /* AlertPresentable.swift */,
+				4BFD4BED230C443C0064E871 /* UITableView+ReloadWithoutAnimation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -629,6 +632,7 @@
 				DD8AE18E21BACA6A00969F12 /* NewProjectReportViewModel.swift in Sources */,
 				DD76BF1E21A86BC900A65352 /* SettingsCell.swift in Sources */,
 				DD4E490922284870004FE180 /* ReviewViewModel.swift in Sources */,
+				4BFD4BEE230C443C0064E871 /* UITableView+ReloadWithoutAnimation.swift in Sources */,
 				DD76BF2221A8747600A65352 /* ProjectInformationViewController.swift in Sources */,
 				DD767338222E1427001F87F7 /* BaseViewController.swift in Sources */,
 				DD75C15322774E7E007CD49C /* AddEventViewControllerCells.swift in Sources */,

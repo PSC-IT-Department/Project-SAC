@@ -23,7 +23,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bnX-Jn-4sV">
                         <rect key="frame" x="0.0" y="0.0" width="748" height="400"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lZ-eF-8ZC">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lZ-eF-8ZC">
                                 <rect key="frame" x="8" y="0.0" width="732" height="40"/>
                                 <color key="backgroundColor" name="PSC_Green"/>
                                 <constraints>
@@ -94,9 +94,9 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="Truss_Type" width="312" height="79.5"/>
+        <image name="Truss_Type" width="312" height="100"/>
         <namedColor name="PSC_Green">
-            <color red="0.59999999999999998" green="0.76470588235294112" blue="0.30588235294117649" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.60000002384185791" green="0.76499998569488525" blue="0.3059999942779541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

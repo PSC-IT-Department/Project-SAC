@@ -109,11 +109,12 @@ extension MainViewController {
         }
         
         let newPrjList = pendingProjects.compactMap { SiteAssessmentDataStructure(withZohoData: $0) }
-        
-        prjList.append(contentsOf: newPrjList)
-        
-        DataStorageService.shared.updateLocalProject(prjList: prjList)
-        newPrjList.forEach {DataStorageService.shared.storeData(withData: $0, onCompleted: nil)}
+        let count = newPrjList.count
+        if count >= 1 {
+            prjList.append(contentsOf: newPrjList)
+            DataStorageService.shared.updateLocalProject(prjList: prjList)
+            newPrjList.forEach {DataStorageService.shared.storeData(withData: $0, onCompleted: nil)}
+        }
     }
     
     func reloadPrjList() {
@@ -174,7 +175,7 @@ extension MainViewController {
     private func setupDataSource() {
         let (configureCell, titleForSection) = tableViewDataSourceUI()
         
-        let dataSource = RxTableViewSectionedReloadDataSource<MainSection>(
+        let dataSource = RxTableViewSectionedReloadDataSource<MainSection> (
             configureCell: configureCell,
             titleForHeaderInSection: titleForSection
         )
@@ -193,32 +194,32 @@ extension MainViewController {
     }
 
     private func setupButtonTitleTapHandling() {
-        titleButton
-            .rx
-            .tap
-            .subscribe(onNext: { [weak self] (_) in
-                let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
-                
-                let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
-                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
-                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
-                    
-                    self?.reloadPrjList()
-                }
-                
-                let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
-                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
-                    
-                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
-                    
-                    self?.reloadPrjList()
-                }
-                
-                popup.addButtons([resButton, comButton])
-                
-                self?.present(popup, animated: true, completion: nil)
-            })
-            .disposed(by: disposeBag)
+//        titleButton
+//            .rx
+//            .tap
+//            .subscribe(onNext: { [weak self] (_) in
+//                let popup = PopupDialog(title: "Type", message: nil, transitionStyle: .bounceDown)
+//
+//                let resButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentResidential.rawValue) {
+//                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentResidential)
+//                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentResidential.rawValue, for: .normal)
+//
+//                    self?.reloadPrjList()
+//                }
+//
+//                let comButton = DefaultButton(title: SiteAssessmentType.SiteAssessmentCommercial.rawValue) {
+//                    DataStorageService.shared.storeDefaultType(option: SiteAssessmentType.SiteAssessmentCommercial)
+//
+//                    self?.titleButton.setTitle(SiteAssessmentType.SiteAssessmentCommercial.rawValue, for: .normal)
+//
+//                    self?.reloadPrjList()
+//                }
+//
+//                popup.addButtons([resButton, comButton])
+//
+//                self?.present(popup, animated: true, completion: nil)
+//            })
+//            .disposed(by: disposeBag)
     }
     
     private func setupBarButtonFilterTapHandling() {
@@ -229,13 +230,15 @@ extension MainViewController {
                 let popup = PopupDialog(title: "Grouping By", message: nil, transitionStyle: .fadeIn)
                 
                 let statusButton = DefaultButton(title: GroupingOptions.status.rawValue) {
-                    DataStorageService.shared.storeGroupingOption(option: .status)
+                    [weak self, weak dataStorageService = DataStorageService.shared] in
+                    dataStorageService?.storeGroupingOption(option: .status)
                     
                     self?.setupViewModel()
                 }
                 
                 let scheduleDateButton = DefaultButton(title: GroupingOptions.scheduleDate.rawValue) {
-                    DataStorageService.shared.storeGroupingOption(option: .scheduleDate)
+                    [weak self, weak dataStorageService = DataStorageService.shared] in
+                    dataStorageService?.storeGroupingOption(option: .scheduleDate)
                     
                     self?.setupViewModel()
                 }
@@ -273,7 +276,7 @@ extension MainViewController {
     @objc func refreshData(_ sender: Any) {
         refreshControl.beginRefreshing()
         fetchZohoData { [weak self] success in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 self?.refreshControl.endRefreshing()
             }
             if success {
@@ -391,7 +394,7 @@ extension MainViewController {
 
         sections.accept(viewModel)
     }
-    
+
     private func setupCellTapHandling() {
         tableView
             .rx
@@ -424,16 +427,12 @@ fileprivate extension Selector {
 extension MainViewController: NotificationBannerDelegate {
     
     private func setupNotificationCenter() {
-        let noticationCenter = NotificationCenter.default
-        noticationCenter.addObserver(self, selector: .onDidGetCompleteMsg, name: .CompleteMsg, object: nil)
-        
-        noticationCenter.addObserver(self, selector: .onDidGetProcessingMsg, name: .ProcessingMsg, object: nil)
-        
-        noticationCenter.addObserver(self, selector: .onDidGetErrorMsg, name: .ErrorMsg, object: nil)
-        
-        noticationCenter.addObserver(self, selector: .onDidGetWarningMsg, name: .WarningMsg, object: nil)
-        
-        noticationCenter.addObserver(self, selector: .onDidGetReachabilityMsg, name: .ReachabilityMsg, object: nil)
+        let msgCentre = NotificationCenter.default
+        msgCentre.addObserver(self, selector: .onDidGetCompleteMsg, name: .CompleteMsg, object: nil)
+        msgCentre.addObserver(self, selector: .onDidGetProcessingMsg, name: .ProcessingMsg, object: nil)
+        msgCentre.addObserver(self, selector: .onDidGetErrorMsg, name: .ErrorMsg, object: nil)
+        msgCentre.addObserver(self, selector: .onDidGetWarningMsg, name: .WarningMsg, object: nil)
+        msgCentre.addObserver(self, selector: .onDidGetReachabilityMsg, name: .ReachabilityMsg, object: nil)
     }
     
     @objc func onDidGetCompleteMsg(_ msg: Notification) {
@@ -442,15 +441,12 @@ extension MainViewController: NotificationBannerDelegate {
             return
         }
 
-        print("onDidGetCompleteMsg")
-
         DataStorageService.shared.setProjectStatus(projectID: prjID, status: .completed)
 
         if let _prjList = DataStorageService.shared.reloadProjectList() {
             prjList = _prjList
+            setupViewModel()
         }
-
-        setupViewModel()
     }
     
     @objc func onDidGetProcessingMsg(_ msg: Notification) {
@@ -463,10 +459,8 @@ extension MainViewController: NotificationBannerDelegate {
 
         if let _prjList = DataStorageService.shared.reloadProjectList() {
             prjList = _prjList
+            setupViewModel()
         }
-
-        setupViewModel()
-        
     }
     
     @objc func onDidGetErrorMsg(_ msg: Notification) {

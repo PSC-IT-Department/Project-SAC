@@ -25,6 +25,7 @@ enum ReviewButtonStatus: String {
     case save   = "Save"
 }
 
+/*
 class NewProjectReportViewController: UIViewController {
     
     typealias EachSection = AnimatableSectionModel<String, QuestionStructure>
@@ -175,7 +176,7 @@ extension NewProjectReportViewController {
         guard let question = getQuestionByIndexPath(indexPath: indexPath) else { return }
         guard let data = prjData else { return }
         let secNum = indexPath.section
-        let questions = data.prjQuestionnaire[secNum].Questions
+        let questions = data.prjQuestionnaire[secNum].questions
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == question.Key})
         
         let relatedIndices = relatedQuestions.compactMap({questions.firstIndex(of: $0)})
@@ -411,10 +412,10 @@ extension NewProjectReportViewController {
     
     func loadData() -> [EachSection] {
         let eachSections = prjData.prjQuestionnaire.compactMap { section -> EachSection in
-            let questions = section.Questions.filter({
+            let questions = section.questions.filter({
                 $0.Mandatory == "Yes" || ($0.Value != "" && $0.Value != nil)
             })
-            return EachSection(model: section.Name, items: questions)
+            return EachSection(model: section.name, items: questions)
         }
         
         return eachSections
@@ -913,10 +914,10 @@ extension NewProjectReportViewController: SelectionCellDelegate {
         
         guard var data = prjData else { return }
         
-        if data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value == newValue { return }
+        if data.prjQuestionnaire[indexPath.section].questions[indexPath.row].Value == newValue { return }
 
         let secNum = indexPath.section
-        let questions = data.prjQuestionnaire[secNum].Questions
+        let questions = data.prjQuestionnaire[secNum].questions
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == key})
         
         let (matchedQuestions, notMatchedQuestions) = relatedQuestions.stablePartition { question in
@@ -932,7 +933,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
             q.Mandatory = "Yes"
             self?.updateQuestion(indexPath: indexPath, question: q)
             
-            data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Mandatory = "Yes"
+            data.prjQuestionnaire[indexPath.section].questions[indexPath.row].Mandatory = "Yes"
         }
         
         let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
@@ -942,16 +943,16 @@ extension NewProjectReportViewController: SelectionCellDelegate {
             
             q.Mandatory = "No"
             self?.updateQuestion(indexPath: indexPath, question: q)
-            data.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Mandatory = "No"
+            data.prjQuestionnaire[indexPath.section].questions[indexPath.row].Mandatory = "No"
         }
                 
         let answeredQuestions = initialValue.map({$0.items}).joined().filter({ $0.Value != nil && $0.Value != "" })
         
         answeredQuestions.forEach {[weak self] (question) in
             self?.prjData.prjQuestionnaire.enumerated().forEach({ (offset, element) in
-                if let row = element.Questions.firstIndex(where: {$0.Name == question.Name && $0.Mandatory == "Yes"}) {
+                if let row = element.questions.firstIndex(where: {$0.Name == question.Name && $0.Mandatory == "Yes"}) {
                     let indexPath = IndexPath(row: row, section: offset)
-                    self?.prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row].Value = question.Value
+                    self?.prjData.prjQuestionnaire[indexPath.section].questions[indexPath.row].Value = question.Value
                 }
             })
         }
@@ -964,7 +965,7 @@ extension NewProjectReportViewController: SelectionCellDelegate {
     }
     
     private func updateQuestion(indexPath: IndexPath, question: QuestionStructure) {
-        prjData.prjQuestionnaire[indexPath.section].Questions[indexPath.row] = question
+        prjData.prjQuestionnaire[indexPath.section].questions[indexPath.row] = question
     }
 }
 
@@ -1047,3 +1048,5 @@ extension NewProjectReportViewController: TableViewIndexDelegate, TableViewIndex
         return true
     }
 }
+
+ */

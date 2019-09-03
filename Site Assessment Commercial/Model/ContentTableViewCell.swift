@@ -114,7 +114,7 @@ class TvMultipleSelectionCell: UITableViewCell {
     
     func setupCell(with question: QuestionStructure) {
         labelKey.text = question.Name
-        
+
         optionGroup.forEach {
             $0.isHidden = true
             $0.imageView?.contentMode = .scaleAspectFit
@@ -160,61 +160,46 @@ class TvImageCell: UITableViewCell {
     @IBOutlet weak var collectionView: ImageGalleryCollectionView!
     
     var disposeBag = DisposeBag()
-    
-    var imageAttrs: [ImageAttributes]?
-    var images: [UIImage]?
-    
+
+    var images: [UIImage] = [UIImage(named: "Add_Pictures")!]
+
     private let imageDefault = UIImage(named: "Add_Pictures")!
     
-    func loadImages(_ questionName: String) {
+    func loadImages(_ imgAttrs: [ImageAttributes]?) {
         guard let prjFolder = DataStorageService.shared.projectDir else {
             print("[retrieveData - FileManager.default.urls] failed.")
             return
         }
         
         let fileManager = FileManager.default
-        
         let result = Result {try fileManager.contentsOfDirectory(at: prjFolder, includingPropertiesForKeys: nil)}
         switch result {
         case .success(let urls):
-            let imageUrls = urls.filter({$0.lastPathComponent.contains(questionName) && $0.pathExtension == "png"})
-            
-            let _imageAttrs = imageUrls.compactMap({ url -> (UIImage?, ImageAttributes?) in
-                
-                if let image = UIImage(contentsOfFile: url.path) {
-                    let fileName = url.deletingPathExtension().lastPathComponent
-                    let imgAttr = ImageAttributes(name: fileName)
-                    
-                    return (image, imgAttr)
+            let _images = imgAttrs?.compactMap { (imgAttr) -> UIImage? in
+                if let url = urls.first(where: {$0.lastPathComponent.contains(imgAttr.name) &&
+                    $0.pathExtension == "png"}),
+                    let image = UIImage(contentsOfFile: url.path) {
+                    return image
+                } else {
+                    return nil
                 }
-                
-                return (nil, nil)
-            })
-            
-            images = _imageAttrs.compactMap({$0.0})
-            imageAttrs = _imageAttrs.compactMap({$0.1})
-            
+            }
+            images = _images ?? [imageDefault]
         default:
             break
         }
     }
     
     func setupCell(question: QuestionStructure) {
-        
         labelKey.text = question.Name
-        
-        loadImages(question.Name)
         collectionView.isUserInteractionEnabled = false
-        collectionView.images = self.images ?? []
+        collectionView.images = images
         collectionView.reloadData()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
-        
-        labelKey.text = nil
-        collectionView.images = [imageDefault]
     }
 }
 
@@ -314,30 +299,36 @@ class TvSelectionCell: UITableViewCell {
     var indexPath: IndexPath!
     
     func setupCell(question: QuestionStructure) {
+        labelKey.text = question.Name
+
         optionGroup.forEach({
             $0.imageView?.contentMode = .scaleAspectFit
             $0.imageEdgeInsets = UIEdgeInsets(top: 1.0, left: 1.0, bottom: 1.0, right: 1.0)
         })
 
-        labelKey.text = question.Name
-        
         if let options = question.Options {
             for (index, option) in options.enumerated() {
                 
                 let button = optionGroup[index]
                 button.setTitle(option, for: .normal)
                 button.isHidden = false
-                
+
                 if let defaultValue = question.Default, defaultValue == option,
                     let storedValue = question.Value, storedValue == "" {
                     button.isChecked = true
                 }
             }
         }
-        
+
         if let value = question.Value, value != "" {
-            optionGroup.first(where: {$0.title(for: .normal) == value})?.isChecked = true
-//            labelKey.backgroundColor = UIColor.init(named: "PSC_Green")
+            if let index = optionGroup.firstIndex(where: {$0.title(for: .normal) == value}) {
+                optionGroup[index].isChecked = true
+            } else {
+                if let index = optionGroup.firstIndex(where: {$0.title(for: .normal) == "Other"}) {
+                    optionGroup[index].setTitle(value, for: .normal)
+                    optionGroup[index].isChecked = true
+                }
+            }
         }
         
         if let imageName = question.Image, imageName != "" {
@@ -349,15 +340,12 @@ class TvSelectionCell: UITableViewCell {
             imageField.isUserInteractionEnabled = false
             imageField.isHidden = true
         }
-        
-//        layoutIfNeeded()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
         disposeBag = DisposeBag()
-        labelKey.text = nil
         imageField.image = nil
         optionGroup.forEach {
             $0.isChecked = false

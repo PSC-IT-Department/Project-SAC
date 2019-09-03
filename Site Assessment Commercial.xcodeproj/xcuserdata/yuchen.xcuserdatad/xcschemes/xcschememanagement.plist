@@ -7,7 +7,25 @@
 		<key>Site Assessment Commercial.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>27</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>DD76BEF921A85D7600A65352</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DD7925982256891200855B68</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DD7925A62256891800855B68</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

@@ -28,6 +28,9 @@ class ContentTableViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
+    // declaration & initialization
+    var cellHeightsDictionary: [IndexPath: CGFloat] = [:]
+
     private var disposeBag = DisposeBag()
     private var sections = BehaviorRelay(value: [ContentSection]())
 
@@ -54,7 +57,6 @@ class ContentTableViewController: UIViewController {
     var initialValue: [ContentSection]! = [] {
         didSet {
             let count = initialValue.reduce(0) { (result, section) -> Int in
-
                 let questionCount = section.items.filter({
                     $0.isHidden == "No" && ($0.Value == nil || $0.Value == "")}).count
                 return result + questionCount
@@ -63,79 +65,77 @@ class ContentTableViewController: UIViewController {
             sectionMissing = count
         }
     }
-    
-    var prjImageArray: [ImageArrayStructure]! = []
-    
+
+    var categoryImageArray = CategoryImageArrayStructure()
+    var sectionImageArray = Array(repeating: SectionImageArrayStructure(), count: 3)
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        setupTableView()
         setupTableViewCell()
         setupViewModel()
+        loadImages()
         setupDataSource()
         setupCellTapHandling()
-
-        // Auto Layout
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 42.0
-        
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedSectionHeaderHeight = 44.0
-        
-        tableView.backgroundColor = UIColor.clear
-        tableView.tableFooterView = UIView(frame: CGRect.zero)
-        
-        prjImageArray = DataStorageService.shared.retrieveCurrentProjectData().prjImageArray
     }
     
     static func instantiateFromStoryBoard(section: SectionStructure) -> ContentTableViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: id) as! ContentTableViewController
-    
         viewController.sectionData = section
-        
         return viewController
     }
     
-    @available(iOS 11.0, *)
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-        guard let tableViewLayoutMargin = tableViewLayoutMargin else { return }
-        
-        tableView.layoutMargins = tableViewLayoutMargin
-    }
-    
-    @available(iOS 11.0, *)
-    private var tableViewLayoutMargin: UIEdgeInsets? {
-        guard let superview = parent?.view else {
-            return nil
-        }
-        
-        let defaultTableContentInsetLeft: CGFloat = 16
-        return UIEdgeInsets(
-            top: 0,
-            left: superview.safeAreaInsets.left + defaultTableContentInsetLeft,
-            bottom: 0,
-            right: 0
-        )
-    }
-
     deinit {
         print("ContentTableViewController deinit")
     }
 }
 
 extension ContentTableViewController {
+    func loadImages() {
+        if let dataStorageService = DataStorageService.shared,
+            let imageArray = dataStorageService.loadCategoryImageArray(category: sectionData.Name) {
+            sectionImageArray = imageArray
+        }
+    }
+
+    func setupTableView() {
+        // Auto Layout
+        tableView.rowHeight = UITableView.automaticDimension
+
+        // IMPORTANT: After set to 300.0 from 44.0, jumping issue solved.
+        tableView.estimatedRowHeight = 300.0
+
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
+
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = UITableView.automaticDimension
+
+        tableView.backgroundColor = UIColor.clear
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+
+        tableView
+            .rx
+            .willDisplayCell
+            .subscribe(onNext: { [weak self] (cell, indexPath) in
+                self?.cellHeightsDictionary[indexPath] = cell.frame.size.height
+            })
+            .disposed(by: disposeBag)
+    }
+
     func setupTableViewCell() {
         
         let nibMSCell = UINib(nibName: MSCellID, bundle: nil)
         tableView.register(nibMSCell, forCellReuseIdentifier: MSCellID)
-        
+
         let nibInputsCell = UINib(nibName: InputsCellID, bundle: nil)
         tableView.register(nibInputsCell, forCellReuseIdentifier: InputsCellID)
-        
+
         let nibNotesCell = UINib(nibName: NotesCellID, bundle: nil)
         tableView.register(nibNotesCell, forCellReuseIdentifier: NotesCellID)
-        
+
         let nibSWIOCell = UINib(nibName: SWIOCellID, bundle: nil)
         tableView.register(nibSWIOCell, forCellReuseIdentifier: SWIOCellID)
         
@@ -158,19 +158,21 @@ extension ContentTableViewController {
 
                     let nib = UINib(nibName: self.IGCellID, bundle: nil)
                     cell.collectionView.register(nib, forCellWithReuseIdentifier: self.IGCellID)
-                    
-                    cell.setupCell(question: item)
-                    
-                    if let index = self.prjImageArray.firstIndex(where: {$0.key == item.Name}),
-                        let imageAttrs = cell.imageAttrs {
-                        self.prjImageArray[index].images = imageAttrs
+
+                    var sectionNumber = ip.section
+                    if sectionNumber > 0 {
+                        sectionNumber -= 1
                     }
 
-                    /*
-                    if (cell.collectionView.images.count >= 2) {
-//                        self.updateValue(indexPath: ip, value: "Yes")
+                    if let imgAttrs = self.sectionImageArray[sectionNumber].imageArrays.first(where: {
+                        $0.key == item.Name})?.images {
+                        cell.loadImages(imgAttrs)
+                    } else {
+                        cell.loadImages(nil)
                     }
-                     */
+
+                    cell.setupCell(question: item)
+
                     return cell
                     
                 case .notes:
@@ -187,7 +189,6 @@ extension ContentTableViewController {
                                 textView.text = ""
                                 textView.textColor = UIColor.black
                             }
-                            
                         })
                         .disposed(by: cell.disposeBag)
                     
@@ -273,8 +274,16 @@ extension ContentTableViewController {
                             self.presentImageViewController(imageName: item.Image)
                         })
                         .disposed(by: cell.disposeBag)
-                    
-                    let imgAttrs = self.prjImageArray.first(where: {$0.key == item.Name})?.images
+
+                    var sectionNumber = ip.section
+                    if sectionNumber > 0 {
+                        sectionNumber -= 1
+                    }
+
+                    let imgAttrs = self.sectionImageArray[sectionNumber]
+                                        .imageArrays
+                                        .first(where: {$0.key == item.Name})?
+                                        .images
                     
                     cell.setupCell(question: item, imageAttrs: imgAttrs)
                     
@@ -368,6 +377,12 @@ extension ContentTableViewController {
     
     func getData() -> [ContentSection] {
         return initialValue
+    }
+
+    func getImages() -> CategoryImageArrayStructure {
+        let name = sectionData.Name
+        let array = sectionImageArray
+        return CategoryImageArrayStructure(name: name, imageArray: array)
     }
 
     func setupCellTapHandling() {
@@ -500,6 +515,15 @@ extension ContentTableViewController: UITableViewDelegate {
             header.accessibilityIdentifier = "MainTableViewHeader"
         }
     }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        print("estimatedHeightForRowAt cellHeightsDictionary = \(cellHeightsDictionary)")
+        if let height =  cellHeightsDictionary[indexPath] {
+            print("height = \(height)")
+            return height
+        }
+        return UITableView.automaticDimension
+    }
 }
 
 extension ContentTableViewController: SelectionCellDelegate {
@@ -530,13 +554,14 @@ extension ContentTableViewController: SelectionCellDelegate {
                             }
                             value = values.joined(separator: ",")
                             self?.updateValue(indexPath: indexPath, value: value)
+                            self?.reloadData()
                         }
                     }
                 }
                 
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self]_ in
                     button.isChecked = false
-                    self?.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: "")
                     return
                 }
                 
@@ -545,7 +570,7 @@ extension ContentTableViewController: SelectionCellDelegate {
                 
                 present(alertViewController, animated: true, completion: nil)
             }
-            
+
             if var values = question.Value?.split(separator: ",").compactMap({String($0)}) {
                 if let index = values.firstIndex(of: value) {
                     values.remove(at: index)
@@ -565,7 +590,7 @@ extension ContentTableViewController: SelectionCellDelegate {
                     textField.returnKeyType = .done
                 }
                 
-                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[weak self] (_) in
+                let confirmAction = UIAlertAction(title: "Confirm", style: .default) {[weak self] _ in
                     if let textField = alertViewController.textFields?.first,
                         let text = textField.text {
                         value = text
@@ -577,13 +602,13 @@ extension ContentTableViewController: SelectionCellDelegate {
                 
                 let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) {[weak self] (_) in
                     button.isChecked = false
-                    self?.updateValue(indexPath: indexPath, value: nil)
+                    self?.updateValue(indexPath: indexPath, value: "")
                     return
                 }
                 
                 alertViewController.addAction(confirmAction)
                 alertViewController.addAction(cancelAction)
-                
+
                 present(alertViewController, animated: true, completion: nil)
             }
             
@@ -591,10 +616,11 @@ extension ContentTableViewController: SelectionCellDelegate {
             break
         }
 
+        updateValue(indexPath: indexPath, value: value)
+
         if question.Interdependence == "Yes" {
             showQuestionsBasedOnDependency(key: question.Key, indexPath: indexPath, newValue: value)
         }
-        updateValue(indexPath: indexPath, value: value)
         reloadData()
     }
     
@@ -649,13 +675,17 @@ extension ContentTableViewController: SelectionCellDelegate {
         guard var data = initialValue else { return }
 
         let secCount = data.count
-        if question.Key == "sa_numberOfRoofShingle" || question.Key == "sa_numberOfTrussRafter" || question.Key == "sa_numberOfBreakerPanels" {
+        if question.Key == "sa_numberOfRoofShingle" || question.Key == "sa_numberOfTrussRafter" ||
+                question.Key == "sa_numberOfBreakerPanels" {
             if let storedValue = question.Value,
                 let intValue = Int(storedValue) {
                 
                 if intValue > secCount - 1 {
                     guard let relatedSections = data.last else { return }
-                    let repeatedSections = Array(repeating: relatedSections, count: intValue - secCount + 1).enumerated().compactMap { (arg0) -> ContentSection in
+                    let count = intValue - secCount + 1
+                    let repeatedSections = Array(repeating: relatedSections, count: count)
+                                                        .enumerated()
+                                                        .compactMap { (arg0) -> ContentSection in
                         
                         let (offset, element) = arg0
                         
@@ -681,13 +711,20 @@ extension ContentTableViewController: SelectionCellDelegate {
                     data = newInitalValue
                 }
             }
-
             initialValue = data
             return
         }
 
-        let plainData = loadOriginalData()
+        var plainData = loadOriginalData()
+
         var questions = plainData[0].items.filter({!($0.Name.contains("#"))})
+
+        data[indexPath.section].items.forEach { (question) in
+            if let index = questions.firstIndex(where: {$0.Name == question.Name}) {
+                questions[index].Value = question.Value
+                questions[index].isHidden = question.isHidden
+            }
+        }
 
         let relatedQuestions = questions.filter({$0.Dependent?.first?.key == key})
         let (matchedQuestions, notMatchedQuestions) = relatedQuestions.stablePartition { question in
@@ -700,7 +737,7 @@ extension ContentTableViewController: SelectionCellDelegate {
         let oldIndices = notMatchedQuestions.compactMap({questions.firstIndex(of: $0)})
         oldIndices.forEach { questions[$0].isHidden = "Yes" }
 
-        let answeredQuestions = data[indexPath.section].items.filter({$0.isHidden == "No" && ($0.Value != "" || $0.Value != nil) })
+        let answeredQuestions = data[indexPath.section].items.filter({($0.Value != "" || $0.Value != nil) })
         answeredQuestions.forEach { (question) in
             if let index = questions.firstIndex(where: {$0.Name == question.Name}) {
                 questions[index].Value = question.Value
@@ -710,6 +747,8 @@ extension ContentTableViewController: SelectionCellDelegate {
         let showedQuestions = questions.filter({$0.isHidden == "No"})
 
         initialValue[indexPath.section].items = showedQuestions
+
+        updateValue(indexPath: indexPath, value: newValue)
     }
 }
 
@@ -790,18 +829,17 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
     }
     
     func photoPickerViewController(_ picker: YMSPhotoPickerViewController!, didFinishPicking image: UIImage!) {
-        picker.dismiss(animated: true) { [weak self] in
+        picker.dismiss(animated: true) { [weak self, weak dataStorageService = DataStorageService.shared] in
             
             guard let compressedImage = image.compressed(quality: 1.0),
+                let dataStorageService = dataStorageService,
                 let indexPath = self?.tableView.indexPathForSelectedRow,
                 let item = self?.getQuestionByIndexPath(indexPath: indexPath),
-                let prjID = DataStorageService.shared.currentProjectID
+                let prjID = dataStorageService.currentProjectID
                 else { return }
             
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
-                
-                DataStorageService.shared.storeImages (
+            DispatchQueue.main.async { [weak self, weak dataStorageService = DataStorageService.shared] in
+                dataStorageService?.storeImages (
                     prjID: prjID,
                     name: item.Name,
                     images: [compressedImage]) {[weak self] (imageAttrs, error) in
@@ -811,11 +849,18 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                         
                         guard let imgAttrs = imageAttrs else { return }
                         let imgAttr = ImageArrayStructure(key: item.Name, images: imgAttrs)
-                        
-                        if let index = self?.prjImageArray.firstIndex(where: {$0.key == item.Name}) {
-                            self?.prjImageArray[index] = imgAttr
+
+                        var sectionNumber = indexPath.section
+                        if sectionNumber > 0 {
+                            sectionNumber -= 1
+                        }
+
+                        if let index = self?.sectionImageArray[sectionNumber]
+                                            .imageArrays
+                                            .firstIndex(where: {$0.key == item.Name}) {
+                            self?.sectionImageArray[sectionNumber].imageArrays[index] = imgAttr
                         } else {
-                            self?.prjImageArray.append(imgAttr)
+                            self?.sectionImageArray[sectionNumber].imageArrays.append(imgAttr)
                         }
                         
                         self?.updateValue(indexPath: indexPath, value: "Yes")
@@ -827,7 +872,7 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
     func photoPickerViewController(
         _ picker: YMSPhotoPickerViewController!,
         didFinishPickingImages photoAssets: [PHAsset]!) {
-        picker.dismiss(animated: true) { [weak self] in
+        picker.dismiss(animated: true) { [weak self, weak dataStorageService = DataStorageService.shared] in
             let imageManager = PHImageManager.init()
             let options = PHImageRequestOptions.init()
             options.deliveryMode = .highQualityFormat
@@ -851,15 +896,16 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
             }
             
             guard let indexPath = self?.tableView.indexPathForSelectedRow,
+                let dataStorageService = dataStorageService,
                 let item = self?.getQuestionByIndexPath(indexPath: indexPath),
-                let prjID = DataStorageService.shared.currentProjectID
+                let prjID = dataStorageService.currentProjectID
                 else {
                     print("No indexPath")
                     return
             }
             
-            DispatchQueue.main.async {
-                DataStorageService.shared.storeImages (
+            DispatchQueue.main.async { [weak self, weak dataStorageService = DataStorageService.shared] in
+                dataStorageService?.storeImages (
                     prjID: prjID,
                     name: item.Name,
                     images: imageArray) { [weak self] (imageAttrs, error) in
@@ -867,13 +913,22 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                             print("Error = \(err)")
                         }
                         
-                        guard let imgAttrs = imageAttrs else { return }
+                        guard let imgAttrs = imageAttrs
+                            else { return }
+
+                        var sectionNumber = indexPath.section
+                        if sectionNumber > 0 {
+                            sectionNumber -= 1
+                        }
+
                         let imgAttr = ImageArrayStructure(key: item.Name, images: imgAttrs)
-                        
-                        if let index = self?.prjImageArray.firstIndex(where: {$0.key == item.Name}) {
-                            self?.prjImageArray[index] = imgAttr
+
+                        if let index = self?.sectionImageArray[sectionNumber]
+                                            .imageArrays
+                                            .firstIndex(where: {$0.key == item.Name}) {
+                            self?.sectionImageArray[sectionNumber].imageArrays[index] = imgAttr
                         } else {
-                            self?.prjImageArray.append(imgAttr)
+                            self?.sectionImageArray[sectionNumber].imageArrays.append(imgAttr)
                         }
                         
                         self?.updateValue(indexPath: indexPath, value: "Yes")

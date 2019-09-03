@@ -108,7 +108,7 @@ class AEDatePickerCell: UITableViewCell {
                 
                 let sheduleDate = formatter.string(from: date)
                 self?.dateValueChanged?(sheduleDate)
-                print("date = \(sheduleDate)")
+                print("setupCell date = \(sheduleDate)")
             })
             .disposed(by: disposeBag)
     }

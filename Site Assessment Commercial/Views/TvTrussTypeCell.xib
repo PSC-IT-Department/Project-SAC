@@ -23,7 +23,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yP9-fV-Fl0">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="399.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UM0-TI-Uq9">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UM0-TI-Uq9">
                                 <rect key="frame" x="8" y="0.0" width="752" height="40"/>
                                 <color key="backgroundColor" name="PSC_Green"/>
                                 <constraints>
@@ -34,7 +34,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Sny-YP-lgo">
-                                <rect key="frame" x="12" y="136" width="744" height="32"/>
+                                <rect key="frame" x="12" y="156" width="744" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="32" id="uEM-us-89h"/>
                                 </constraints>
@@ -43,7 +43,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="102" contentMode="scaleToFill" scrollEnabled="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Tdn-mH-7fZ" customClass="ImageGalleryCollectionView" customModule="Site_Assessment_Commercial" customModuleProvider="target">
-                                <rect key="frame" x="12" y="176" width="744" height="215.5"/>
+                                <rect key="frame" x="12" y="196" width="744" height="195.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="vmP-dZ-XiK"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="safeArea" id="PK9-wR-wdi">
@@ -54,7 +54,7 @@
                                 </collectionViewFlowLayout>
                             </collectionView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Truss_Type" translatesAutoresizingMaskIntoConstraints="NO" id="J35-gZ-z6s">
-                                <rect key="frame" x="228" y="48" width="312" height="80"/>
+                                <rect key="frame" x="228" y="48" width="312" height="100"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -95,9 +95,9 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="Truss_Type" width="312" height="79.5"/>
+        <image name="Truss_Type" width="312" height="100"/>
         <namedColor name="PSC_Green">
-            <color red="0.59999999999999998" green="0.76470588235294112" blue="0.30588235294117649" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.60000002384185791" green="0.76499998569488525" blue="0.3059999942779541" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

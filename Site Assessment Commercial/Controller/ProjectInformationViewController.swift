@@ -267,7 +267,8 @@ extension ProjectInformationViewController: AddEventViewControllerDelegate {
     func passingScheduleDate(date: String?) {
         if let date = date {
             prjData.prjInformation.scheduleDate = date
-            
+
+            DataStorageService.shared.updateProject(prjData: prjData)
             DataStorageService.shared.storeData(withData: prjData, onCompleted: nil)
             
             setupViewModel()

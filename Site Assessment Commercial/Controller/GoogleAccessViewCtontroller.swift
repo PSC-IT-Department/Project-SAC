@@ -20,6 +20,7 @@ class GoogleAccessViewController: UIViewController {
         super.viewDidLoad()
         
         if let email = GoogleService.shared.getEmail() {
+            print("Signing out: \(email)")
             setupForSignOut()
         } else {
             setupForSignIn()

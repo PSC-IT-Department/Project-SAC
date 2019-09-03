@@ -138,31 +138,42 @@ class ContainerViewController: UIViewController {
             .rx
             .tap
             .subscribe(onNext: { [weak self] (_) in
-                guard let allVcData = self?.dataSource.compactMap({($0.content as? ContentTableViewController)?.getData()}) else { return }
+                guard let allVc = self?.dataSource.compactMap({$0.content as? ContentTableViewController})
+                    else { return }
 
+                let allVcData = allVc.compactMap({$0.getData()})
+                let allVcImages = allVc.compactMap({$0.getImages()})
                 let _prjData = self?.prjData
 
                 let data = allVcData.compactMap({ eachSection -> SectionStructure? in
                     let section = eachSection.flatMap({$0.items})
-                    if let sectionName = eachSection.filter({!$0.model.contains("#") && !$0.model.contains("-")}).first?.model,
-                        var returnedSection = _prjData?.prjQuestionnaire.filter({$0.Name == sectionName}).first {
-                            let questionsSection = returnedSection.Questions.compactMap({ (question) -> QuestionStructure? in
-                                var q = question
-                                
-                                let value = section.filter({$0.Name == question.Name}).compactMap({$0.Value}).joined(separator: ", ")
-                                
-                                q.Value = value
-                                return q
-                            })
-
-                            returnedSection.Questions = questionsSection
-                            return returnedSection
+                    if let sectionName = eachSection.filter({!$0.model.contains("#") && !$0.model.contains("-")})
+                                        .first?
+                                        .model,
+                        var returnedSection = _prjData?.prjQuestionnaire
+                                                        .filter({$0.Name == sectionName})
+                                                        .first {
+                        let questionsSection = returnedSection.Questions
+                                                .compactMap({ (question) -> QuestionStructure? in
+                            var q = question
+                            
+                            let value = section.filter({$0.Name == question.Name})
+                                                .compactMap({$0.Value})
+                                                .joined(separator: ", ")
+                            
+                            q.Value = value
+                            return q
+                        })
+                        
+                        returnedSection.Questions = questionsSection
+                        return returnedSection
                     } else {
                         return nil
                     }
                 })
 
                 self?.setupPrjDataQuestionnaire(sections: data)
+                self?.prjData.prjImageArray = allVcImages
 
                 guard let totalMissing = self?.totalMissing,
                     let newPrjData = self?.prjData
@@ -174,15 +185,19 @@ class ContainerViewController: UIViewController {
                 let banner = StatusBarNotificationBanner(title: "Project data saved successfully.", style: .success)
                 banner.show()
 
+                //print("To-Do: if totalMissing >= 0 change to if totalMissing == 0")
                 if totalMissing == 0 {
                     if let vc = ReviewViewController.instantiateFromStoryBoard(withProjectData: newPrjData) {
                         self?.navigationController?.pushViewController(vc, animated: true)
                     }
                 } else {
-                    let msgContent = allVcData.dropLast().compactMap({ (content) -> [(modelName: String, items: [String])] in
+                    let msgContent = allVcData.dropLast()
+                                                .compactMap({ (content) -> [(modelName: String, items: [String])] in
                         return content.compactMap({ (section) -> (modelName: String, items: [String])? in
                             let model = section.model
-                            let questions = section.items.filter({($0.Value == nil || $0.Value == "") && $0.Mandatory == "Yes"})
+                            let questions = section.items
+                                                    .filter({($0.Value == nil || $0.Value == "") &&
+                                                            $0.Mandatory == "Yes"})
                             if questions.isEmpty {
                                 return nil
                             }

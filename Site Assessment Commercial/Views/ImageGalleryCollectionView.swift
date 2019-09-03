@@ -14,7 +14,11 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     
     var images: [UIImage] = [UIImage(named: "Add_Pictures")!] {
         didSet {
-            images.append(UIImage(named: "Add_Pictures")!)
+            if let first = images.first,
+                let image = UIImage(named: "Add_Pictures"),
+                first != image {
+                images.append(UIImage(named: "Add_Pictures")!)
+            }
         }
     }
 
@@ -37,15 +41,14 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: "ImageGalleryCell")
+
+        let cellId = "ImageGalleryCell"
+        let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: cellId)
         let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
                                                                     forIndexPath: indexPath)
         
         let image = images[indexPath.row]
-        
         cell.imageView.image = image
-        
         return cell
     }
     
@@ -60,4 +63,7 @@ class ImageGalleryCollectionView: UICollectionView, UICollectionViewDelegate, UI
         return CGSize(width: 32, height: 32)
     }
 
+    deinit {
+        print("ImageGalleryCollectionView deinit")
+    }
 }

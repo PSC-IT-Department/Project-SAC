@@ -40,17 +40,16 @@ class GoogleService {
     }
     
     func storeGoogleAccountInformation(_signIn: GIDSignIn) {
-        
         let user = _signIn.currentUser
         signIn = _signIn
         driveService.authorizer = user!.authentication.fetcherAuthorizer()
         calendarService.authorizer = user!.authentication.fetcherAuthorizer()
-        
-        UserDefaults.standard.set(user!.profile.email, forKey: "GoogleUser")
+
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(user!.profile.email, forKey: "GoogleUser")
     }
     
     func syncWithCalendar() {
-        
     }
     
     func retrieveGoogleUserInformation() -> GIDSignIn? {
@@ -58,11 +57,13 @@ class GoogleService {
     }
     
     func resetGoogleUserInformation() {
-        UserDefaults.standard.removeObject(forKey: "GoogleUser")
+        let userDefaults = UserDefaults.standard
+        userDefaults.removeObject(forKey: "GoogleUser")
     }
     
     func getEmail() -> String? {
-        return UserDefaults.standard.string(forKey: "GoogleUser")
+        let userDefaults = UserDefaults.standard
+        return userDefaults.string(forKey: "GoogleUser")
     }
     
     public func listFilesInFolder(_ folder: String, onCompleted: @escaping (GTLRDrive_FileList?, Error?) -> Void) {
@@ -92,7 +93,8 @@ class GoogleService {
                                   folderID: String,
                                   onCompleted: @escaping (Bool, Error?) -> Void) {
 
-        guard let homeDirectory = DataStorageService.shared.homeDirectory else {
+        guard let dataStorageService = DataStorageService.shared,
+            let homeDirectory = dataStorageService.homeDirectory else {
             print("homeDirectory is nil")
             onCompleted(false, nil)
             return
@@ -113,68 +115,77 @@ class GoogleService {
     }
 
     public func uploadImages(fid: String, onCompleted: ((Bool, Error?) -> Void)?) {
-        createProjectSectionFolders(pfid: fid) { (sectionFolderIDs, error) in
-            guard let sfids = sectionFolderIDs else {
+        createCategoryFolders(pfid: fid) {
+            [weak self, weak dataStorageService = DataStorageService.shared] (success, error) in
+            guard success else {
+                print("createCategoryFolders failed, error = \(error)")
                 onCompleted?(false, error)
                 return
             }
-            
-            let saData = DataStorageService.shared.retrieveCurrentProjectData()
-            
-            var totalAmount = saData.prjImageArray.reduce(0, { (result, imageArray) -> Int in
-                if let images = imageArray.images {
-                    return result + images.count
-                } else {
-                    return result + 0
+
+            self?.createSectionFolders(pfid: fid, onCompleted: {
+                [weak self, weak dataStorageService = DataStorageService.shared] (success, error) in
+                guard success,
+                    let imageArray = dataStorageService?.retrieveCurrentProjectData().prjImageArray
+                    else {
+                    print("createSectionFolders failed, error = \(error)")
+                    onCompleted?(false, error)
+                    return
                 }
-            })
-            
-            saData.prjImageArray.forEach({ [weak self] (imageArray) in
-                let sections = saData.prjQuestionnaire.filter {$0.Questions.contains(where: {
-                    $0.Name == imageArray.key})}
-                
-                if let section = sections.first {
-                    imageArray.images?.forEach({ [weak self] (imageAttr) in
-                        guard let prjDir = DataStorageService.shared.projectDir else {
+
+                imageArray
+                    .flatMap({$0.sections.filter({$0.count >= 1})})
+                    .forEach({ (section) in
+                        let sectionName = section.name
+                        var start = 0
+                        let count = section.count
+                        if let sfid = self?.ggFolderIDs[sectionName],
+                            let prjDir = dataStorageService?.homeDirectory,
+                            let prjId = dataStorageService?.currentProjectID {
+
+                            section.imageArrays
+                                .compactMap({$0.images?.compactMap({$0.name})})
+                                .flatMap({$0})
+                                .forEach({ fileName in
+                                    let prefix = prjDir.path + "/" + prjId + "/"
+                                    let fileFullName = fileName + ".png"
+                                    let filePath = prefix + fileFullName
+                                    self?.upload(sfid, path: filePath, MIMEType: "image/png",
+                                                 onCompleted: { (fileId, _) in
+                                        start += 1
+                                        if let fid = fileId {
+                                            print("fid = \(fid)")
+                                        } else {
+                                            print("file upload failed.")
+                                        }
+
+                                        if start == count {
+                                            print("Files upload successfully.")
+                                            onCompleted?(true, nil)
+                                            return
+                                        }
+                                    })
+                                })
+                        } else {
+                            print("No such folder: \(sectionName)")
                             onCompleted?(false, nil)
                             return
                         }
-                        
-                        let imgName = prjDir.appendingPathComponent(imageAttr.name).appendingPathExtension("png")
-                        let imgPath = imgName.path
-                        
-                        if let fid = sfids[section.Name] {
-                            self?.upload(fid, path: imgPath, MIMEType: "image/png", onCompleted: { (fileID, error) in
-                                if let err = error {
-                                    print("fileID, Error = \(err)")
-                                }
-                                
-                                if let fid = fileID {
-                                    print("Image fid = \(fid)")
-                                    
-                                    totalAmount -= 1
-                                    if totalAmount == 0 {
-                                        onCompleted?(true, nil)
-                                        return
-                                    }
-                                }
-                            })
-                        }
                     })
-                }
             })
         }
     }
     
     public func uploadData(fid: String, onCompleted: ((Bool, Error?) -> Void)?) {
-        createProjectDataFolder(pfid: fid) { [weak self] (folderID, error) in
-            guard let fid = folderID else {
-                onCompleted?(false, error)
-                return
+        createProjectDataFolder(pfid: fid) {
+            [weak self, weak dataStorageService = DataStorageService.shared] (folderID, error) in
+            guard let fid = folderID,
+                let saData = dataStorageService?.retrieveCurrentProjectData()
+                else {
+                    onCompleted?(false, error)
+                    return
             }
-            
-            let saData = DataStorageService.shared.retrieveCurrentProjectData()
-            
+
             if let prjID = saData.prjInformation.projectID, let prjType = saData.prjInformation.type {
             
                 let t = prjType == .SiteAssessmentCommercial ? "S" : "R"
@@ -200,15 +211,17 @@ class GoogleService {
     }
     
     public func uploadProject(with saData: SiteAssessmentDataStructure, onCompleted: ((Bool, Error?) -> Void)?) {
- 
-        let imgAttrs = saData.prjImageArray.compactMap({$0.images}).joined().filter({ $0.name != "" })
-        
-        if imgAttrs.isEmpty {
-            print("No Need to upload to Google Drive, success.")
+        let imgCount = saData.prjImageArray.count
+
+        print("imgCount = \(imgCount)")
+        print("To-Do: if imgCount < 1")
+        /*
+        if imgCount < 1 {
+            print("No need to upload to Google Drive, success.")
             onCompleted?(true, nil)
             return
         }
-        
+         */
         search(rootDir) { [weak self] (folderID, error) in
             if let err = error {
                 print("folderID, Error = \(err)")
@@ -254,66 +267,90 @@ class GoogleService {
             }
         }
     }
-    
-    private func createProjectSectionQuestionFolders(sfid: String,
-                                                     onCompleted: (([String: String]?, Error?) -> Void)?) {
-        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
-        
-        var qfids: [String: String] = [:]
-        prjdata.prjQuestionnaire.forEach { (section) in
-            let questions = section.Questions.filter {$0.QType == .image}
-            
-            questions.forEach({ [weak self] (question) in
-                self?.createSubfolder(question.Name, sfid, onCompleted: { [weak self] (questionFolderID, error) in
-                    if let err = error {
-                        print("createSubfolder, Error = \(err)")
-                    }
-                    
-                    guard let qfid = questionFolderID else {
-                        print("Error: createSubfolder failed for questions.")
-                        onCompleted?(nil, error)
-                        return
-                    }
-                    
-                    qfids.updateValue(qfid, forKey: question.Name)
-                    
-                    self?.ggFolderIDs.updateValue(qfid, forKey: question.Name)
-                    if qfids.count == prjdata.prjQuestionnaire.count {
-                        onCompleted?(qfids, nil)
-                    }
-                })
-            })
+
+    private func createSectionFolders(pfid: String, onCompleted: ((Bool, Error?) -> Void)?) {
+        guard let dataStorageService = DataStorageService.shared else {
+            print("Error: createSectionFolders failed for DataStorageService.shared.")
+            onCompleted?(false, nil)
+            return
+        }
+
+        let imageArray = dataStorageService.retrieveCurrentProjectData().prjImageArray
+
+        imageArray.filter({$0.sections.contains(where: {$0.count >= 1})})
+            .forEach { category in
+                var start = 0
+                let sections = category.sections.filter({$0.count >= 1})
+                let count = sections.count
+                print("count = \(count)")
+                
+                if let cfid = ggFolderIDs[category.name] {
+                    sections
+                        .forEach({ (section) in
+                            let sectionName = section.name
+                            createSubfolder(sectionName, cfid, onCompleted: { [weak self] (folderId, error) in
+                                if let err = error {
+                                    print("createSectionFolders, Error = \(err)")
+                                }
+
+                                guard let fid = folderId else {
+                                    print("Error: createSubfolder failed for sections.")
+                                    onCompleted?(false, error)
+                                    return
+                                }
+
+                                self?.ggFolderIDs.updateValue(fid, forKey: sectionName)
+
+                                start += 1
+                                if start == count {
+                                    onCompleted?(true, nil)
+                                    return
+                                }
+                            })
+                        })
+                } else {
+                    print("No such category: \(category.name)")
+                    onCompleted?(false, nil)
+                    return
+                }
         }
     }
     
-    private func createProjectSectionFolders(pfid: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
-        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
-        
-        var sfids: [String: String] = [:]
-        prjdata.prjQuestionnaire.forEach({ [weak self] (section) in
-            self?.createSubfolder(section.Name, pfid, onCompleted: { [weak self] (sectionFolderID, error) in
-                if let err = error {
-                    print("createProjectSectionFolders, Error = \(err)")
-                }
-                
-                guard let sfid = sectionFolderID else {
-                    print("Error: createSubfolder failed for sections.")
-                    onCompleted?(nil, error)
-                    return
-                }
-                
-                sfids.updateValue(sfid, forKey: section.Name)
-                self?.ggFolderIDs.updateValue(sfid, forKey: section.Name)
+    private func createCategoryFolders(pfid: String, onCompleted: ((Bool, Error?) -> Void)?) {
+        guard let dataStorageService = DataStorageService.shared else {
+            print("Error: createSubfolder failed for DataStorageService.shared.")
+            onCompleted?(false, nil)
+            return
+        }
 
-                if sfids.count == prjdata.prjQuestionnaire.count {
-                    onCompleted?(sfids, nil)
-                }
+        let prjdata = dataStorageService.retrieveCurrentProjectData()
+        let count = prjdata.prjQuestionnaire.count
+        var start = 0
+        prjdata.prjQuestionnaire
+            .compactMap({$0.Name})
+            .forEach({ [weak self] (name) in
+                self?.createSubfolder(name, pfid, onCompleted: { [weak self] (sectionFolderID, error) in
+                    if let err = error {
+                        print("createProjectSectionFolders, Error = \(err)")
+                    }
+
+                    guard let sfid = sectionFolderID else {
+                        print("Error: createSubfolder failed for sections.")
+                        onCompleted?(false, error)
+                        return
+                    }
+
+                    self?.ggFolderIDs.updateValue(sfid, forKey: name)
+
+                    start += 1
+                    if start == count {
+                        onCompleted?(true, nil)
+                    }
+                })
             })
-        })
     }
     
     private func createProjectDataFolder(pfid: String, onCompleted: ((String?, Error?) -> Void)?) {
-        
         let sectionData = "DATA"
         createSubfolder(sectionData, pfid, onCompleted: { [weak self] (dataFolderID, error) in
             if let err = error {
@@ -329,98 +366,34 @@ class GoogleService {
             self?.ggFolderIDs.updateValue(dfid, forKey: sectionData)
             onCompleted?(dfid, nil)
         })
-        
     }
     
     private func createProjectFolder(rfid: String, onCompleted: ((String?, Error?) -> Void)?) {
-        let prjdata = DataStorageService.shared.retrieveCurrentProjectData()
-        
-        if let prjAddr = prjdata.prjInformation.projectAddress {
-            createSubfolder(prjAddr, rfid, onCompleted: { [weak self] (folderID, error) in
-                if let err = error {
-                    print("createProjectFolder, createSubfolder Error: \(err.localizedDescription)")
-                }
-                
-                guard let fid = folderID else {
-                    onCompleted?(nil, error)
-                    return
-                }
-                
-                self?.ggFolderIDs.updateValue(fid, forKey: "Project Address")
-                onCompleted?(fid, nil)
-                return
-            })
+        guard let dataStorage = DataStorageService.shared,
+            let prjAddr = dataStorage.retrieveCurrentProjectData().prjInformation.projectAddress
+            else {
+            print("createProjectFolder DataStorageService.shared is nil")
+            onCompleted?(nil, nil)
+            return
         }
-    }
-    
-    private func createFolders(rootFolderID: String, onCompleted: (([String: String]?, Error?) -> Void)?) {
-        createProjectFolder(rfid: rootFolderID, onCompleted: { [weak self] (prjFolderID, error) in
+
+        createSubfolder(prjAddr, rfid, onCompleted: { [weak self] (folderID, error) in
             if let err = error {
-                print("Error = \(err)")
-                
+                print("createProjectFolder, createSubfolder Error: \(err)")
             }
-            
-            guard let pfid = prjFolderID else {
+
+            guard let fid = folderID else {
                 onCompleted?(nil, error)
                 return
             }
-            
-            var fids: [String: String] = [:]
-            
-            self?.createProjectSectionFolders(pfid: pfid, onCompleted: { (SectionFolderIDs, error) in
-                if let err = error {
-                    print("Error = \(err)")
-                    
-                }
-                
-                guard let sfids = SectionFolderIDs else {
-                    onCompleted?(nil, error)
-                    return
-                }
-                
-                fids = sfids
-                
-            })
-            
-            self?.createProjectDataFolder(pfid: pfid, onCompleted: { (DataFolderID, error ) in
-                if let err = error {
-                    print("Error = \(err)")
-                    
-                }
-                
-                guard let dfid = DataFolderID else {
-                    onCompleted?(nil, error)
-                    return
-                }
-                
-                fids.updateValue(dfid, forKey: "DATA")
-                
-            })
-            
-            onCompleted?(fids, nil)
+
+            let key = "Project Address"
+            self?.ggFolderIDs.updateValue(fid, forKey: key)
+            onCompleted?(fid, nil)
             return
         })
-
     }
 
-    public func uploadFile(_ name: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> Void)?) {
-        
-        search(name) { [weak self] (folderID, error) in
-            
-            if let ID = folderID {
-                self?.upload(ID, path: path, MIMEType: MIMEType, onCompleted: onCompleted)
-            } else {
-                self?.createFolder(name, onCompleted: { [weak self] (folderID, error) in
-                    guard let ID = folderID else {
-                        onCompleted?(nil, error)
-                        return
-                    }
-                    self?.upload(ID, path: path, MIMEType: MIMEType, onCompleted: onCompleted)
-                })
-            }
-        }
-    }
-    
     private func upload(_ parentID: String, path: String, MIMEType: String, onCompleted: ((String?, Error?) -> Void)?) {
         
         guard let data = FileManager.default.contents(atPath: path) else {
@@ -566,16 +539,22 @@ extension GoogleService {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        let startDateTime = dateFormatter.date(from: startTime!)!
-        
-        let endDate = dateFormatter.date(from: endTime!)!
-        
+
+        var startDateTime = Date()
+        if let _startTime = startTime {
+            startDateTime = dateFormatter.date(from: _startTime)!
+        }
+
+        var endDateTime = Date()
+        if let _endTime = endTime {
+            endDateTime = dateFormatter.date(from: _endTime)!
+        }
+
         let eStartDateTime = GTLRDateTime(date: startDateTime)
         newEvent.start = GTLRCalendar_EventDateTime()
         newEvent.start?.dateTime = eStartDateTime
         
-        let eEndDateTime = GTLRDateTime(date: endDate)
+        let eEndDateTime = GTLRDateTime(date: endDateTime)
         newEvent.end = GTLRCalendar_EventDateTime()
         newEvent.end?.dateTime = eEndDateTime
         
