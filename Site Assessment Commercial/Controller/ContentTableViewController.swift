@@ -715,7 +715,7 @@ extension ContentTableViewController: SelectionCellDelegate {
             return
         }
 
-        var plainData = loadOriginalData()
+        let plainData = loadOriginalData()
 
         var questions = plainData[0].items.filter({!($0.Name.contains("#"))})
 
@@ -839,7 +839,7 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
                 else { return }
             
             DispatchQueue.main.async { [weak self, weak dataStorageService = DataStorageService.shared] in
-                dataStorageService?.storeImages (
+                dataStorageService?.storeImages(
                     prjID: prjID,
                     name: item.Name,
                     images: [compressedImage]) {[weak self] (imageAttrs, error) in
@@ -905,7 +905,7 @@ extension ContentTableViewController: YMSPhotoPickerViewControllerDelegate {
             }
             
             DispatchQueue.main.async { [weak self, weak dataStorageService = DataStorageService.shared] in
-                dataStorageService?.storeImages (
+                dataStorageService?.storeImages(
                     prjID: prjID,
                     name: item.Name,
                     images: imageArray) { [weak self] (imageAttrs, error) in

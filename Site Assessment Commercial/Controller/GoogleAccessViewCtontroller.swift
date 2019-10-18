@@ -72,11 +72,11 @@ class GoogleAccessViewController: UIViewController {
     }
     
     private func setupForSignIn() {
-        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive, kGTLRAuthScopeCalendar]
         GIDSignIn.sharedInstance().shouldFetchBasicProfile = true
-        GIDSignIn.sharedInstance().signInSilently()
+        GIDSignIn.sharedInstance().restorePreviousSignIn()
 
         let button = GIDSignInButton(frame: CGRect(x: 0, y: 0, width: 200, height: 100))
         button.center = view.center
@@ -95,6 +95,3 @@ extension GoogleAccessViewController: GIDSignInDelegate {
         }
     }
 }
-
-// MARK: - GIDSignInUIDelegate
-extension GoogleAccessViewController: GIDSignInUIDelegate {}

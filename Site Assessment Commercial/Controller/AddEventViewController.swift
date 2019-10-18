@@ -159,7 +159,7 @@ extension AddEventViewController {
     private func setupDataSource() {
         let (configureCell, titleForSection) = tableViewDataSourceUI()
         
-        let reloadDataSource = RxTableViewSectionedReloadDataSource<AddEventSection> (
+        let reloadDataSource = RxTableViewSectionedReloadDataSource<AddEventSection>(
             configureCell: configureCell,
             titleForHeaderInSection: titleForSection
         )

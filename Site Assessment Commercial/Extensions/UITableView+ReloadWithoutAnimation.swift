@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 
-// https://stackoverflow.com/questions/28244475/reloaddata-of-uitableview-with-dynamic-cell-heights-causes-jumpy-scrolling
-// Srujan Simha
+// https://stackoverflow.com/questions/28244475 @Srujan Simha
 extension UITableView {
 
     func reloadWithoutAnimation() {

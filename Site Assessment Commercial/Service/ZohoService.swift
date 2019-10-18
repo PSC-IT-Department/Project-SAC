@@ -248,7 +248,7 @@ class ZohoService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        guard let uploadData = saData.compactMap ({ (key, value) in
+        guard let uploadData = saData.compactMap({(key, value) in
             [key, value].joined(separator: "=")}).joined(separator: "&").data(using: .utf8)
             else {
             DataStorageService.shared.writeToLog("uploadData uploadData = saData.compactMap")
@@ -260,7 +260,7 @@ class ZohoService {
         let task = urlSession.uploadTask(with: request, from: uploadData) {
             [weak dataStorageService = DataStorageService.shared] (data, response, error) in
             if let err = error {
-                print ("error: \(err)")
+                print("error: \(err)")
             }
             
             guard let respData = data,

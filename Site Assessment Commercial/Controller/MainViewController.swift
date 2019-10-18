@@ -175,7 +175,7 @@ extension MainViewController {
     private func setupDataSource() {
         let (configureCell, titleForSection) = tableViewDataSourceUI()
         
-        let dataSource = RxTableViewSectionedReloadDataSource<MainSection> (
+        let dataSource = RxTableViewSectionedReloadDataSource<MainSection>(
             configureCell: configureCell,
             titleForHeaderInSection: titleForSection
         )
@@ -186,11 +186,11 @@ extension MainViewController {
     }
     
     private func setupGoogleSignIn() {
-        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().presentingViewController = self
         GIDSignIn.sharedInstance().delegate = self
         GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive, kGTLRAuthScopeCalendar]
         GIDSignIn.sharedInstance().shouldFetchBasicProfile = true
-        GIDSignIn.sharedInstance().signInSilently()
+        GIDSignIn.sharedInstance().restorePreviousSignIn()
     }
 
     private func setupButtonTitleTapHandling() {
@@ -512,7 +512,7 @@ extension MainViewController: NotificationBannerDelegate {
     }
 }
 
-extension MainViewController: GIDSignInDelegate, GIDSignInUIDelegate {
+extension MainViewController: GIDSignInDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         if let err = error {
             showBanner(title: "Google SignIn Failed. Error: \(err.localizedDescription)", style: .danger)

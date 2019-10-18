@@ -210,8 +210,9 @@ class ContainerViewController: UIViewController {
                         let firstQuestion = msgContent?.items.first {
 
                         let title = "Project data saved successfully."
-                        let msg = "Complete the questionnaire to proceed to next step, still Missing: \(totalMissing) sections.\n" +
-                                    "Section: \(sectionName), question: \(firstQuestion)"
+                        let msg = "Complete the questionnaire to proceed to next step"
+                            + ", still Missing: \(totalMissing) sections.\n"
+                            + "Section: \(sectionName), question: \(firstQuestion)"
                         let popup = PopupDialog(title: title, message: msg)
 
                         let confirmButton = PopupDialogButton(title: "OK", action: nil)

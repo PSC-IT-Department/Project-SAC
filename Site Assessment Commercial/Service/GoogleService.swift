@@ -34,7 +34,7 @@ class GoogleService {
     }
     
     init() {
-        signIn = GIDSignIn()
+        signIn = GIDSignIn.sharedInstance()
         driveService = GTLRDriveService()
         calendarService = GTLRCalendarService()
     }
@@ -118,7 +118,7 @@ class GoogleService {
         createCategoryFolders(pfid: fid) {
             [weak self, weak dataStorageService = DataStorageService.shared] (success, error) in
             guard success else {
-                print("createCategoryFolders failed, error = \(error)")
+                print("createCategoryFolders failed, error = \(String(describing: error))")
                 onCompleted?(false, error)
                 return
             }
@@ -128,7 +128,7 @@ class GoogleService {
                 guard success,
                     let imageArray = dataStorageService?.retrieveCurrentProjectData().prjImageArray
                     else {
-                    print("createSectionFolders failed, error = \(error)")
+                        print("createSectionFolders failed, error = \(String(describing: error))")
                     onCompleted?(false, error)
                     return
                 }

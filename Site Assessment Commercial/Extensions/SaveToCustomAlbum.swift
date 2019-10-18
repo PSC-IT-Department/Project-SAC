@@ -7,6 +7,7 @@
 //
 
 import Photos
+import UIKit
 
 class SaveToCustomAlbum: NSObject {
     static let albumName = "Site Assessment"

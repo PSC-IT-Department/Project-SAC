@@ -44,7 +44,7 @@ class TrussTypeCell: UICollectionViewCell {
     
     func setupDataSource() {
         
-        let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
+        let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection>(
             configureCell: { [unowned self] (_, collectionView, indexPath, element) in
                 let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: self.cellID)
                 let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,

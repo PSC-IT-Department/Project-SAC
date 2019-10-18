@@ -16,7 +16,6 @@ class TvTrussTypeCell: UITableViewCell {
     @IBOutlet weak var labelKey: UILabel!
     @IBOutlet weak var imageTrussType: UIImageView!
     @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var collectionView: UICollectionView!
 
     private let cellID = "ImageGalleryCell"
     
@@ -29,42 +28,7 @@ class TvTrussTypeCell: UITableViewCell {
     var images: [UIImage]! = []
     
     var disposeBag = DisposeBag()
-    
-    func setupDataSource() {
-        
-        let dataSource = RxCollectionViewSectionedReloadDataSource<ImageGallerySection> (
-            configureCell: { (_, collectionView, indexPath, element) in
-                let cellId = "ImageGalleryCell"
-                let cellIdentifier = CellIdentifier<ImageGalleryCell>(reusableIdentifier: cellId)
-                let cell = collectionView.dequeueReusableCellWithIdentifier(identifier: cellIdentifier,
-                                                                            forIndexPath: indexPath)
-                
-                if let image = UIImage(named: element) {
-                    cell.imageView.image = image
-                } else {
-                    cell.imageView.image = nil
-                }
-                return cell
-        },
-            configureSupplementaryView: { (dataSource, collectionView, kind, indexPath) in
-                let section = collectionView.dequeueReusableSupplementaryView (
-                    ofKind: kind,
-                    withReuseIdentifier: "Section",
-                    for: indexPath
-                    // swiftlint:disable:next force_cast
-                    ) as! CollectionReusableView
-                
-                section.labelSectionName.text = "\(dataSource[indexPath.section].model)"
-                return section
-        }
-        )
-        
-        sections
-            .asObservable()
-            .bind(to: collectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-    }
-    
+
     func setupCell(question: QuestionStructure, imageAttrs: [ImageAttributes]?) {
         labelKey.text = question.Name
         
@@ -83,9 +47,7 @@ class TvTrussTypeCell: UITableViewCell {
         textField.autocorrectionType = .no
         textField.inputAssistantItem.leadingBarButtonGroups = []
         textField.inputAssistantItem.trailingBarButtonGroups = []
-        
-        //collectionView.reloadData()
-        collectionView.isHidden = true
+
     }
     
     override func prepareForReuse() {
@@ -95,8 +57,6 @@ class TvTrussTypeCell: UITableViewCell {
         imageTrussType.image = UIImage(named: "Truss_Type")
         textField.text = nil
         images = nil
-        
-        collectionView.isHidden = true
     }
 }
 
